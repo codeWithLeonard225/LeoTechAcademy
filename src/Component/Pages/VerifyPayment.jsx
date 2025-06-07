@@ -1,14 +1,17 @@
 // src/pages/VerifyPayment.jsx
 
 import { useState } from 'react';
-import { users } from './Userdb'; // Import your user database
+// Corrected import path for Userdb. Assuming it's in src/data/Userdb.js
+// If it's in src/pages/Userdb.js, then use './Userdb'
+import { users } from './Userdb'; 
 import { useNavigate } from 'react-router-dom';
 
 export default function VerifyPayment() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [transactionCode, setTransactionCode] = useState('');
   const [verified, setVerified] = useState(false);
-  const [formData, setFormData] = useState({ username: '', email: '', id: '' });
+  // Only need 'id' in formData now
+  const [formData, setFormData] = useState({ id: '' }); 
   const [error, setError] = useState('');
 
   const handleVerify = (e) => {
@@ -23,22 +26,22 @@ export default function VerifyPayment() {
   const handleAccountSubmit = (e) => {
     e.preventDefault();
 
+    // Use .trim() for robustness, especially with mobile input
+    const enteredId = formData.id.trim(); 
+
     const match = users.find(
-      (user) =>
-        user.username.toLowerCase() === formData.username.toLowerCase() &&
-        user.email.toLowerCase() === formData.email.toLowerCase() &&
-        user.id === formData.id
+      (user) => user.id === enteredId
     );
 
-     if (match) {
+    if (match) {
       alert('Login successful!');
       localStorage.setItem('loggedInUser', JSON.stringify(match));
-      navigate('/dashboard'); // <-- Use navigate here instead of window.location.href
+      navigate('/dashboard'); 
     } else {
-      setError('No user found with the provided details. Please check your info.');
+      // Clear error message if user starts typing again
+      setError('No user found with that ID. Please check your ID.'); 
     }
   };
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -67,34 +70,17 @@ export default function VerifyPayment() {
           </>
         ) : (
           <>
-            <h2 className="text-2xl font-semibold mb-6 text-center">Login with Your Details</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center">Login with Your User ID</h2>
             <form onSubmit={handleAccountSubmit} className="space-y-4">
-              <div>
-                <label className="block mb-1 font-medium">Username</label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  required
-                  className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
               <div>
                 <label className="block mb-1 font-medium">User ID</label>
                 <input
                   type="text"
                   value={formData.id}
-                  onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                  onChange={(e) => {
+                      setFormData({ ...formData, id: e.target.value });
+                      setError(''); // Clear error when user types
+                  }}
                   required
                   className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
