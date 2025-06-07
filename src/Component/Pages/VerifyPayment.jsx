@@ -1,9 +1,11 @@
 // src/pages/VerifyPayment.jsx
 
 import { useState } from 'react';
-import { users } from '../Pages/Userdb'; // Import your user database
+import { users } from './Userdb'; // Import your user database
+import { useNavigate } from 'react-router-dom';
 
 export default function VerifyPayment() {
+   const navigate = useNavigate();
   const [transactionCode, setTransactionCode] = useState('');
   const [verified, setVerified] = useState(false);
   const [formData, setFormData] = useState({ username: '', email: '', id: '' });
@@ -28,15 +30,15 @@ export default function VerifyPayment() {
         user.id === formData.id
     );
 
-    if (match) {
+     if (match) {
       alert('Login successful!');
-      // You can store the user in localStorage or context here
       localStorage.setItem('loggedInUser', JSON.stringify(match));
-      window.location.href = '/dashboard';
+      navigate('/dashboard'); // <-- Use navigate here instead of window.location.href
     } else {
       setError('No user found with the provided details. Please check your info.');
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

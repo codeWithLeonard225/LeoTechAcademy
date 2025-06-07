@@ -16,12 +16,6 @@ import FAQsPage from './Component/Pages/FAQsPage';
 import BlogPage from './Component/Pages/BlogPage';
 import Footer from './Component/Pages/Footer';
 
-
-// import Footer from './components/Footer/Footer'; // Assuming you'll create this in components/Footer/Footer.jsx
-
-// Import your page components
-
-
 function App() {
   return (
     <div className="font-sans antialiased">
