@@ -1,9 +1,8 @@
 // src/pages/CoursePage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../firebase"; // adjust path if needed
-
+import { paidCourses } from '../data/paidCourses';
+import { allCourses } from '../data/allCourses';
 
 const CoursePage = () => {
   const { courseId } = useParams();
@@ -12,43 +11,33 @@ const CoursePage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeWeek, setActiveWeek] = useState(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem('loggedInUser');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setCurrentUser(parsedUser);
 
-  const fetchCourse = async () => {
-  try {
-    const paidRef = doc(db, 'paidCourses', courseId);
-    const freeRef = doc(db, 'freeCourse', courseId);
+      let foundCourse = paidCourses.find((c) => c.id === courseId);
+      if (!foundCourse) {
+        foundCourse = allCourses.find((c) => c.id === courseId);
+      }
 
-    const paidSnap = await getDoc(paidRef);
-    if (paidSnap.exists()) {
-      setCourse({ id: paidSnap.id, ...paidSnap.data() });
-      return;
+      if (foundCourse) {
+        setCourse(foundCourse);
+        const userProgress = parsedUser.userProgress?.[courseId];
+        if (userProgress && userProgress.lastAccessedWeek) {
+          setActiveWeek(userProgress.lastAccessedWeek);
+        } else {
+          setActiveWeek(1);
+        }
+      } else {
+        console.warn(`Course with ID: "${courseId}" not found in data. Redirecting.`);
+        navigate('/courses');
+      }
+    } else {
+      navigate('/login');
     }
-
-    const freeSnap = await getDoc(freeRef);
-    if (freeSnap.exists()) {
-      setCourse({ id: freeSnap.id, ...freeSnap.data() });
-      return;
-    }
-
-    console.warn(`Course with ID "${courseId}" not found in Firestore`);
-    navigate('/courses');
-  } catch (error) {
-    console.error("Error fetching course:", error);
-    navigate('/courses');
-  }
-};
-
-useEffect(() => {
-  const storedUser = localStorage.getItem('loggedInUser');
-  if (storedUser) {
-    const parsedUser = JSON.parse(storedUser);
-    setCurrentUser(parsedUser);
-    fetchCourse();
-  } else {
-    navigate('/login');
-  }
-}, [courseId, navigate]);
-
+  }, [courseId, navigate]);
 
   const toggleWeek = (weekNumber) => {
     setActiveWeek(activeWeek === weekNumber ? null : weekNumber);

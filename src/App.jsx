@@ -15,6 +15,9 @@ import Contact from './Component/Pages/ContactPage';
 import FAQsPage from './Component/Pages/FAQsPage';
 import BlogPage from './Component/Pages/BlogPage';
 import Footer from './Component/Pages/Footer';
+import VideoUploader from './Component/Pages/VideoUploader';
+import PaidCourseForm from './Component/PaidCourse/PaidCourseForm';
+import FreeCourseForm from './Component/FreeCourse/FreeCourseForm';
 
 function App() {
   return (
@@ -24,7 +27,11 @@ function App() {
 
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        {/* <Route path="/" element={<VideoUploader />} /> */}
+        <Route path="/" element={<PaidCourseForm />} />
+        {/* <Route path="/" element={<FreeCourseForm />} /> */}
+
 
         {/* Dedicated routes for other pages */}
         <Route path="/about" element={<About />} />
