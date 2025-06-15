@@ -1,7 +1,7 @@
 // src/pages/CoursesPage.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {coursesData, learningPaths} from './coursesData';
+import { coursesData, learningPaths } from './coursesData';
 
 
 
@@ -15,13 +15,13 @@ const CoursesPage = () => {
   const filteredCourses = coursesData.filter(course => {
     const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
     const matchesSearchTerm = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              course.instructor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              course.category.toLowerCase().includes(searchTerm.toLowerCase()); // Also search by category
+      course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.instructor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.category.toLowerCase().includes(searchTerm.toLowerCase()); // Also search by category
     return matchesCategory && matchesSearchTerm;
   });
 
- 
+
 
   return (
     <div className="bg-gray-50 min-h-screen pt-12 pb-20">
@@ -68,7 +68,7 @@ const CoursesPage = () => {
                 </select>
                 {/* Custom dropdown arrow */}
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.59 4.59z"/></svg>
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9l4.59 4.59z" /></svg>
                 </div>
               </div>
             </div>

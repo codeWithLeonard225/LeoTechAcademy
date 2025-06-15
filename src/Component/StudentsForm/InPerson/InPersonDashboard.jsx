@@ -1,37 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { db } from "../../../firebase"; // Adjust path if needed
-import { doc, getDoc } from 'firebase/firestore'; // Import getDoc (singular)
+import { db } from "../../../../firebase";
+import { doc, getDoc } from 'firebase/firestore';
 
-// This function will now attempt to find the course in both collections
+// Fetch course from either 'paidCourses' or 'freeCourse'
 const getCourseDetails = async (courseId) => {
   try {
-    // Attempt to fetch from 'paidCourses' first
-    const paidCourseDocRef = doc(db, 'paidCourses', courseId);
-    const paidCourseDocSnap = await getDoc(paidCourseDocRef); // Use getDoc
+    const paidCourseDocRef = doc(db, 'InPersonCourses', courseId);
+    const paidCourseDocSnap = await getDoc(paidCourseDocRef);
 
     if (paidCourseDocSnap.exists()) {
       return { id: paidCourseDocSnap.id, ...paidCourseDocSnap.data(), isFree: false };
     }
 
-    // If not found in paidCourses, attempt to fetch from 'freeCourse'
-    const freeCourseDocRef = doc(db, 'freeCourse', courseId); // Make sure this collection name is consistent ('freeCourse' or 'freeCourses')
-    const freeCourseDocSnap = await getDoc(freeCourseDocRef); // Use getDoc
+    const freeCourseDocRef = doc(db, 'freeCourse', courseId);
+    const freeCourseDocSnap = await getDoc(freeCourseDocRef);
 
     if (freeCourseDocSnap.exists()) {
       return { id: freeCourseDocSnap.id, ...freeCourseDocSnap.data(), isFree: true };
     }
 
-    // If still not found, return null
-    console.warn(`Course data for ID: ${courseId} not found in either 'paidCourses' or 'freeCourse' collections.`);
+    console.warn(`Course with ID ${courseId} not found.`);
     return null;
   } catch (error) {
-    console.error(`Error fetching course details for ${courseId}:`, error);
+    console.error(`Error fetching course with ID ${courseId}:`, error);
     return null;
   }
 };
 
-const UserDashboard = () => {
+const InPersonDashboard = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -48,25 +45,19 @@ const UserDashboard = () => {
           const parsedUser = JSON.parse(storedUser);
           setCurrentUser(parsedUser);
 
-          if (parsedUser.enrolledCourseIds && parsedUser.enrolledCourseIds.length > 0) {
-            // Fetch enrolled courses from Firebase
-            const coursePromises = parsedUser.enrolledCourseIds.map(async (courseId) => {
-              // We no longer pass isFree, as getCourseDetails handles checking both collections
-              return getCourseDetails(courseId);
-            });
-
+          if (parsedUser.enrolledCourseIds?.length > 0) {
+            const coursePromises = parsedUser.enrolledCourseIds.map((courseId) => getCourseDetails(courseId));
             const courses = await Promise.all(coursePromises);
-            // Filter out any null courses (i.e., courses that weren't found in either collection)
             setEnrolledCourses(courses.filter(Boolean));
           } else {
-            setEnrolledCourses([]); // User has no enrolled courses
+            setEnrolledCourses([]);
           }
         } else {
-          navigate('/login'); // No logged-in user, redirect to login
+          navigate('/login');
         }
       } catch (err) {
         setError('Failed to load user data or enrolled courses. Please try again.');
-        console.error('Error in fetchUserDataAndCourses:', err);
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -88,7 +79,7 @@ const UserDashboard = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <p className="text-red-700 text-lg mb-4">{error}</p>
         <button
-          onClick={() => window.location.reload()} // Simple reload to retry
+          onClick={() => window.location.reload()}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
         >
           Retry
@@ -98,7 +89,6 @@ const UserDashboard = () => {
   }
 
   if (!currentUser) {
-    // This state should ideally be caught by the navigate('/login') above
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-gray-700 text-lg">User not logged in. Redirecting...</p>
@@ -106,13 +96,16 @@ const UserDashboard = () => {
     );
   }
 
-  // Map enrolled courses with progress data
   const enrolledCoursesWithProgress = enrolledCourses.map((course) => {
-    // Ensure weeklyContent exists before accessing its length
     const totalWeeks = course.weeklyContent?.length || 0;
-    const userCourseProgress = currentUser.userProgress?.[course.id] || { completedWeeks: [], lastAccessedWeek: 0 };
+    const userCourseProgress = currentUser.userProgress?.[course.id] || {
+      completedWeeks: [],
+      lastAccessedWeek: 0,
+    };
     const completedWeeksCount = userCourseProgress.completedWeeks.length;
-    const progressPercentage = totalWeeks > 0 ? Math.round((completedWeeksCount / totalWeeks) * 100) : 0;
+    const progressPercentage = totalWeeks > 0
+      ? Math.round((completedWeeksCount / totalWeeks) * 100)
+      : 0;
 
     return {
       ...course,
@@ -154,13 +147,13 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Enrolled Courses Section */}
+      {/* Courses Section */}
       <h3 className="text-3xl font-bold text-blue-800 mb-8 text-center relative">
         <span className="relative z-10">My Enrolled Courses</span>
         <span className="absolute left-1/2 transform -translate-x-1/2 bottom-0 w-24 h-2 bg-green-500 rounded-full z-0"></span>
       </h3>
 
-      {/* Free Courses Section */}
+      {/* Free Courses */}
       <div className="mb-10">
         <h4 className="text-2xl font-bold text-green-600 mb-6 border-b-2 border-green-300 pb-2">Free Courses</h4>
         {freeCourses.length > 0 ? (
@@ -168,38 +161,35 @@ const UserDashboard = () => {
             {freeCourses.map((course) => (
               <Link
                 key={course.id}
-                to={`/my-courses/${course.id}`}
+                to={`/inPerson-courses/${course.id}`}
                 className="block bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 p-6 border-l-4 border-green-500"
               >
-                <div>
-                  <h5 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h5>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{course.description}</p>
-                  <p className="text-xs text-gray-500 mb-3">Duration: {course.duration}</p>
-                </div>
-                <div className="mt-auto">
-                  <div className="w-full bg-gray-200 rounded-full h-4">
-                    <div
-                      className="bg-blue-500 h-4 rounded-full text-xs text-white flex items-center justify-center font-semibold"
-                      style={{ width: `${course.progressPercentage}%` }}
-                    >
-                      {course.progressPercentage}%
-                    </div>
+                <h5 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h5>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{course.description}</p>
+                <p className="text-xs text-gray-500 mb-3">Duration: {course.duration}</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full text-xs text-white flex items-center justify-center font-semibold"
+                    style={{ width: `${course.progressPercentage}%` }}
+                  >
+                    {course.progressPercentage}%
                   </div>
-                  <p className="text-sm text-gray-500 mt-2 text-center">
-                    Completed {course.completedWeeksCount} of {course.totalWeeks} weeks
-                  </p>
                 </div>
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  Completed {course.completedWeeksCount} of {course.totalWeeks} weeks
+                </p>
               </Link>
             ))}
           </div>
         ) : (
           <div className="p-6 bg-white rounded-xl shadow text-gray-700 italic text-center">
-            You are not enrolled in any free courses. <Link to="/courses" className="text-blue-600 hover:underline">Explore free offerings!</Link>
+            You are not enrolled in any free courses.{' '}
+            <Link to="/courses" className="text-blue-600 hover:underline">Explore free offerings!</Link>
           </div>
         )}
       </div>
 
-      {/* Paid Courses Section */}
+      {/* Paid Courses */}
       <div>
         <h4 className="text-2xl font-bold text-blue-600 mb-6 border-b-2 border-blue-300 pb-2">Paid Courses</h4>
         {userPaidCourses.length > 0 ? (
@@ -210,30 +200,27 @@ const UserDashboard = () => {
                 to={`/my-courses/${course.id}`}
                 className="block bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 p-6 border-l-4 border-blue-500"
               >
-                <div>
-                  <h5 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h5>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{course.description}</p>
-                  <p className="text-xs text-gray-500 mb-3">Duration: {course.duration}</p>
-                </div>
-                <div className="mt-auto">
-                  <div className="w-full bg-gray-200 rounded-full h-4">
-                    <div
-                      className="bg-green-500 h-4 rounded-full text-xs text-white flex items-center justify-center font-semibold"
-                      style={{ width: `${course.progressPercentage}%` }}
-                    >
-                      {course.progressPercentage}%
-                    </div>
+                <h5 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h5>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{course.description}</p>
+                <p className="text-xs text-gray-500 mb-3">Duration: {course.duration}</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-green-600 h-4 rounded-full text-xs text-white flex items-center justify-center font-semibold"
+                    style={{ width: `${course.progressPercentage}%` }}
+                  >
+                    {course.progressPercentage}%
                   </div>
-                  <p className="text-sm text-gray-500 mt-2 text-center">
-                    Completed {course.completedWeeksCount} of {course.totalWeeks} weeks
-                  </p>
                 </div>
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  Completed {course.completedWeeksCount} of {course.totalWeeks} weeks
+                </p>
               </Link>
             ))}
           </div>
         ) : (
           <div className="p-6 bg-white rounded-xl shadow text-gray-700 italic text-center">
-            You are not enrolled in any paid courses. <Link to="/courses" className="text-blue-600 hover:underline">Browse premium courses!</Link>
+            You are not enrolled in any paid courses.{' '}
+            <Link to="/courses" className="text-blue-600 hover:underline">Explore paid offerings!</Link>
           </div>
         )}
       </div>
@@ -241,4 +228,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default InPersonDashboard;

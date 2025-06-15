@@ -3,6 +3,7 @@ import { db } from '../../../firebase'; // Your Firebase config
 import { doc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore'; // Import necessary Firestore functions
 import { v4 as uuidv4 } from 'uuid';
 import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Import your new Cloudinary Uploader components
@@ -32,7 +33,7 @@ const PaidCourseForm = () => {
     // Function to fetch all paid courses from Firestore
     const fetchPaidCourses = async () => {
         try {
-            const coursesCollectionRef = collection(db, 'freeCourse');
+            const coursesCollectionRef = collection(db, 'paidCourses');
             const querySnapshot = await getDocs(coursesCollectionRef);
             const coursesList = querySnapshot.docs.map(doc => ({
                 id: doc.id,
@@ -40,7 +41,7 @@ const PaidCourseForm = () => {
             }));
             setAllPaidCourses(coursesList);
         } catch (error) {
-            console.error("Error fetching free Course: ", error);
+            console.error("Error fetching paid courses: ", error);
             toast.error("Failed to load courses.");
         }
     };
@@ -102,7 +103,8 @@ const PaidCourseForm = () => {
                     lessons: [],
                     videos: [],
                     readings: [], // Readings should be objects with title and url for consistency with CoursePage.jsx
-                    assignments: []
+                    assignments: [],
+                    quiz: '' // Add the new quiz field here, initialized as an empty string
                 }
             ];
             // Automatically expand the newly added week
@@ -195,7 +197,6 @@ const PaidCourseForm = () => {
         });
     };
 
-
     // --- Edit Course Handler ---
     const handleEditCourse = (selectedCourse) => {
         setCourse(selectedCourse); // Load selected course data into the form
@@ -209,7 +210,7 @@ const PaidCourseForm = () => {
         if (window.confirm(`Are you sure you want to delete the course "${courseTitle}"? This action cannot be undone.`)) {
             setLoading(true);
             try {
-                const docRef = doc(db, 'freeCourse', courseId);
+                const docRef = doc(db, 'paidCourses', courseId);
                 await deleteDoc(docRef);
                 toast.success(`Course "${courseTitle}" deleted successfully!`);
                 await fetchPaidCourses(); // Refresh the list of courses
@@ -230,7 +231,6 @@ const PaidCourseForm = () => {
         }
     };
 
-
     // --- Submit Handler (Create/Update) ---
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -242,7 +242,7 @@ const PaidCourseForm = () => {
         }
 
         try {
-            const docRef = doc(db, 'freeCourse', courseId);
+            const docRef = doc(db, 'paidCourses', courseId);
             await setDoc(docRef, {
                 ...course,
                 id: courseId
@@ -277,65 +277,55 @@ const PaidCourseForm = () => {
                 </h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Basic Course Details */}
+                    {/* ... (existing basic course details fields) ... */}
+                    <div>
+                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Course Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            id="title"
+                            value={course.title}
+                            onChange={handleCourseChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="e.g., Advanced React Development"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea
+                            name="description"
+                            id="description"
+                            value={course.description}
+                            onChange={handleCourseChange}
+                            rows="4"
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Provide a detailed description of the course content."
+                            required
+                        ></textarea>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="id" className="block text-sm font-medium text-gray-700">Course ID (Optional, auto-generated if empty):</label>
+                            <label htmlFor="instructor" className="block text-sm font-medium text-gray-700">Instructor</label>
                             <input
                                 type="text"
-                                id="id"
-                                name="id"
-                                value={course.id}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                placeholder="e.g., solar-installation-fundamentals"
-                                disabled={isEditing} // Disable ID input when editing
-                            />
-                            {isEditing && <p className="text-xs text-gray-500 mt-1">Course ID cannot be changed when editing.</p>}
-                        </div>
-                        <div>
-                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title:</label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                value={course.title}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                required
-                            />
-                        </div>
-                        <div className="md:col-span-2">
-                            <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description:</label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={course.description}
-                                onChange={handleCourseChange}
-                                rows="3"
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                required
-                            ></textarea>
-                        </div>
-                        <div>
-                            <label htmlFor="instructor" className="block text-sm font-medium text-gray-700">Instructor:</label>
-                            <input
-                                type="text"
-                                id="instructor"
                                 name="instructor"
+                                id="instructor"
                                 value={course.instructor}
                                 onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="e.g., Jane Doe"
                                 required
                             />
                         </div>
                         <div>
-                            <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level:</label>
+                            <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level</label>
                             <select
-                                id="level"
                                 name="level"
+                                id="level"
                                 value={course.level}
                                 onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 required
                             >
                                 <option value="">Select Level</option>
@@ -344,56 +334,60 @@ const PaidCourseForm = () => {
                                 <option value="Advanced">Advanced</option>
                             </select>
                         </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration:</label>
+                            <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration (e.g., 8 Weeks)</label>
                             <input
                                 type="text"
-                                id="duration"
                                 name="duration"
+                                id="duration"
                                 value={course.duration}
                                 onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                placeholder="e.g., 4 Weeks / 20 Lessons"
+                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="e.g., 8 Weeks"
                                 required
                             />
                         </div>
                         <div>
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price:</label>
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price (e.g., $99.99)</label>
                             <input
-                                type="text"
-                                id="price"
+                                type="number"
                                 name="price"
+                                id="price"
                                 value={course.price}
                                 onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                placeholder="e.g., $50 USD / SLL 1,250,000"
+                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="e.g., 99.99"
+                                step="0.01"
                                 required
                             />
                         </div>
-                        <div>
-                            <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category:</label>
-                            <input
-                                type="text"
-                                id="category"
-                                name="category"
-                                value={course.category}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                required
-                            />
-                        </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Course Image (from Cloudinary):</label>
-                            <CloudinaryImageUploader onUploadSuccess={handleImageUploadSuccess} currentUrl={course.image} />
-                            {course.image && (
-                                <div className="mt-2 text-sm text-gray-600">
-                                    Uploaded Image URL: <a href={course.image} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline break-all">{course.image}</a>
-                                </div>
-                            )}
-                            {course.image && (
-                                <img src={course.image} alt="Course Preview" className="mt-4 max-h-40 object-contain mx-auto rounded-lg shadow-md" />
-                            )}
-                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+                        <input
+                            type="text"
+                            name="category"
+                            id="category"
+                            value={course.category}
+                            onChange={handleCourseChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="e.g., Web Development, Data Science"
+                            required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Course Image</label>
+                        <CloudinaryImageUploader
+                            onUploadSuccess={handleImageUploadSuccess}
+                            currentUrl={course.image}
+                        />
+                        {course.image && (
+                            <div className="mt-2 text-sm text-gray-600">
+                                Current Image: <a href={course.image} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{course.image}</a>
+                            </div>
+                        )}
                     </div>
 
                     {/* Weekly Content Section (Accordion for details) */}
@@ -426,6 +420,9 @@ const PaidCourseForm = () => {
                                                 Assignments
                                             </th>
                                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Quiz
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Actions
                                             </th>
                                         </tr>
@@ -450,6 +447,9 @@ const PaidCourseForm = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                     {(week.assignments || []).length}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                    {week.quiz ? 'Yes' : 'No'} {/* Display if a quiz URL exists */}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <button
@@ -574,7 +574,7 @@ const PaidCourseForm = () => {
 
                                 {/* Readings Section */}
                                 <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Readings:</label>
+                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Readings (URLs):</label>
                                     {(week.readings || []).map((reading, readingIndex) => (
                                         <div key={readingIndex} className="mb-4 p-3 border border-gray-200 rounded-md bg-gray-50 shadow-inner">
                                             <input
@@ -586,7 +586,7 @@ const PaidCourseForm = () => {
                                             />
                                             <input
                                                 type="url"
-                                                placeholder="Reading URL (Optional)"
+                                                placeholder="Reading URL (e.g., https://example.com/article.pdf)"
                                                 value={reading.url}
                                                 onChange={(e) => handleNestedItemChange(weekIndex, 'readings', readingIndex, e.target.value, 'url')}
                                                 className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -652,6 +652,38 @@ const PaidCourseForm = () => {
                                         + Add Assignment
                                     </button>
                                 </div>
+
+                                {/* --- NEW QUIZ INPUT FIELD --- */}
+                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
+                                    <label htmlFor={`quiz-id-${weekIndex}`} className="block text-lg font-semibold text-gray-700 mb-3">Quiz ID:</label>
+                                    <input
+                                        type="text" // Changed to 'text' as it's an ID, not a full URL
+                                        id={`quiz-id-${weekIndex}`}
+                                        value={week.quizId || ''} // Changed to week.quizId to match CoursePage
+                                        onChange={(e) => handleWeeklyContentChange(weekIndex, 'quizId', e.target.value)} // Changed field name to 'quizId'
+                                        className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        placeholder="e.g., week_1, intro_quiz" // Updated placeholder
+                                    />
+                                    {week.quizId && ( // Changed to week.quizId
+                                        <Link
+                                            to={`/quiz/${week.quizId}`} // Construct the link here for preview
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline text-sm block mt-2 break-all"
+                                        >
+                                            Preview Quiz: /quiz/{week.quizId}
+                                        </Link>
+                                    )}
+                                    {week.quizId && ( // Changed to week.quizId
+                                        <button
+                                            type="button"
+                                            onClick={() => handleWeeklyContentChange(weekIndex, 'quizId', '')} // Changed field name to 'quizId'
+                                            className="text-red-500 hover:text-red-700 text-sm mt-3 px-3 py-1 rounded-md border border-red-500 hover:bg-red-50 transition duration-150 ease-in-out"
+                                        >
+                                            Clear Quiz ID
+                                        </button>
+                                    )}
+                                </div>
+                                {/* --- END NEW QUIZ INPUT FIELD --- */}
                             </div>
                         ))}
                     </div>
@@ -685,88 +717,55 @@ const PaidCourseForm = () => {
                     </div>
                 </form>
             </div>
-
             {/* Table for Existing Courses */}
-            <hr className="my-12 border-gray-300" />
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                <h3 className="text-3xl font-bold text-indigo-700 mb-6 border-b pb-4">Existing Paid Courses</h3>
-                {allPaidCourses.length === 0 && !loading ? (
-                    <p className="text-gray-600 text-center py-4">No paid courses found. Add a new course using the form above!</p>
-                ) : (
-                    <div className="overflow-x-auto shadow-md rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        ID
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Title
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Instructor
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Category
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Price
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Weeks
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
-                                        Actions
-                                    </th>
+            <h3 className="text-3xl font-bold text-indigo-700 mt-12 mb-6 border-b pb-4">Existing Paid Courses</h3>
+            {allPaidCourses.length === 0 ? (
+                <p className="text-gray-600 text-center">No paid courses found. Start by creating one!</p>
+            ) : (
+                <div className="overflow-x-auto shadow-lg rounded-xl border border-indigo-200">
+                    <table className="min-w-full divide-y divide-indigo-200">
+                        <thead className="bg-indigo-50">
+                            <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Title</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Instructor</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Level</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Duration</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Price</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Category</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Weeks</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {allPaidCourses.map((courseItem) => (
+                                <tr key={courseItem.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{courseItem.title}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.instructor}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.level}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.duration}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${courseItem.price}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.category}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{(courseItem.weeklyContent || []).length}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button
+                                            onClick={() => handleEditCourse(courseItem)}
+                                            className="text-indigo-600 hover:text-indigo-900 mr-3 transition duration-150 ease-in-out"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteCourse(courseItem.id, courseItem.title)}
+                                            className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {allPaidCourses.map((c) => (
-                                    <tr key={c.id} className={isEditing && course.id === c.id ? 'bg-indigo-50 border-indigo-400' : ''}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {c.id}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {c.title}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {c.instructor}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {c.category}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {c.price}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {(c.weeklyContent || []).length}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleEditCourse(c)}
-                                                className="text-blue-600 hover:text-blue-900 mr-4 transition duration-150 ease-in-out font-semibold"
-                                                disabled={loading}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleDeleteCourse(c.id, c.title)}
-                                                className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out font-semibold"
-                                                disabled={loading}
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
             <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </div>
     );

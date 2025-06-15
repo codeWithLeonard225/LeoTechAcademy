@@ -1,6 +1,7 @@
 // src/pages/HomePage.jsx
 import React from 'react';
 import Navbar from '../Nav/Navbar';
+import Footer from './Footer';
 
 // --- Hero Section Component ---
 const Hero = () => {
@@ -242,12 +243,14 @@ const CTA = () => {
 const Home = () => {
   return (
     <>
+    <Navbar/>
       <Hero />
       <WhyLeoTech />
       <HowItWorks />
       <FeaturedCourses />
       <Testimonials />
       <CTA />
+      <Footer/>
     </>
   );
 };

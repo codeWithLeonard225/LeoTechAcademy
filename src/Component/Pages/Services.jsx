@@ -1,6 +1,8 @@
 // src/pages/ServicesPage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../Nav/Navbar';
+import Footer from './Footer';
 
 const Services = () => {
   // Placeholder for icons. In a real app, you might use:
@@ -81,6 +83,8 @@ const Services = () => {
   ];
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-16 px-4 md:py-24 text-center shadow-lg relative overflow-hidden">
@@ -163,6 +167,8 @@ const Services = () => {
         </div>
       </section>
     </div>
+    <Footer/>
+    </>
   );
 };
 

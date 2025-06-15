@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react'; // Assuming you have lucide-react installed
+import Navbar from '../Nav/Navbar';
 
 const FAQsPage = () => {
   // State to manage which FAQ item is open
@@ -40,6 +41,8 @@ const FAQsPage = () => {
   ];
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
       {/* Header - Simple navigation (re-using common header structure) */}
       <header className="bg-white shadow-md p-4 flex flex-col sm:flex-row justify-between items-center z-10">
@@ -125,6 +128,8 @@ const FAQsPage = () => {
         </div>
       </section>
     </div>
+    <footer/>
+    </>
   );
 };
 

@@ -1,6 +1,8 @@
 // src/pages/BlogPage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../Nav/Navbar';
+import Footer from './Footer';
 
 const BlogPage = () => {
   // Dummy blog post data for demonstration
@@ -54,6 +56,8 @@ const BlogPage = () => {
   ];
 
   return (
+    <> 
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
       {/* Header - Simple navigation (re-using common header structure) */}
       <header className="bg-white shadow-md p-4 flex flex-col sm:flex-row justify-between items-center z-10">
@@ -151,6 +155,8 @@ const BlogPage = () => {
         </div>
       </section>
     </div>
+    <Footer/>
+    </>
   );
 };
 

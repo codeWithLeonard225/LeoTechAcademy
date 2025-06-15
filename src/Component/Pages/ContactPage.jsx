@@ -1,6 +1,8 @@
 // src/pages/ContactPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import Navbar from '../Nav/Navbar';
+import Footer from './Footer';
 
 const Contact = () => { // Renamed from 'Contact' to 'ContactPage'
   const location = useLocation();
@@ -80,6 +82,8 @@ const Contact = () => { // Renamed from 'Contact' to 'ContactPage'
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800 flex flex-col">
       {/* Main Content Area */}
       <main className="flex-grow container mx-auto p-4 md:p-8 lg:p-10">
@@ -234,6 +238,8 @@ const Contact = () => { // Renamed from 'Contact' to 'ContactPage'
         </div>
       </main>
     </div>
+    <Footer/>
+    </>
   );
 };
 
