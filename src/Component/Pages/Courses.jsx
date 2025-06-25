@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { coursesData, learningPaths } from './coursesData';
+import Navbar from '../Nav/Navbar';
+import Footer from './Footer';
 
 
 
@@ -24,6 +26,8 @@ const CoursesPage = () => {
 
 
   return (
+    <>
+    <Navbar/>
     <div className="bg-gray-50 min-h-screen pt-12 pb-20">
       <div className="container mx-auto px-6 max-w-6xl">
 
@@ -163,6 +167,8 @@ const CoursesPage = () => {
 
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

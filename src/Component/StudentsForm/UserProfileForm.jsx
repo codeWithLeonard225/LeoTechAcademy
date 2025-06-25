@@ -3,7 +3,7 @@ import { db } from '../../../firebase';
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import CloudinaryImageUserUploader from './CloudinaryImageUserUploader';
+import CloudinaryImageUserUploader from './InPerson/CloudinaryImageUploader';
 
 const UserProfileForm = () => {
     // Define the initial empty state for a new profile
@@ -14,30 +14,30 @@ const UserProfileForm = () => {
         tel: '',
         address: '',
         email: '',
-        userType: 'distance', // NEW: Default to 'distance'
-        enrolledCourseIds: [], // For distance learners (video lessons)
-        inPersonClassIds: [], // NEW: For face-to-face learners (classes)
+        userType: 'distance', // Default to 'distance'
+        enrolledCourseIds: [], // For distance learners (referencing 'Course' collection)
+        inPersonClassIds: [], // Specifically for in-person classes (referencing 'Classes' collection)
     };
 
     const [profile, setProfile] = useState(initialProfileState);
     const [userProfiles, setUserProfiles] = useState([]); // State to store all user profiles
-    const [availableCourses, setAvailableCourses] = useState([]);
-    const [availableClasses, setAvailableClasses] = useState([]); // NEW: State for available in-person classes
-    const [selectedCourse, setSelectedCourse] = useState('');
-    const [selectedClass, setSelectedClass] = useState(''); // NEW: State for selected in-person class
+    const [availableCourses, setAvailableCourses] = useState([]); // Online courses from 'Course' collection
+    const [selectedCourse, setSelectedCourse] = useState(''); // For the "Enroll in a Course" dropdown
+
+    const [availableClasses, setAvailableClasses] = useState([]); // In-person classes from 'Classes' collection
+    const [selectedClass, setSelectedClass] = useState(''); // For the "Enroll in an In-Person Class" dropdown
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [addCourseLoading, setAddCourseLoading] = useState(false);
-    const [addClassLoading, setAddClassLoading] = useState(false); // NEW: Loading for adding new class
+    const [addContentLoading, setAddContentLoading] = useState(false); // Renamed for clarity (can be for course or class)
 
-    const [newCourseId, setNewCourseId] = useState('');
-    const [newCourseTitle, setNewCourseTitle] = useState('');
+    const [newCourseId, setNewCourseId] = useState(''); // For new online course creation
+    const [newCourseTitle, setNewCourseTitle] = useState(''); // For new online course title
 
-    const [newClassId, setNewClassId] = useState(''); // NEW: State for new class ID
-    const [newClassName, setNewClassName] = useState(''); // NEW: State for new class name
+    const [newClassId, setNewClassId] = useState(''); // For new in-person class creation
+    const [newClassName, setNewClassName] = useState(''); // For new in-person class name
 
-
-    // --- NEW: Function to fetch all user profiles ---
+    // --- Function to fetch all user profiles ---
     const fetchUserProfiles = useCallback(async () => {
         setLoading(true);
         try {
@@ -56,60 +56,56 @@ const UserProfileForm = () => {
         }
     }, []);
 
+    // --- Function to fetch online courses from 'Course' collection ---
+    const fetchAvailableCourses = useCallback(async () => {
+        try {
+            const coursesSnap = await getDocs(collection(db, 'Course')); // Fetches from 'Course'
+            const courses = [];
+            coursesSnap.forEach(doc => {
+                const data = doc.data();
+                // If you want to explicitly filter by a 'type' field in 'Course' collection:
+                // if (data.type === 'online-course' || !data.type) { // Assuming no type means online course
+                courses.push({ id: doc.id, ...data });
+                // }
+            });
+            setAvailableCourses(courses);
+            if (courses.length > 0 && !selectedCourse) {
+                setSelectedCourse(courses[0].id);
+            }
+        } catch (err) {
+            console.error('Error loading online courses:', err);
+            toast.error('Failed to load online courses.');
+        }
+    }, [selectedCourse]);
+
+    // --- Function to fetch in-person classes from 'Classes' collection ---
+    const fetchAvailableClasses = useCallback(async () => {
+        try {
+            const classesSnap = await getDocs(collection(db, 'Classes')); // NOW FETCHING FROM 'CLASSES' COLLECTION
+            const classes = [];
+            classesSnap.forEach(doc => {
+                const data = doc.data();
+                classes.push({ id: doc.id, ...data });
+            });
+            setAvailableClasses(classes);
+            if (classes.length > 0 && !selectedClass) {
+                setSelectedClass(classes[0].id);
+            }
+        } catch (err) {
+            console.error('Error loading in-person classes:', err);
+            toast.error('Failed to load in-person classes.');
+        }
+    }, [selectedClass]);
+
     useEffect(() => {
-  const loadProfilesAndCourses = async () => {
-    await fetchUserProfiles(); // Fetch all user profiles
+        const loadAllData = async () => {
+            await fetchUserProfiles();
+            await fetchAvailableCourses();
+            await fetchAvailableClasses(); // Fetch from new 'Classes' collection
+        };
 
-    try {
-      // Load courses from 'Course' collection
-      const coursesSnap = await getDocs(collection(db, 'Course'));
-      const courses = [];
-
-      coursesSnap.forEach(doc => {
-        courses.push({ id: doc.id, ...doc.data() });
-      });
-
-      setAvailableCourses(courses);
-
-      // Auto-select the first course if not already selected
-      if (courses.length > 0 && !selectedCourse) {
-        setSelectedCourse(courses[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading courses:', err);
-      toast.error('Failed to load courses.');
-    }
-  };
-
-  loadProfilesAndCourses();
-}, [fetchUserProfiles]); // Runs only once or when fetchUserProfiles changes
-
-
-useEffect(() => {
-  const loadClasses = async () => {
-    try {
-      // Load classes from 'Classes' collection
-      const classesSnap = await getDocs(collection(db, 'Classes'));
-      const classes = [];
-
-      classesSnap.forEach(doc => {
-        classes.push({ id: doc.id, ...doc.data() });
-      });
-
-      setAvailableClasses(classes);
-
-      // Auto-select the first class if not already selected
-      if (classes.length > 0 && !selectedClass) {
-        setSelectedClass(classes[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading classes:', err);
-      toast.error('Failed to load classes.');
-    }
-  };
-
-  loadClasses();
-}, [selectedClass]); // Only rerun when selectedClass changes (optional)
+        loadAllData();
+    }, [fetchUserProfiles, fetchAvailableCourses, fetchAvailableClasses]);
 
 
     const handleChange = (e) => {
@@ -117,26 +113,22 @@ useEffect(() => {
         setProfile(prev => ({ ...prev, [name]: value }));
     };
 
-    // Handler for userType change
     const handleUserTypeChange = (e) => {
         const { value } = e.target;
         setProfile(prev => ({
             ...prev,
             userType: value,
-            // Clear enrolled courses/classes when switching type to avoid confusion
-            enrolledCourseIds: value === 'distance' ? prev.enrolledCourseIds : [],
-            inPersonClassIds: value === 'in-person' ? prev.inPersonClassIds : [],
         }));
     };
 
-
+    // Handler for adding an online course to the user's profile
     const handleAddCourse = () => {
         if (!selectedCourse) {
-            toast.warn('Please select a course to add.');
+            toast.warn('Please select an online course to add.');
             return;
         }
         if (profile.enrolledCourseIds.includes(selectedCourse)) {
-            toast.info('This course is already in the enrolled list.');
+            toast.info('This online course is already in the enrolled list.');
             return;
         }
 
@@ -144,27 +136,29 @@ useEffect(() => {
             ...prev,
             enrolledCourseIds: [...prev.enrolledCourseIds, selectedCourse],
         }));
-        const courseTitle = availableCourses.find(c => c.id === selectedCourse)?.title || selectedCourse;
-        toast.success(`"${courseTitle}" added to enrolled courses.`);
+
+        const courseTitle = availableCourses.find(course => course.id === selectedCourse)?.title || selectedCourse;
+        toast.success(`"${courseTitle}" added to enrolled online courses.`);
     };
 
-   const handleRemoveCourse = (courseIdToRemove) => {
-    setProfile(prev => ({
-        ...prev,
-        enrolledCourseIds: prev.enrolledCourseIds.filter(id => id !== courseIdToRemove),
-    }));
-    const courseTitle = availableCourses.find(c => c.id === courseIdToRemove)?.title || courseIdToRemove;
-    toast.info(`"${courseTitle}" removed from enrolled courses.`);
-};
+    // Handler for removing an online course from the user's profile
+    const handleRemoveCourse = (courseIdToRemove) => {
+        setProfile(prev => ({
+            ...prev,
+            enrolledCourseIds: profile.enrolledCourseIds.filter(id => id !== courseIdToRemove),
+        }));
+        const courseTitle = availableCourses.find(course => course.id === courseIdToRemove)?.title || courseIdToRemove;
+        toast.info(`"${courseTitle}" removed from enrolled online courses.`);
+    };
 
-    // NEW: Handlers for in-person classes
+    // Handler for adding an in-person class to the user's profile
     const handleAddClass = () => {
         if (!selectedClass) {
-            toast.warn('Please select a class to add.');
+            toast.warn('Please select an in-person class to add.');
             return;
         }
         if (profile.inPersonClassIds.includes(selectedClass)) {
-            toast.info('This class is already in the enrolled list.');
+            toast.info('This in-person class is already in the enrolled list.');
             return;
         }
 
@@ -172,17 +166,19 @@ useEffect(() => {
             ...prev,
             inPersonClassIds: [...prev.inPersonClassIds, selectedClass],
         }));
-        const classTitle = availableClasses.find(c => c.id === selectedClass)?.name || selectedClass; // Assuming 'name' field for classes
-        toast.success(`"${classTitle}" added to enrolled classes.`);
+
+        const className = availableClasses.find(classItem => classItem.id === selectedClass)?.name || selectedClass;
+        toast.success(`"${className}" added to enrolled in-person classes.`);
     };
 
+    // Handler for removing an in-person class from the user's profile
     const handleRemoveClass = (classIdToRemove) => {
         setProfile(prev => ({
             ...prev,
-            inPersonClassIds: prev.inPersonClassIds.filter(id => id !== classIdToRemove),
+            inPersonClassIds: profile.inPersonClassIds.filter(id => id !== classIdToRemove),
         }));
-        const classTitle = availableClasses.find(c => c.id === classIdToRemove)?.name || classIdToRemove;
-        toast.info(`"${classTitle}" removed from enrolled classes.`);
+        const className = availableClasses.find(classItem => classItem.id === classIdToRemove)?.name || classIdToRemove;
+        toast.info(`"${className}" removed from enrolled in-person classes.`);
     };
 
 
@@ -190,83 +186,86 @@ useEffect(() => {
         setProfile(prev => ({ ...prev, profilePhoto: url }));
     };
 
+    // Function to handle creation of a new online course (still in 'Course' collection)
     const handleCreateNewCourse = async () => {
         if (!newCourseId.trim()) {
             toast.error('Course ID cannot be empty.');
             return;
         }
 
-        setAddCourseLoading(true);
+        setAddContentLoading(true);
         try {
-            const courseDocRef = doc(db, 'Course', newCourseId.trim());
+            const courseDocRef = doc(db, 'Course', newCourseId.trim()); // Storing in 'Course'
             const courseDocSnap = await getDoc(courseDocRef);
 
             if (courseDocSnap.exists()) {
-                toast.error(`Course with ID "${newCourseId.trim()}" already exists.`);
+                toast.error(`Online Course with ID "${newCourseId.trim()}" already exists.`);
                 return;
             }
 
             const courseData = {
                 title: newCourseTitle.trim() || `Course ${newCourseId.trim()}`,
+                // No 'type' needed if 'Course' collection exclusively holds online courses
                 createdAt: new Date(),
             };
 
             await setDoc(courseDocRef, courseData);
-            toast.success(`Course "${newCourseId.trim()}" created successfully!`);
+            toast.success(`Online Course "${newCourseId.trim()}" created successfully!`);
 
-            setAvailableCourses(prev => [...prev, { id: newCourseId.trim(), title: courseData.title }]);
-            setSelectedCourse(newCourseId.trim());
+            await fetchAvailableCourses(); // Re-fetch all online courses
+            setSelectedCourse(newCourseId.trim()); // Select the newly created course
             setNewCourseId('');
             setNewCourseTitle('');
 
         } catch (err) {
-            console.error('Error creating new course:', err);
-            toast.error('Failed to create new course.');
+            console.error('Error creating new online course:', err);
+            toast.error('Failed to create new online course.');
         } finally {
-            setAddCourseLoading(false);
+            setAddContentLoading(false);
         }
     };
 
-    // NEW: Handle Create New Class
+    // Function to handle creation of a new in-person class (NOW IN 'Classes' collection)
     const handleCreateNewClass = async () => {
         if (!newClassId.trim()) {
             toast.error('Class ID cannot be empty.');
             return;
         }
 
-        setAddClassLoading(true);
+        setAddContentLoading(true);
         try {
-            const classDocRef = doc(db, 'Classes', newClassId.trim()); // Assuming 'Classes' collection
+            const classDocRef = doc(db, 'Classes', newClassId.trim()); // <--- IMPORTANT CHANGE: Storing in 'Classes'
             const classDocSnap = await getDoc(classDocRef);
 
             if (classDocSnap.exists()) {
-                toast.error(`Class with ID "${newClassId.trim()}" already exists.`);
+                toast.error(`In-Person Class with ID "${newClassId.trim()}" already exists.`);
                 return;
             }
 
             const classData = {
-                name: newClassName.trim() || `Class ${newClassId.trim()}`,
+                name: newClassName.trim() || `Class ${newClassId.trim()}`, // Use 'name' for classes
+                // No 'type' needed if 'Classes' collection exclusively holds in-person classes
+                schedule: 'TBD', // Default fields for in-person class
+                room: 'TBD',
                 createdAt: new Date(),
-                // Add other default fields for a class if needed (e.g., schedule, room)
-                schedule: 'TBD',
-                room: 'TBD'
             };
 
             await setDoc(classDocRef, classData);
-            toast.success(`Class "${newClassId.trim()}" created successfully!`);
+            toast.success(`In-Person Class "${newClassId.trim()}" created successfully!`);
 
-            setAvailableClasses(prev => [...prev, { id: newClassId.trim(), name: classData.name }]);
-            setSelectedClass(newClassId.trim());
+            await fetchAvailableClasses(); // Re-fetch all in-person classes from 'Classes'
+            setSelectedClass(newClassId.trim()); // Select the newly created class
             setNewClassId('');
             setNewClassName('');
 
         } catch (err) {
-            console.error('Error creating new class:', err);
-            toast.error('Failed to create new class.');
+            console.error('Error creating new in-person class:', err);
+            toast.error('Failed to create new in-person class.');
         } finally {
-            setAddClassLoading(false);
+            setAddContentLoading(false);
         }
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -284,11 +283,11 @@ useEffect(() => {
 
             setProfile(initialProfileState); // Clear form after successful save
             setSelectedCourse('');
-            setSelectedClass(''); // Clear selected class
+            setSelectedClass('');
             setNewCourseId('');
             setNewCourseTitle('');
-            setNewClassId(''); // Clear new class fields
-            setNewClassName(''); // Clear new class fields
+            setNewClassId('');
+            setNewClassName('');
             await fetchUserProfiles(); // Re-fetch profiles to update the table
 
         } catch (err) {
@@ -299,7 +298,7 @@ useEffect(() => {
         }
     };
 
-    // --- NEW: Function to load profile into form for editing ---
+    // --- Function to load profile into form for editing ---
     const handleEditProfile = (userToEdit) => {
         setProfile({
             id: userToEdit.id,
@@ -308,14 +307,14 @@ useEffect(() => {
             tel: userToEdit.tel || '',
             address: userToEdit.address || '',
             email: userToEdit.email || '',
-            userType: userToEdit.userType || 'distance', // Load existing userType, default to 'distance'
+            userType: userToEdit.userType || 'distance',
             enrolledCourseIds: userToEdit.enrolledCourseIds || [],
-            inPersonClassIds: userToEdit.inPersonClassIds || [], // Load existing inPersonClassIds
+            inPersonClassIds: userToEdit.inPersonClassIds || [],
         });
         toast.info(`Editing profile for ${userToEdit.username || userToEdit.id}`);
     };
 
-    // --- NEW: Function to delete a profile ---
+    // --- Function to delete a profile ---
     const handleDeleteProfile = async (userId) => {
         if (window.confirm(`Are you sure you want to delete profile for ID: ${userId}? This cannot be undone.`)) {
             setLoading(true); // Indicate loading while deleting
@@ -342,6 +341,7 @@ useEffect(() => {
 
     return (
         <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-10 mb-20">
+            <ToastContainer position="bottom-right" autoClose={5000} />
             <h2 className="text-3xl font-bold text-center text-indigo-700 mb-8">User Profile Management</h2>
 
             {/* User Profile Form */}
@@ -355,7 +355,7 @@ useEffect(() => {
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
                         placeholder="e.g., STD20250001"
                         required
-                        disabled={profile.id !== '' && userProfiles.some(u => u.id === profile.id)} // Disable ID if editing existing
+                        disabled={profile.id !== '' && userProfiles.some(u => u.id === profile.id)}
                     />
                     {profile.id !== '' && userProfiles.some(u => u.id === profile.id) && (
                         <p className="mt-1 text-sm text-gray-500">
@@ -377,7 +377,7 @@ useEffect(() => {
                                 onChange={handleUserTypeChange}
                                 className="form-radio text-indigo-600"
                             />
-                            <span className="ml-2 text-gray-800">Distance Learner (Online Courses)</span>
+                            <span className="ml-2 text-gray-800">Distance Learner</span>
                         </label>
                         <label className="inline-flex items-center">
                             <input
@@ -388,7 +388,7 @@ useEffect(() => {
                                 onChange={handleUserTypeChange}
                                 className="form-radio text-indigo-600"
                             />
-                            <span className="ml-2 text-gray-800">In-Person Student (Face-to-Face Classes)</span>
+                            <span className="ml-2 text-gray-800">In-Person Student</span>
                         </label>
                     </div>
                 </div>
@@ -435,181 +435,177 @@ useEffect(() => {
                     )}
                 </div>
 
-                {/* Conditional sections based on userType */}
-                {profile.userType === 'distance' && (
-                    <>
-                        {/* Create New Course Section */}
-                        <div className="border border-indigo-200 p-4 rounded-md bg-indigo-50">
-                            <h3 className="text-lg font-bold text-indigo-700 mb-4">Quick Add New Online Course (to Database)</h3>
-                            <div className="space-y-3">
-                                <div>
-                                    <label htmlFor="newCourseId" className="block text-sm font-medium text-gray-700">New Course ID:</label>
-                                    <input
-                                        type="text"
-                                        id="newCourseId"
-                                        value={newCourseId}
-                                        onChange={(e) => setNewCourseId(e.target.value)}
-                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="e.g., react-fundamentals"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="newCourseTitle" className="block text-sm font-medium text-gray-700">Course Title (Optional):</label>
-                                    <input
-                                        type="text"
-                                        id="newCourseTitle"
-                                        value={newCourseTitle}
-                                        onChange={(e) => setNewCourseTitle(e.target.value)}
-                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="e.g., React Fundamentals"
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={handleCreateNewCourse}
-                                    disabled={addCourseLoading || !newCourseId.trim()}
-                                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-colors duration-200"
-                                >
-                                    {addCourseLoading ? 'Creating Course...' : 'Create Course in Database'}
-                                </button>
-                            </div>
-                        </div>
-                        <hr className="my-6 border-gray-200" />
+                <hr className="my-6 border-gray-200" />
 
-                        {/* Enrolled Courses Dropdown (for Distance Learners) */}
+                {/* Quick Add New Online Course Section */}
+                <div className="border border-indigo-200 p-4 rounded-md bg-indigo-50">
+                    <h3 className="text-lg font-bold text-indigo-700 mb-4">Quick Add New Online Course (to Course Collection)</h3>
+                    <div className="space-y-3">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Enroll in an Online Course:</label>
-                            <div className="flex gap-4 items-center">
-                                <select
-                                    className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    value={selectedCourse}
-                                    onChange={(e) => setSelectedCourse(e.target.value)}
-                                >
-                                    <option value="">-- Select a Course --</option>
-                                    {availableCourses.map(course => (
-                                        <option key={course.id} value={course.id}>{course.title || course.id}</option>
-                                    ))}
-                                </select>
-                                <button
-                                    type="button"
-                                    onClick={handleAddCourse}
-                                    disabled={!selectedCourse}
-                                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Add Course
-                                </button>
-                            </div>
-
-                            {/* Display selected course list */}
-                            {profile.enrolledCourseIds.length > 0 && (
-                                <div className="mt-3 p-3 border border-gray-200 rounded-md bg-gray-50">
-                                    <h4 className="text-sm font-medium text-gray-700 mb-2">Currently Enrolled Online Courses:</h4>
-                                    <ul className="space-y-2">
-                                        {profile.enrolledCourseIds.map((id) => {
-                                            const enrolledCourse = availableCourses.find(c => c.id === id);
-                                            return (
-                                                <li key={id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
-                                                    <span>{enrolledCourse ? `${enrolledCourse.title} (${id})` : id}</span>
-                                                    <button type="button" onClick={() => handleRemoveCourse(id)}
-                                                        className="text-red-500 hover:text-red-700 text-sm font-medium">
-                                                        Remove
-                                                    </button>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
+                            <label htmlFor="newCourseId" className="block text-sm font-medium text-gray-700">New Course ID:</label>
+                            <input
+                                type="text"
+                                id="newCourseId"
+                                value={newCourseId}
+                                onChange={(e) => setNewCourseId(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="e.g., react-fundamentals"
+                            />
                         </div>
-                    </>
-                )}
+                        <div>
+                            <label htmlFor="newCourseTitle" className="block text-sm font-medium text-gray-700">Course Title (Optional):</label>
+                            <input
+                                type="text"
+                                id="newCourseTitle"
+                                value={newCourseTitle}
+                                onChange={(e) => setNewCourseTitle(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="e.g., React Fundamentals"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleCreateNewCourse}
+                            disabled={addContentLoading || !newCourseId.trim()}
+                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-colors duration-200"
+                        >
+                            {addContentLoading ? 'Creating Course...' : 'Create Course in Database'}
+                        </button>
+                    </div>
+                </div>
 
+                {/* Quick Add New In-Person Class Section - ONLY for In-Person User Type */}
                 {profile.userType === 'in-person' && (
-                    <>
-                        {/* NEW: Create New Class Section */}
-                        <div className="border border-purple-200 p-4 rounded-md bg-purple-50">
-                            <h3 className="text-lg font-bold text-purple-700 mb-4">Quick Add New In-Person Class (to Database)</h3>
-                            <div className="space-y-3">
-                                <div>
-                                    <label htmlFor="newClassId" className="block text-sm font-medium text-gray-700">New Class ID:</label>
-                                    <input
-                                        type="text"
-                                        id="newClassId"
-                                        value={newClassId}
-                                        onChange={(e) => setNewClassId(e.target.value)}
-                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="e.g., physics-fall-2025"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="newClassName" className="block text-sm font-medium text-gray-700">Class Name (Optional):</label>
-                                    <input
-                                        type="text"
-                                        id="newClassName"
-                                        value={newClassName}
-                                        onChange={(e) => setNewClassName(e.target.value)}
-                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="e.g., Introduction to Physics I"
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={handleCreateNewClass}
-                                    disabled={addClassLoading || !newClassId.trim()}
-                                    className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-colors duration-200"
-                                >
-                                    {addClassLoading ? 'Creating Class...' : 'Create Class in Database'}
-                                </button>
+                    <div className="border border-purple-200 p-4 rounded-md bg-purple-50">
+                        <h3 className="text-lg font-bold text-purple-700 mb-4">Quick Add New In-Person Class (to Classes Collection)</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <label htmlFor="newClassId" className="block text-sm font-medium text-gray-700">New Class ID:</label>
+                                <input
+                                    type="text"
+                                    id="newClassId"
+                                    value={newClassId}
+                                    onChange={(e) => setNewClassId(e.target.value)}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="e.g., physics-fall-2025"
+                                />
                             </div>
-                        </div>
-                        <hr className="my-6 border-gray-200" />
-
-                        {/* Enrolled Classes Dropdown (for In-Person Learners) */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Enroll in an In-Person Class:</label>
-                            <div className="flex gap-4 items-center">
-                                <select
-                                    className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    value={selectedClass}
-                                    onChange={(e) => setSelectedClass(e.target.value)}
-                                >
-                                    <option value="">-- Select a Class --</option>
-                                    {availableClasses.map(classItem => (
-                                        <option key={classItem.id} value={classItem.id}>{classItem.name || classItem.id}</option>
-                                    ))}
-                                </select>
-                                <button
-                                    type="button"
-                                    onClick={handleAddClass}
-                                    disabled={!selectedClass}
-                                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Add Class
-                                </button>
+                            <div>
+                                <label htmlFor="newClassName" className="block text-sm font-medium text-gray-700">Class Name (Optional):</label>
+                                <input
+                                    type="text"
+                                    id="newClassName"
+                                    value={newClassName}
+                                    onChange={(e) => setNewClassName(e.target.value)}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="e.g., Introduction to Physics I"
+                                />
                             </div>
-
-                            {/* Display selected class list */}
-                            {profile.inPersonClassIds.length > 0 && (
-                                <div className="mt-3 p-3 border border-gray-200 rounded-md bg-gray-50">
-                                    <h4 className="text-sm font-medium text-gray-700 mb-2">Currently Enrolled In-Person Classes:</h4>
-                                    <ul className="space-y-2">
-                                        {profile.inPersonClassIds.map((id) => {
-                                            const enrolledClass = availableClasses.find(c => c.id === id);
-                                            return (
-                                                <li key={id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
-                                                    <span>{enrolledClass ? `${enrolledClass.name} (${id})` : id}</span>
-                                                    <button type="button" onClick={() => handleRemoveClass(id)}
-                                                        className="text-red-500 hover:text-red-700 text-sm font-medium">
-                                                        Remove
-                                                    </button>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            )}
+                            <button
+                                type="button"
+                                onClick={handleCreateNewClass}
+                                disabled={addContentLoading || !newClassId.trim()}
+                                className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-colors duration-200"
+                            >
+                                {addContentLoading ? 'Creating Class...' : 'Create Class in Database'}
+                            </button>
                         </div>
-                    </>
+                    </div>
+                )}
+                <hr className="my-6 border-gray-200" />
+
+                {/* Enroll in an Online Course section - Always visible */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Enroll in an Online Course:</label>
+                    <div className="flex gap-4 items-center">
+                        <select
+                            className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            value={selectedCourse}
+                            onChange={(e) => setSelectedCourse(e.target.value)}
+                        >
+                            <option value="">-- Select a Course --</option>
+                            {availableCourses.map(course => (
+                                <option key={course.id} value={course.id}>{course.title || course.id}</option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            onClick={handleAddCourse}
+                            disabled={!selectedCourse}
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Add Course
+                        </button>
+                    </div>
+
+                    {/* Display enrolled online course list */}
+                    {profile.enrolledCourseIds.length > 0 && (
+                        <div className="mt-3 p-3 border border-gray-200 rounded-md bg-gray-50">
+                            <h4 className="text-sm font-medium text-gray-700 mb-2">Currently Enrolled Online Courses:</h4>
+                            <ul className="space-y-2">
+                                {profile.enrolledCourseIds.map((id) => {
+                                    const enrolledCourse = availableCourses.find(c => c.id === id);
+                                    return (
+                                        <li key={id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                                            <span>{enrolledCourse ? `${enrolledCourse.title || enrolledCourse.id}` : id}</span>
+                                            <button type="button" onClick={() => handleRemoveCourse(id)}
+                                                className="text-red-500 hover:text-red-700 text-sm font-medium">
+                                                Remove
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                {/* Enrolled Classes Dropdown (for In-Person Learners) - ONLY visible for In-Person User Type */}
+                {profile.userType === 'in-person' && (
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Enroll in an In-Person Class:</label>
+                        <div className="flex gap-4 items-center">
+                            <select
+                                className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                value={selectedClass}
+                                onChange={(e) => setSelectedClass(e.target.value)}
+                            >
+                                <option value="">-- Select a Class --</option>
+                                {availableClasses.map(classItem => (
+                                    <option key={classItem.id} value={classItem.id}>{classItem.name || classItem.id}</option>
+                                ))}
+                            </select>
+                            <button
+                                type="button"
+                                onClick={handleAddClass}
+                                disabled={!selectedClass}
+                                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Add Class
+                            </button>
+                        </div>
+
+                        {/* Display selected class list */}
+                        {profile.inPersonClassIds.length > 0 && (
+                            <div className="mt-3 p-3 border border-gray-200 rounded-md bg-gray-50">
+                                <h4 className="text-sm font-medium text-gray-700 mb-2">Currently Enrolled In-Person Classes:</h4>
+                                <ul className="space-y-2">
+                                    {profile.inPersonClassIds.map((id) => {
+                                        const enrolledClass = availableClasses.find(c => c.id === id);
+                                        return (
+                                            <li key={id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                                                <span>{enrolledClass ? `${enrolledClass.name || enrolledClass.id}` : id}</span>
+                                                <button type="button" onClick={() => handleRemoveClass(id)}
+                                                    className="text-red-500 hover:text-red-700 text-sm font-medium">
+                                                    Remove
+                                                </button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 )}
 
 
@@ -628,7 +624,7 @@ useEffect(() => {
                 </div>
             </form>
 
-            ---
+            <hr className="my-12 border-gray-300" />
 
             {/* User Profiles Table */}
             <div className="mt-12">
@@ -639,8 +635,15 @@ useEffect(() => {
                     <div className="overflow-x-auto shadow-md sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
-                                {/* Corrected: No whitespace between <tr> and <th>, or between <th> tags */}
-                                <tr><th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th><th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th><th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th><th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th><th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enrollments</th><th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr>
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Online Courses</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In-Person Classes</th>
+                                    <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {userProfiles.map((user) => (
@@ -655,20 +658,23 @@ useEffect(() => {
                                             {user.email}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-                                            {user.userType || 'N/A'} {/* Display userType */}
+                                            {user.userType || 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-500">
-                                            {user.userType === 'distance' && user.enrolledCourseIds && user.enrolledCourseIds.length > 0
+                                            {user.enrolledCourseIds && user.enrolledCourseIds.length > 0
                                                 ? user.enrolledCourseIds.map(courseId => {
                                                     const course = availableCourses.find(c => c.id === courseId);
-                                                    return course ? course.title : courseId;
+                                                    return course ? course.title || course.id : courseId;
                                                 }).join(', ')
-                                                : user.userType === 'in-person' && user.inPersonClassIds && user.inPersonClassIds.length > 0
-                                                    ? user.inPersonClassIds.map(classId => {
-                                                        const classItem = availableClasses.find(c => c.id === classId);
-                                                        return classItem ? classItem.name : classId;
-                                                    }).join(', ')
-                                                    : 'None'}
+                                                : 'None'}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {user.inPersonClassIds && user.inPersonClassIds.length > 0
+                                                ? user.inPersonClassIds.map(classId => {
+                                                    const classItem = availableClasses.find(c => c.id === classId);
+                                                    return classItem ? classItem.name || classItem.id : classId;
+                                                }).join(', ')
+                                                : 'None'}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                             <button
@@ -691,8 +697,6 @@ useEffect(() => {
                     </div>
                 )}
             </div>
-
-            <ToastContainer position="bottom-right" autoClose={5000} />
         </div>
     );
 };

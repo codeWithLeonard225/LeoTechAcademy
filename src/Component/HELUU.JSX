@@ -1,774 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../../../firebase'; // Your Firebase config
-import { doc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore'; // Import necessary Firestore functions
-import { v4 as uuidv4 } from 'uuid';
-import { toast, ToastContainer } from 'react-toastify';
-import { Link } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../../firebase'; // Assuming your Firebase config is in src/firebase.js
 
-// Import your new Cloudinary Uploader components
-import CloudinaryImageUploader from './CloudinaryImageUploader';
-import CloudinaryVideoUploader from './CloudinaryVideoUploader';
-import CloudinaryAssignmentUploader from './CloudinaryAssignmentUploader';
+export default function VerifyPayment() {
+    const navigate = useNavigate();
+    const [transactionCode, setTransactionCode] = useState('');
+    const [verified, setVerified] = useState(false);
+    const [formData, setFormData] = useState({ id: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false); // New loading state
 
-const PaidCourseForm = () => {
-    const [course, setCourse] = useState({
-        id: '',
-        title: '',
-        description: '',
-        instructor: '',
-        level: '',
-        duration: '',
-        price: '',
-        category: '',
-        image: '', // This will hold the Cloudinary URL
-        weeklyContent: []
-    });
-
-    const [loading, setLoading] = useState(false);
-    const [allPaidCourses, setAllPaidCourses] = useState([]); // New state for listing all courses
-    const [expandedWeekIndex, setExpandedWeekIndex] = useState(null); // State for accordion
-    const [isEditing, setIsEditing] = useState(false); // New state to indicate if we are editing an existing course
-
-    // Function to fetch all paid courses from Firestore
-    const fetchPaidCourses = async () => {
-        try {
-            const coursesCollectionRef = collection(db, 'paidCourses');
-            const querySnapshot = await getDocs(coursesCollectionRef);
-            const coursesList = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setAllPaidCourses(coursesList);
-        } catch (error) {
-            console.error("Error fetching paid courses: ", error);
-            toast.error("Failed to load courses.");
-        }
-    };
-
-    // Fetch courses on initial component mount
-    useEffect(() => {
-        fetchPaidCourses();
-    }, []);
-
-    const handleCourseChange = (e) => {
-        const { name, value } = e.target;
-        setCourse(prevCourse => ({ ...prevCourse, [name]: value }));
-    };
-
-    // --- PDF Upload Success Handler (Assignments) ---
-    const handleAssignmentUploadSuccess = (weekIndex, assignmentIndex, url) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            // Ensure the assignment object and its URL property exist
-            if (newWeeklyContent[weekIndex] && newWeeklyContent[weekIndex].assignments && newWeeklyContent[weekIndex].assignments[assignmentIndex]) {
-                newWeeklyContent[weekIndex].assignments[assignmentIndex] = {
-                    ...newWeeklyContent[weekIndex].assignments[assignmentIndex],
-                    url: url
-                };
-            }
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    // --- Image Upload Success Handler (Course Image) ---
-    const handleImageUploadSuccess = (url) => {
-        setCourse(prevCourse => ({ ...prevCourse, image: url }));
-    };
-
-    // --- Video Upload Success Handler ---
-    const handleVideoUploadSuccess = (weekIndex, videoIndex, url) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            // Ensure the video object and its URL property exist
-            if (newWeeklyContent[weekIndex] && newWeeklyContent[weekIndex].videos && newWeeklyContent[weekIndex].videos[videoIndex]) {
-                newWeeklyContent[weekIndex].videos[videoIndex] = {
-                    ...newWeeklyContent[weekIndex].videos[videoIndex],
-                    url: url
-                };
-            }
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    // --- Handlers for weeklyContent (add/remove week) ---
-    const addWeek = () => {
-        setCourse(prevCourse => {
-            const newWeekNumber = prevCourse.weeklyContent.length + 1;
-            const updatedWeeklyContent = [
-                ...prevCourse.weeklyContent,
-                {
-                    week: newWeekNumber,
-                    title: '',
-                    lessons: [],
-                    videos: [],
-                    readings: [], // Readings should be objects with title and url for consistency with CoursePage.jsx
-                    assignments: [],
-                    quiz: '' // Add the new quiz field here, initialized as an empty string
-                }
-            ];
-            // Automatically expand the newly added week
-            setExpandedWeekIndex(updatedWeeklyContent.length - 1);
-            return { ...prevCourse, weeklyContent: updatedWeeklyContent };
-        });
-    };
-
-    const removeWeek = (weekIndexToRemove) => {
-        setCourse(prevCourse => {
-            const updatedWeeklyContent = prevCourse.weeklyContent
-                .filter((_, i) => i !== weekIndexToRemove)
-                .map((week, i) => ({ ...week, week: i + 1 })); // Re-index weeks
-
-            // Adjust expandedWeekIndex if the removed week was before it or if it was the last one
-            if (expandedWeekIndex === weekIndexToRemove) {
-                setExpandedWeekIndex(null); // Close the expanded week if it was removed
-            } else if (expandedWeekIndex > weekIndexToRemove) {
-                setExpandedWeekIndex(prevIndex => prevIndex - 1); // Adjust index if a preceding week was removed
-            }
-            return { ...prevCourse, weeklyContent: updatedWeeklyContent };
-        });
-    };
-
-    // Toggle the visibility of a week's detailed content
-    const toggleWeekDetails = (index) => {
-        setExpandedWeekIndex(expandedWeekIndex === index ? null : index);
-    };
-
-    // --- Handlers for nested content (lessons, videos, etc.) ---
-    const handleWeeklyContentChange = (weekIndex, field, value) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            newWeeklyContent[weekIndex] = {
-                ...newWeeklyContent[weekIndex],
-                [field]: value
-            };
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    const addNestedItem = (weekIndex, fieldName) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            const currentWeek = { ...newWeeklyContent[weekIndex] };
-
-            let newItem;
-            if (fieldName === 'videos' || fieldName === 'assignments' || fieldName === 'readings') {
-                // For videos, assignments, and readings (which can have URLs)
-                newItem = { title: '', url: '' };
-            } else {
-                newItem = ''; // Default for lessons (string array)
-            }
-
-            currentWeek[fieldName] = [...(currentWeek[fieldName] || []), newItem]; // Ensure array exists
-            newWeeklyContent[weekIndex] = currentWeek;
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    const removeNestedItem = (weekIndex, fieldName, itemIndex) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            const currentWeek = { ...newWeeklyContent[weekIndex] };
-            currentWeek[fieldName] = (currentWeek[fieldName] || []).filter((_, i) => i !== itemIndex);
-            newWeeklyContent[weekIndex] = currentWeek;
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    const handleNestedItemChange = (weekIndex, fieldName, itemIndex, value, nestedField = null) => {
-        setCourse(prevCourse => {
-            const newWeeklyContent = [...prevCourse.weeklyContent];
-            const currentWeek = { ...newWeeklyContent[weekIndex] };
-
-            if (fieldName === 'videos' || fieldName === 'assignments' || fieldName === 'readings') {
-                // For objects with title and url (videos, assignments, readings)
-                // Ensure the item at itemIndex exists and is an object before spreading
-                currentWeek[fieldName][itemIndex] = {
-                    ...(currentWeek[fieldName][itemIndex] || {}), // Spread existing object properties or an empty object
-                    [nestedField]: value // Update the specific nested field (e.g., 'title' or 'url')
-                };
-            } else {
-                // Handle string array updates (lessons)
-                currentWeek[fieldName][itemIndex] = value;
-            }
-
-            newWeeklyContent[weekIndex] = currentWeek;
-            return { ...prevCourse, weeklyContent: newWeeklyContent };
-        });
-    };
-
-    // --- Edit Course Handler ---
-    const handleEditCourse = (selectedCourse) => {
-        setCourse(selectedCourse); // Load selected course data into the form
-        setIsEditing(true); // Set editing mode to true
-        setExpandedWeekIndex(null); // Collapse any expanded week when loading a new course
-        toast.info(`Editing course: "${selectedCourse.title}"`);
-    };
-
-    // --- Delete Course Handler ---
-    const handleDeleteCourse = async (courseId, courseTitle) => {
-        if (window.confirm(`Are you sure you want to delete the course "${courseTitle}"? This action cannot be undone.`)) {
-            setLoading(true);
-            try {
-                const docRef = doc(db, 'paidCourses', courseId);
-                await deleteDoc(docRef);
-                toast.success(`Course "${courseTitle}" deleted successfully!`);
-                await fetchPaidCourses(); // Refresh the list of courses
-                // If the deleted course was being edited, clear the form
-                if (course.id === courseId) {
-                    setCourse({
-                        id: '', title: '', description: '', instructor: '', level: '',
-                        duration: '', price: '', category: '', image: '', weeklyContent: []
-                    });
-                    setIsEditing(false);
-                }
-            } catch (error) {
-                console.error("Error deleting course: ", error);
-                toast.error(`Error deleting course: ${error.message}`);
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-
-    // --- Submit Handler (Create/Update) ---
-    const handleSubmit = async (e) => {
+    // Updated handleVerify to fetch from Firestore
+    const handleVerify = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        let courseId = course.id.trim();
+        setLoading(true); // Start loading
+        setError(''); // Clear previous errors
 
-        if (!courseId) {
-            courseId = uuidv4();
+        const enteredCode = transactionCode.trim().toUpperCase(); // Clean and standardize input
+
+        if (!enteredCode) {
+            setError('Please enter a transaction code.');
+            setLoading(false);
+            return;
         }
 
         try {
-            const docRef = doc(db, 'paidCourses', courseId);
-            await setDoc(docRef, {
-                ...course,
-                id: courseId
-            });
-            toast.success(`Course "${course.title}" ${isEditing ? 'updated' : 'added'} successfully!`);
-            console.log("Course saved with ID: ", courseId);
+            // Collection name is now 'handleVerify' as per your code
+            const transactionsCollectionRef = collection(db, 'handleVerify'); 
 
-            // Clear the form after successful submission
-            setCourse({
-                id: '', title: '', description: '', instructor: '', level: '',
-                duration: '', price: '', category: '', image: '', weeklyContent: []
-            });
-            setExpandedWeekIndex(null); // Reset expanded week
-            setIsEditing(false); // Exit editing mode
-            await fetchPaidCourses(); // Refresh the list of courses
-        } catch (error) {
-            console.error("Error adding/updating document: ", error);
-            toast.error(`Error saving course: ${error.message}`);
+            // Create a query to find documents where 'transactionCode' field matches the entered code
+            const q = query(transactionsCollectionRef, where('transactionCode', '==', enteredCode));
+
+            // Execute the query
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                // If querySnapshot is not empty, it means we found at least one matching transaction code
+                const transactionDoc = querySnapshot.docs[0]; 
+                const transactionData = transactionDoc.data();
+
+                // You can add more checks here if your 'handleVerify' documents have other fields
+                // For example: if (transactionData.status === 'completed') { ... }
+
+                setVerified(true);
+                alert('Payment verified successfully! You can now log in with your User ID.');
+            } else {
+                // No document found with the given transaction code
+                setError('Invalid transaction code. Please try again.');
+                alert('Invalid transaction code.');
+            }
+        } catch (err) {
+            console.error('Payment verification error from Firestore:', err);
+            setError('An error occurred during verification. Please try again.');
         } finally {
+            setLoading(false); // End loading
+        }
+    };
+
+    // This part is updated to include userType-based navigation
+    const handleAccountSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true); 
+        setError(''); 
+
+        const enteredId = formData.id.trim();
+
+        if (!enteredId) {
+            setError('Please enter a user ID.');
             setLoading(false);
+            return;
+        }
+
+        try {
+            const userDocRef = doc(db, 'Users', enteredId);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                const user = { ...userData, id: userDocSnap.id }; 
+
+                // Store user data in localStorage (optional, but good for persistence)
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+                // --- NEW LOGIC FOR USER TYPE NAVIGATION ---
+                if (user.userType === 'in-person') {
+                    alert(`Welcome, ${user.username || user.id}! Redirecting to In-Person Dashboard.`);
+                    navigate('/inPersonDashboard'); // Navigate to InPersonDashboard
+                } else if (user.userType === 'distance') {
+                    alert(`Welcome, ${user.username || user.id}! Redirecting to Distance Dashboard.`);
+                    navigate('/distanceDashboard'); // Navigate to DistanceDashboard
+                } else {
+                    // Handle cases where userType is missing or unknown
+                    setError('User type not specified or recognized. Please contact support.');
+                    alert('Login successful, but user type is undefined. Please contact support.');
+                    // Optionally, navigate to a default dashboard or an error page
+                    navigate('/'); 
+                }
+            } else {
+                setError('No user found with that ID. Please check your ID.');
+            }
+        } catch (err) {
+            console.error('Error fetching user from Firestore:', err);
+            setError('An error occurred while logging in. Please try again.');
+        } finally {
+            setLoading(false); 
         }
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-10 mb-20 font-sans">
-            <h2 className="text-4xl font-extrabold text-center text-indigo-800 mb-8">Course Management (Paid)</h2>
-
-            {/* Form for Creating/Editing a Course */}
-            <div className="mb-12 p-8 border border-indigo-200 rounded-2xl shadow-xl bg-gradient-to-br from-indigo-50 to-purple-50">
-                <h3 className="text-3xl font-bold text-indigo-700 mb-6 border-b pb-4">
-                    {isEditing ? `Edit Course: ${course.title || 'Untitled'}` : 'Create New Course'}
-                </h3>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Basic Course Details */}
-                    {/* ... (existing basic course details fields) ... */}
-                    <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Course Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            id="title"
-                            value={course.title}
-                            onChange={handleCourseChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="e.g., Advanced React Development"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea
-                            name="description"
-                            id="description"
-                            value={course.description}
-                            onChange={handleCourseChange}
-                            rows="4"
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Provide a detailed description of the course content."
-                            required
-                        ></textarea>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label htmlFor="instructor" className="block text-sm font-medium text-gray-700">Instructor</label>
-                            <input
-                                type="text"
-                                name="instructor"
-                                id="instructor"
-                                value={course.instructor}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="e.g., Jane Doe"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level</label>
-                            <select
-                                name="level"
-                                id="level"
-                                value={course.level}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                required
-                            >
-                                <option value="">Select Level</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration (e.g., 8 Weeks)</label>
-                            <input
-                                type="text"
-                                name="duration"
-                                id="duration"
-                                value={course.duration}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="e.g., 8 Weeks"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price (e.g., $99.99)</label>
-                            <input
-                                type="number"
-                                name="price"
-                                id="price"
-                                value={course.price}
-                                onChange={handleCourseChange}
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="e.g., 99.99"
-                                step="0.01"
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-                        <input
-                            type="text"
-                            name="category"
-                            id="category"
-                            value={course.category}
-                            onChange={handleCourseChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="e.g., Web Development, Data Science"
-                            required
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Course Image</label>
-                        <CloudinaryImageUploader
-                            onUploadSuccess={handleImageUploadSuccess}
-                            currentUrl={course.image}
-                        />
-                        {course.image && (
-                            <div className="mt-2 text-sm text-gray-600">
-                                Current Image: <a href={course.image} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{course.image}</a>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Weekly Content Section (Accordion for details) */}
-                    <hr className="my-8 border-gray-300" />
-                    <div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-6">Weekly Content Management</h3>
-
-                        {/* Table for Weekly Content Summary */}
-                        {course.weeklyContent.length > 0 && (
-                            <div className="overflow-x-auto mb-6 shadow-md rounded-lg border border-gray-200">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Week
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Title
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Lessons
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Videos
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Readings
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Assignments
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Quiz
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {course.weeklyContent.map((week, weekIndex) => (
-                                            <tr key={weekIndex}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {week.week}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {week.title || 'Untitled Week'}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {(week.lessons || []).length}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {(week.videos || []).length}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {(week.readings || []).length}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {(week.assignments || []).length}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                    {week.quiz ? 'Yes' : 'No'} {/* Display if a quiz URL exists */}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => toggleWeekDetails(weekIndex)}
-                                                        className="text-indigo-600 hover:text-indigo-900 mr-3 transition duration-150 ease-in-out"
-                                                        title={expandedWeekIndex === weekIndex ? "Collapse Details" : "Expand Details"}
-                                                    >
-                                                        {expandedWeekIndex === weekIndex ? 'Collapse' : 'Edit Details'}
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeWeek(weekIndex)}
-                                                        className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
-                                                        title="Remove Week"
-                                                    >
-                                                        Remove Week
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-
-                        {/* Button to Add New Week */}
-                        <button type="button" onClick={addWeek} className="mb-6 px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-200 ease-in-out font-semibold">
-                            + Add New Week
-                        </button>
-
-                        {/* Detailed input fields for the currently expanded week */}
-                        {course.weeklyContent.map((week, weekIndex) => (
-                            <div key={weekIndex} className={`border border-gray-200 p-6 rounded-xl bg-gray-50 shadow-inner mb-6 ${expandedWeekIndex === weekIndex ? 'block' : 'hidden'}`}>
-                                <div className="flex justify-between items-center mb-4">
-                                    <h4 className="text-xl font-bold text-gray-800">Week {week.week} Details: {week.title || 'Untitled'}</h4>
-                                    <button type="button" onClick={() => toggleWeekDetails(weekIndex)} className="text-gray-500 hover:text-gray-700 font-medium px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 transition duration-150 ease-in-out">
-                                        Collapse Week
-                                    </button>
-                                </div>
-
-                                <label className="block mb-2 text-sm font-medium text-gray-700">Week Title:</label>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                {!verified ? (
+                    <>
+                        <h2 className="text-2xl font-semibold mb-6 text-center">Verify Your Payment</h2>
+                        <form onSubmit={handleVerify} className="space-y-4">
+                            <div>
+                                <label className="block mb-1 font-medium">Transaction Code</label>
                                 <input
                                     type="text"
-                                    value={week.title}
-                                    onChange={(e) => handleWeeklyContentChange(weekIndex, 'title', e.target.value)}
-                                    className="border border-gray-300 p-2 rounded-md w-full mb-4 focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="Enter week title"
+                                    value={transactionCode}
+                                    onChange={(e) => setTransactionCode(e.target.value)}
+                                    required
+                                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-
-                                {/* Lessons */}
-                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Lessons:</label>
-                                    {(week.lessons || []).map((lesson, lessonIndex) => (
-                                        <div key={lessonIndex} className="flex items-center mb-3">
-                                            <input
-                                                type="text"
-                                                value={lesson}
-                                                onChange={(e) =>
-                                                    handleNestedItemChange(weekIndex, 'lessons', lessonIndex, e.target.value)
-                                                }
-                                                className="flex-grow border border-gray-300 rounded-md p-2 mr-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                                placeholder="e.g., Introduction to HTML"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeNestedItem(weekIndex, 'lessons', lessonIndex)}
-                                                className="text-red-500 hover:text-red-700 text-2xl transition duration-150 ease-in-out"
-                                                title="Remove Lesson"
-                                            >
-                                                &times;
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addNestedItem(weekIndex, 'lessons')}
-                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-50 transition duration-150 ease-in-out"
-                                    >
-                                        + Add Lesson
-                                    </button>
-                                </div>
-
-                                {/* Videos Section */}
-                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Videos:</label>
-                                    {(week.videos || []).map((video, videoIndex) => (
-                                        <div key={videoIndex} className="mb-4 p-3 border border-gray-200 rounded-md bg-gray-50 shadow-inner">
-                                            <input
-                                                type="text"
-                                                placeholder="Video Title"
-                                                value={video.title}
-                                                onChange={(e) => handleNestedItemChange(weekIndex, 'videos', videoIndex, e.target.value, 'title')}
-                                                className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                            />
-                                            <CloudinaryVideoUploader
-                                                onUploadSuccess={(url) => handleVideoUploadSuccess(weekIndex, videoIndex, url)}
-                                                currentUrl={video.url}
-                                            />
-                                            {video.url && (
-                                                <a href={video.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm block mt-2 break-all">
-                                                    View Uploaded Video
-                                                </a>
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={() => removeNestedItem(weekIndex, 'videos', videoIndex)}
-                                                className="text-red-500 hover:text-red-700 text-sm mt-3 px-3 py-1 rounded-md border border-red-500 hover:bg-red-50 transition duration-150 ease-in-out"
-                                            >
-                                                Remove Video
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addNestedItem(weekIndex, 'videos')}
-                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-50 transition duration-150 ease-in-out"
-                                    >
-                                        + Add Video
-                                    </button>
-                                </div>
-
-                                {/* Readings Section */}
-                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Readings (URLs):</label>
-                                    {(week.readings || []).map((reading, readingIndex) => (
-                                        <div key={readingIndex} className="mb-4 p-3 border border-gray-200 rounded-md bg-gray-50 shadow-inner">
-                                            <input
-                                                type="text"
-                                                placeholder="Reading Title"
-                                                value={reading.title}
-                                                onChange={(e) => handleNestedItemChange(weekIndex, 'readings', readingIndex, e.target.value, 'title')}
-                                                className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                            />
-                                            <input
-                                                type="url"
-                                                placeholder="Reading URL (e.g., https://example.com/article.pdf)"
-                                                value={reading.url}
-                                                onChange={(e) => handleNestedItemChange(weekIndex, 'readings', readingIndex, e.target.value, 'url')}
-                                                className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                            />
-                                            {reading.url && (
-                                                <a href={reading.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm block mt-2 break-all">
-                                                    View Reading
-                                                </a>
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={() => removeNestedItem(weekIndex, 'readings', readingIndex)}
-                                                className="text-red-500 hover:text-red-700 text-sm mt-3 px-3 py-1 rounded-md border border-red-500 hover:bg-red-50 transition duration-150 ease-in-out"
-                                            >
-                                                Remove Reading
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addNestedItem(weekIndex, 'readings')}
-                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-50 transition duration-150 ease-in-out"
-                                    >
-                                        + Add Reading
-                                    </button>
-                                </div>
-
-                                {/* Assignments Section */}
-                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label className="block text-lg font-semibold text-gray-700 mb-3">Assignments:</label>
-                                    {(week.assignments || []).map((assignment, assignmentIndex) => (
-                                        <div key={assignmentIndex} className="mb-4 p-3 border border-gray-200 rounded-md bg-gray-50 shadow-inner">
-                                            <input
-                                                type="text"
-                                                placeholder="Assignment Title"
-                                                value={assignment.title}
-                                                onChange={(e) => handleNestedItemChange(weekIndex, 'assignments', assignmentIndex, e.target.value, 'title')}
-                                                className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                            />
-                                            <CloudinaryAssignmentUploader
-                                                onUploadSuccess={(url) => handleAssignmentUploadSuccess(weekIndex, assignmentIndex, url)}
-                                                currentUrl={assignment.url}
-                                            />
-                                            {assignment.url && (
-                                                <a href={assignment.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm block mt-2 break-all">
-                                                    View Uploaded Assignment
-                                                </a>
-                                            )}
-                                            <button
-                                                type="button"
-                                                onClick={() => removeNestedItem(weekIndex, 'assignments', assignmentIndex)}
-                                                className="text-red-500 hover:text-red-700 text-sm mt-3 px-3 py-1 rounded-md border border-red-500 hover:bg-red-50 transition duration-150 ease-in-out"
-                                            >
-                                                Remove Assignment
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addNestedItem(weekIndex, 'assignments')}
-                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-50 transition duration-150 ease-in-out"
-                                    >
-                                        + Add Assignment
-                                    </button>
-                                </div>
-
-                                {/* --- NEW QUIZ INPUT FIELD --- */}
-                                <div className="mb-6 p-4 border border-gray-200 rounded-md bg-white shadow-sm">
-                                    <label htmlFor={`quiz-id-${weekIndex}`} className="block text-lg font-semibold text-gray-700 mb-3">Quiz ID:</label>
-                                    <input
-                                        type="text" // Changed to 'text' as it's an ID, not a full URL
-                                        id={`quiz-id-${weekIndex}`}
-                                        value={week.quizId || ''} // Changed to week.quizId to match CoursePage
-                                        onChange={(e) => handleWeeklyContentChange(weekIndex, 'quizId', e.target.value)} // Changed field name to 'quizId'
-                                        className="border border-gray-300 p-2 rounded-md w-full mb-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="e.g., week_1, intro_quiz" // Updated placeholder
-                                    />
-                                    {week.quizId && ( // Changed to week.quizId
-                                        <Link
-                                            to={`/quiz/${week.quizId}`} // Construct the link here for preview
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline text-sm block mt-2 break-all"
-                                        >
-                                            Preview Quiz: /quiz/{week.quizId}
-                                        </Link>
-                                    )}
-                                    {week.quizId && ( // Changed to week.quizId
-                                        <button
-                                            type="button"
-                                            onClick={() => handleWeeklyContentChange(weekIndex, 'quizId', '')} // Changed field name to 'quizId'
-                                            className="text-red-500 hover:text-red-700 text-sm mt-3 px-3 py-1 rounded-md border border-red-500 hover:bg-red-50 transition duration-150 ease-in-out"
-                                        >
-                                            Clear Quiz ID
-                                        </button>
-                                    )}
-                                </div>
-                                {/* --- END NEW QUIZ INPUT FIELD --- */}
                             </div>
-                        ))}
-                    </div>
-                    <div className="mt-8">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700
-                           disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg
-                           transition-colors duration-200 shadow-md"
-                        >
-                            {loading ? (isEditing ? 'Updating Course...' : 'Saving Course...') : (isEditing ? 'Update Course' : 'Save New Course')}
-                        </button>
-                        {isEditing && (
                             <button
-                                type="button"
-                                onClick={() => {
-                                    setIsEditing(false);
-                                    setCourse({
-                                        id: '', title: '', description: '', instructor: '', level: '',
-                                        duration: '', price: '', category: '', image: '', weeklyContent: []
-                                    });
-                                    setExpandedWeekIndex(null);
-                                    toast.info("Form cleared for new course creation.");
-                                }}
-                                className="w-full mt-4 bg-gray-400 text-white py-3 px-6 rounded-md hover:bg-gray-500 transition-colors duration-200 shadow-md font-semibold"
+                                type="submit"
+                                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading}
                             >
-                                Cancel Edit / Create New
+                                {loading ? 'Verifying...' : 'Verify Payment'}
                             </button>
-                        )}
-                    </div>
-                </form>
+                            {error && <p className="text-red-600 text-sm mt-2 text-center">{error}</p>}
+                        </form>
+                    </>
+                ) : (
+                    <>
+                        <h2 className="text-2xl font-semibold mb-6 text-center">Login with Your User ID</h2>
+                        <form onSubmit={handleAccountSubmit} className="space-y-4">
+                            <div>
+                                <label className="block mb-1 font-medium">User ID</label>
+                                <input
+                                    type="text"
+                                    value={formData.id}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, id: e.target.value });
+                                        setError(''); 
+                                    }}
+                                    required
+                                    className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+                            {error && <p className="text-red-600 text-sm">{error}</p>}
+                            <button
+                                type="submit"
+                                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading}
+                            >
+                                {loading ? 'Logging In...' : 'Login'}
+                            </button>
+                        </form>
+                    </>
+                )}
             </div>
-            {/* Table for Existing Courses */}
-            <h3 className="text-3xl font-bold text-indigo-700 mt-12 mb-6 border-b pb-4">Existing Paid Courses</h3>
-            {allPaidCourses.length === 0 ? (
-                <p className="text-gray-600 text-center">No paid courses found. Start by creating one!</p>
-            ) : (
-                <div className="overflow-x-auto shadow-lg rounded-xl border border-indigo-200">
-                    <table className="min-w-full divide-y divide-indigo-200">
-                        <thead className="bg-indigo-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Title</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Instructor</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Level</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Duration</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Price</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Category</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Weeks</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {allPaidCourses.map((courseItem) => (
-                                <tr key={courseItem.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{courseItem.title}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.instructor}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.level}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.duration}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${courseItem.price}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{courseItem.category}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{(courseItem.weeklyContent || []).length}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button
-                                            onClick={() => handleEditCourse(courseItem)}
-                                            className="text-indigo-600 hover:text-indigo-900 mr-3 transition duration-150 ease-in-out"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteCourse(courseItem.id, courseItem.title)}
-                                            className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </div>
     );
-};
-
-export default PaidCourseForm;
+}

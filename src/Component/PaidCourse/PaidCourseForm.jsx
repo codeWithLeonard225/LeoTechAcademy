@@ -277,7 +277,20 @@ const PaidCourseForm = () => {
                 </h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Basic Course Details */}
-                    {/* ... (existing basic course details fields) ... */}
+                   
+                    <div>
+                        <label htmlFor="id" className="block text-sm font-medium text-gray-700">Course id</label>
+                        <input
+                            type="text"
+                            name="id"
+                            id="id"
+                            value={course.id}
+                            onChange={handleCourseChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="e.g., Advanced React Development"
+                            required
+                        />
+                    </div>
                     <div>
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">Course Title</label>
                         <input

@@ -473,7 +473,9 @@ const QuizPage = () => {
                                                     checked={userAnswers[currentQuestionIndex] === option}
                                                     onChange={() => handleAnswerChange(currentQuestionIndex, option)}
                                                     className="form-radio h-4 w-4 text-blue-600 mr-2"
+                                                    disabled={userAnswers[currentQuestionIndex] !== ''}
                                                 />
+
                                                 <span className="flex-1">{option}</span>
                                             </label>
                                         ))}

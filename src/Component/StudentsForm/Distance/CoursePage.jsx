@@ -535,13 +535,26 @@ const CoursePage = () => {
                                                         {weekData.quizId && (
                                                             <li className="flex items-center text-sm sm:text-base text-gray-600 font-bold">
                                                                 <span className="mr-2">💡</span> {/* Optional: Use an emoji for quizzes */}
-                                                                <Link
-                                                                    // Construct the quiz URL dynamically
-                                                                    to={`/quiz/${weekData.quizId}`}
-                                                                    className="text-purple-600 hover:underline"
-                                                                >
-                                                                    Take Quiz for Week {weekData.week}
-                                                                </Link>
+                                                                {/*
+                                                                    NEW LOGIC:
+                                                                    - If weeklyProgressPercentage is 80% or more, enable the Link.
+                                                                    - Otherwise, show a disabled-looking text and potentially a tooltip.
+                                                                */}
+                                                                {weeklyProgressPercentage >= 80 ? (
+                                                                    <Link
+                                                                        to={`/quiz/${weekData.quizId}`}
+                                                                        className="text-purple-600 hover:underline"
+                                                                    >
+                                                                        Take Quiz for Week {weekData.week}
+                                                                    </Link>
+                                                                ) : (
+                                                                    <span
+                                                                        className="text-gray-400 cursor-not-allowed"
+                                                                        title={`Complete at least 80% of videos for Week ${weekData.week} to unlock this quiz.`}
+                                                                    >
+                                                                        Take Quiz for Week {weekData.week} (Unlock at 80% video progress - Current: {weeklyProgressPercentage}%)
+                                                                    </span>
+                                                                )}
                                                             </li>
                                                         )}
                                                     </ul>

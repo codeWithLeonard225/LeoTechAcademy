@@ -1,58 +1,103 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from "../../../../firebase"; // adjust path if needed
-import { toast, ToastContainer } from 'react-toastify'; // Import ToastContainer
+import { db } from "../../../../firebase"; // Adjust path if needed
+import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-// Fetch course specifically from the 'inPersonCourses' collection
+// --- CORRECTED getCourseDetails function ---
+// Fetch course from either 'InPersonCourses' or 'freeCourse' (matching InPersonDashboard)
 const getCourseDetails = async (courseId) => {
     try {
-        const inPersonCourseDocRef = doc(db, 'inPersonCourses', courseId);
+        const inPersonCourseDocRef = doc(db, 'InPersonCourses', courseId);
         const inPersonCourseDocSnap = await getDoc(inPersonCourseDocRef);
 
         if (inPersonCourseDocSnap.exists()) {
-            // Assuming in-person courses do not have a 'isFree' property or it's irrelevant here
-            return { id: inPersonCourseDocSnap.id, ...inPersonCourseDocSnap.data() };
+            return { id: inPersonCourseDocSnap.id, ...inPersonCourseDocSnap.data(), isFree: false };
         }
 
-        console.warn(`In-person Course with ID ${courseId} not found.`);
+        const freeCourseDocRef = doc(db, 'freeCourse', courseId);
+        const freeCourseDocSnap = await getDoc(freeCourseDocRef);
+
+        if (freeCourseDocSnap.exists()) {
+            return { id: freeCourseDocSnap.id, ...freeCourseDocSnap.data(), isFree: true };
+        }
+
+        console.warn(`Course with ID ${courseId} not found in 'InPersonCourses' or 'freeCourse'.`);
         return null;
     } catch (error) {
-        console.error(`Error fetching in-person course with ID ${courseId}:`, error);
+        console.error(`Error fetching course with ID ${courseId}:`, error);
         return null;
     }
 };
+// --- End of corrected getCourseDetails function ---
+
 
 const InPersonCoursePage = () => {
     const { courseId } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
-    const [activeWeek, setActiveWeek] = useState(null);
+    // Renamed for clarity: this now tracks the EXPANDED week, not the highest unlocked.
+    const [expandedWeek, setExpandedWeek] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    /**
+     * Calculates the completion percentage of lessons for a given week.
+     * @param {object} weekData - The data for the current week.
+     * @param {object} userCourseProgress - The user's progress for the course.
+     * @returns {number} The percentage of lessons completed for the week.
+     */
+    const calculateLessonProgress = useCallback((weekData, userCourseProgress) => {
+        const completedLessons = userCourseProgress.completedItems[weekData.week]?.lessons?.length || 0;
+        const totalLessons = weekData.lessons?.length || 0;
+        return totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+    }, []);
+
+    /**
+     * Determines if a week is "completed" based on 80% lesson progress and quiz completion.
+     * This is the criterion for UNLOCKING THE NEXT WEEK.
+     * @param {object} weekData - The data for the current week.
+     * @param {object} userCourseProgress - The user's progress for the course.
+     * @returns {boolean} True if the week's unlock criteria are met, false otherwise.
+     */
+    const isWeekUnlockCriteriaMet = useCallback((weekData, userCourseProgress) => {
+        if (!weekData) return false;
+
+        const lessonProgress = calculateLessonProgress(weekData, userCourseProgress);
+        const hasQuiz = !!weekData.quizId;
+        const isQuizComplete = hasQuiz ? (userCourseProgress.completedItems[weekData.week]?.quizzes?.includes(weekData.quizId) || false) : true;
+
+        if (!weekData.lessons?.length && !hasQuiz) {
+            return true; // Week with no content is considered "met" for progression
+        }
+
+        if (!hasQuiz) {
+            return lessonProgress >= 80;
+        }
+
+        return lessonProgress >= 80 && isQuizComplete;
+    }, [calculateLessonProgress]);
+
 
     useEffect(() => {
         const fetchCourseAndUser = async () => {
             setLoading(true);
             setError(null);
 
-            // Get only the user ID from localStorage.
-            // The full user profile will be fetched from Firestore.
             const storedUserString = localStorage.getItem('loggedInUser');
             if (!storedUserString) {
-                // If no user data (even just an ID) in localStorage, redirect to login
                 navigate('/login');
                 return;
             }
             let userId = null;
             try {
                 const tempUser = JSON.parse(storedUserString);
-                userId = tempUser.id; // Extract just the ID
+                userId = tempUser.id;
             } catch (parseError) {
                 console.error("Error parsing user from localStorage:", parseError);
-                navigate('/login'); // If localStorage is corrupted, redirect
+                navigate('/login');
                 return;
             }
 
@@ -64,35 +109,48 @@ const InPersonCoursePage = () => {
             }
 
             try {
-                // Fetch the full user profile from Firestore using the extracted ID
                 const userDocRef = doc(db, 'Users', userId);
                 const userDocSnap = await getDoc(userDocRef);
 
                 if (userDocSnap.exists()) {
                     const userData = { id: userDocSnap.id, ...userDocSnap.data() };
-                    setCurrentUser(userData); // Set currentUser state with data from Firestore
+                    setCurrentUser(userData);
 
-                    // Proceed to fetch course details from 'inPersonCourses'
                     let foundCourse = await getCourseDetails(courseId);
 
                     if (foundCourse) {
                         setCourse(foundCourse);
-                        // Initialize activeWeek from userProgress fetched from Firestore
-                        const userProgress = userData.userProgress?.[courseId];
-                        if (userProgress && userProgress.lastAccessedWeek) {
-                            setActiveWeek(userProgress.lastAccessedWeek);
-                        } else {
-                            setActiveWeek(1); // Default to week 1 if no progress
+
+                        const userProgressForCourse = userData.userProgress?.[courseId] || { completedItems: {} };
+                        let highestAccessibleWeek = 1;
+
+                        if (foundCourse.weeklyContent && foundCourse.weeklyContent.length > 0) {
+                            for (let i = 0; i < foundCourse.weeklyContent.length; i++) {
+                                const week = foundCourse.weeklyContent[i];
+                                // We don't need to check prevWeek for week 1, as it's always accessible.
+                                // For subsequent weeks, check if the *previous* week's criteria are met.
+                                if (week.week > 1) {
+                                    const prevWeek = foundCourse.weeklyContent.find(w => w.week === week.week - 1);
+                                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userProgressForCourse)) {
+                                        highestAccessibleWeek = week.week;
+                                    } else {
+                                        break; // Stop at the first locked week
+                                    }
+                                }
+                            }
                         }
+                        // Set the initially expanded week to the highest accessible week.
+                        // Or, you could set it to week 1 by default and let the user expand others.
+                        setExpandedWeek(highestAccessibleWeek);
+
                     } else {
-                        console.warn(`In-person course with ID: "${courseId}" not found in Firebase. Redirecting.`);
-                        // You might want to redirect to an in-person courses list if you have one
-                        navigate('/in-person-courses-list'); // Example: redirect to a list of in-person courses
+                        console.warn(`Course with ID: "${courseId}" not found in Firebase. Redirecting to courses list.`);
+                        toast.error(`Course "${courseId}" not found.`);
+                        navigate('/in-person-courses-list');
                     }
                 } else {
-                    // User ID found in localStorage, but no matching profile in Firestore
                     setError(`User profile not found in database for ID: ${userId}. Please contact support or log in again.`);
-                    navigate('/login'); // Force re-login or user creation flow
+                    navigate('/login');
                 }
             } catch (err) {
                 console.error("Error fetching user or course data from Firebase:", err);
@@ -103,19 +161,37 @@ const InPersonCoursePage = () => {
         };
 
         fetchCourseAndUser();
-    }, [courseId, navigate]); // Depend on courseId and navigate
+    }, [courseId, navigate, isWeekUnlockCriteriaMet]);
 
+    // Toggles the visibility of a week's content
     const toggleWeek = (weekNumber) => {
-        setActiveWeek(activeWeek === weekNumber ? null : weekNumber);
+        // Find the highest accessible week for the current user's progress.
+        // This logic needs to be run dynamically when a user clicks,
+        // as progress might have just been updated.
+        const userProgressForCourse = currentUser?.userProgress?.[courseId] || { completedItems: {} };
+        let currentHighestAccessibleWeek = 1;
+        if (course?.weeklyContent && course.weeklyContent.length > 0) {
+            for (let i = 0; i < course.weeklyContent.length; i++) {
+                const week = course.weeklyContent[i];
+                if (week.week > 1) {
+                    const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userProgressForCourse)) {
+                        currentHighestAccessibleWeek = week.week;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Only allow toggling if the week is less than or equal to the highest accessible week.
+        if (weekNumber <= currentHighestAccessibleWeek) {
+            setExpandedWeek(expandedWeek === weekNumber ? null : weekNumber);
+        } else {
+            toast.warn(`Please complete the previous week's requirements to unlock Week ${weekNumber}.`);
+        }
     };
 
-    /**
-     * Marks a specific content item (lesson, video, reading, assignment) as complete.
-     * Updates user progress in Firebase Firestore.
-     * @param {number} weekNumber - The week number the content belongs to.
-     * @param {string} contentType - The type of content ('lessons', 'videos', 'readings', 'assignments').
-     * @param {string} itemIdentifier - A unique identifier for the content item (e.g., title or URL).
-     */
     const markContentComplete = async (weekNumber, contentType, itemIdentifier) => {
         if (!currentUser || !course || !currentUser.id) {
             toast.error('Cannot mark content complete: User data missing or User ID not found.');
@@ -123,83 +199,71 @@ const InPersonCoursePage = () => {
             return;
         }
 
-        // Create a deep copy of userProgress to avoid direct state mutation issues with nested objects
         const updatedUserProgress = JSON.parse(JSON.stringify(currentUser.userProgress || {}));
 
-        // Ensure the course entry exists in userProgress
         if (!updatedUserProgress[courseId]) {
-            updatedUserProgress[courseId] = { completedWeeks: [], lastAccessedWeek: 0, completedItems: {} };
+            updatedUserProgress[courseId] = { completedItems: {} };
         }
 
         const courseProgress = updatedUserProgress[courseId];
 
-        // Ensure completedItems structure exists
         if (!courseProgress.completedItems) courseProgress.completedItems = {};
         if (!courseProgress.completedItems[weekNumber]) courseProgress.completedItems[weekNumber] = {};
         if (!courseProgress.completedItems[weekNumber][contentType]) courseProgress.completedItems[weekNumber][contentType] = [];
 
-        // Add item to completed list if not already there
-        if (!courseProgress.completedItems[weekNumber][contentType].includes(itemIdentifier)) {
-            courseProgress.completedItems[weekNumber][contentType].push(itemIdentifier);
-            // Sort to maintain order if desired, though not strictly necessary for functionality
-            courseProgress.completedItems[weekNumber][contentType].sort();
-        } else {
-            // Item already marked complete, do nothing
+        if (courseProgress.completedItems[weekNumber][contentType].includes(itemIdentifier)) {
+            toast.info(`'${itemIdentifier}' is already complete.`);
             return;
         }
 
-        // Find the current week's data from the course to calculate total items in the week
-        const currentWeekData = course.weeklyContent?.find(w => w.week === weekNumber);
+        courseProgress.completedItems[weekNumber][contentType].push(itemIdentifier);
+        courseProgress.completedItems[weekNumber][contentType].sort();
+        toast.success(`'${itemIdentifier}' marked complete!`);
 
-        let allItemsInWeekComplete = true;
-        let totalItemsInWeek = 0;
-
-        // Recalculate if all items in the current week are complete
-        ['lessons', 'videos', 'readings', 'assignments'].forEach(type => {
-            const itemsOfType = currentWeekData?.[type] || [];
-            totalItemsInWeek += itemsOfType.length;
-
-            itemsOfType.forEach(item => {
-                const identifier = (typeof item === 'object' && item !== null && item.title) ? item.title : item;
-                if (!courseProgress.completedItems[weekNumber]?.[type]?.includes(identifier)) {
-                    allItemsInWeekComplete = false;
-                }
-            });
-        });
-
-        // Mark the entire week as complete if all its items are done and it's not already marked
-        if (allItemsInWeekComplete && totalItemsInWeek > 0 && !courseProgress.completedWeeks.includes(weekNumber)) {
-            courseProgress.completedWeeks.push(weekNumber);
-            courseProgress.completedWeeks.sort((a, b) => a - b); // Keep completed weeks sorted
-        }
-
-        // Always update last accessed week
-        courseProgress.lastAccessedWeek = weekNumber;
-
-        // Update React state immediately for UI responsiveness
+        // Update local state first for immediate UI feedback
         setCurrentUser(prevUser => ({
             ...prevUser,
-            userProgress: updatedUserProgress // Update only the userProgress part of currentUser
+            userProgress: updatedUserProgress
         }));
 
-        // Persist updated userProgress to Firebase Firestore
+        // After updating the user's progress, re-evaluate the highest accessible week
+        // to ensure the UI correctly reflects newly unlocked weeks immediately.
+        let highestAccessibleWeekAfterCompletion = 1;
+        if (course.weeklyContent && course.weeklyContent.length > 0) {
+            for (let i = 0; i < course.weeklyContent.length; i++) {
+                const week = course.weeklyContent[i];
+                if (week.week > 1) {
+                    const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, updatedUserProgress[courseId])) {
+                        highestAccessibleWeekAfterCompletion = week.week;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        // If a new week was unlocked, expand it automatically.
+        if (highestAccessibleWeekAfterCompletion > (expandedWeek || 0)) { // Use 0 for initial null check
+            setExpandedWeek(highestAccessibleWeekAfterCompletion);
+            toast.success(`Week ${highestAccessibleWeekAfterCompletion} unlocked!`);
+        }
+
+
         try {
-            // Assuming 'Users' is your collection for user profiles, and document ID is currentUser.id
             const userDocRef = doc(db, 'Users', currentUser.id);
             await updateDoc(userDocRef, {
                 userProgress: updatedUserProgress
             });
             console.log('User progress updated in Firestore successfully!');
-            toast.success('Progress saved!');
         } catch (firebaseError) {
             console.error('Error updating user progress in Firestore:', firebaseError);
-            toast.error('Failed to save progress. Please try again.');
+            toast.error('Failed to save progress to cloud. Please try again.');
         }
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('loggedInUser'); // Remove the ID from localStorage
-        navigate('/login'); // Redirect to your login page
+        localStorage.removeItem('loggedInUser');
+        navigate('/login');
     };
 
     if (loading) {
@@ -215,7 +279,7 @@ const InPersonCoursePage = () => {
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
                 <p className="text-red-600 text-lg mb-4">{error}</p>
                 <button
-                    onClick={() => navigate('/in-person-courses-list')} // Redirect to a specific in-person courses list
+                    onClick={() => navigate('/in-person-courses-list')}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
                 >
                     Go to In-Person Courses
@@ -225,31 +289,41 @@ const InPersonCoursePage = () => {
     }
 
     if (!course || !currentUser) {
-        // This case should ideally be caught by the loading state or redirect in useEffect
         return null;
     }
 
-    const totalWeeks = course.weeklyContent?.length || 0;
-    const completedWeeksCount = currentUser.userProgress?.[course.id]?.completedWeeks?.length || 0;
-    const overallProgressPercentage = totalWeeks > 0 ? Math.round((completedWeeksCount / totalWeeks) * 100) : 0;
+    const userCourseProgress = currentUser.userProgress?.[course.id] || { completedItems: {} };
 
-    // Ensure userCourseProgress is initialized correctly for display
-    const userCourseProgress = currentUser.userProgress?.[course.id] || { completedWeeks: [], lastAccessedWeek: 0, completedItems: {} };
+    // This variable will determine if a week is visually 'enabled' or 'disabled'
+    // based on the user's progress. It's computed dynamically.
+    let highestAccessibleWeek = 1;
+    if (course.weeklyContent && course.weeklyContent.length > 0) {
+        for (let i = 0; i < course.weeklyContent.length; i++) {
+            const week = course.weeklyContent[i];
+            if (week.week > 1) {
+                const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userCourseProgress)) {
+                    highestAccessibleWeek = week.week;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-            <ToastContainer position="bottom-right" autoClose={5000} /> {/* ToastContainer for notifications */}
+            <ToastContainer position="bottom-right" autoClose={5000} />
 
-            {/* Header with Back to Dashboard, User ID, and Logout Button */}
             <header className="bg-white shadow-md p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center">
                 <div className="flex items-center mb-2 sm:mb-0">
                     <Link
-                        to="/distanceDashboard" // You might want to change this to an in-person specific dashboard
+                        to="/inPersonDashboard"
                         className="text-blue-600 hover:text-blue-800 font-semibold text-base sm:text-lg mr-4"
                     >
                         ← Back to Dashboard
                     </Link>
-                    {/* Display Current User ID */}
                     {currentUser.id && (
                         <span className="text-gray-700 text-sm sm:text-base font-medium bg-gray-100 px-3 py-1 rounded-full">
                             User ID: <span className="font-bold text-gray-800">{currentUser.id}</span>
@@ -264,12 +338,10 @@ const InPersonCoursePage = () => {
                 </button>
             </header>
 
-            {/* Main Content Area */}
             <div className="container mx-auto p-4 lg:p-10">
-                {/* Course Header Section (Image, Title, Description, Details, Progress) */}
                 <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 mb-6 sm:mb-8 flex flex-col lg:flex-row items-center border border-gray-100">
                     <img
-                        src={course.image || 'https://placehold.co/128x128/cccccc/ffffff?text=Course+Image'} // Fallback image
+                        src={course.image || 'https://placehold.co/128x128/cccccc/ffffff?text=Course+Image'}
                         alt={course.title}
                         className="w-full lg:w-1/3 h-48 sm:h-56 md:h-64 object-cover rounded-lg mb-6 lg:mb-0 lg:mr-8 shadow-lg"
                     />
@@ -282,233 +354,205 @@ const InPersonCoursePage = () => {
                             <p><span className="font-semibold">Duration:</span> {course.duration}</p>
                             <p><span className="font-semibold">Price:</span> {course.price}</p>
                         </div>
-
-                        <div className="mb-4">
-                            <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-2">Your Overall Progress</h3>
-                            <div className="w-full bg-gray-200 rounded-full h-3">
-                                <div
-                                    className="bg-purple-600 h-3 rounded-full text-xs text-white flex items-center justify-center font-semibold transition-all duration-500 ease-out"
-                                    style={{ width: `${overallProgressPercentage}%` }}
-                                >
-                                    {overallProgressPercentage}%
-                                </div>
-                            </div>
-                            <p className="text-xs sm:text-sm text-gray-500 mt-2">
-                                Completed {completedWeeksCount} of {totalWeeks} weeks
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={() => {
-                                const targetWeek = userCourseProgress.lastAccessedWeek || 1;
-                                setActiveWeek(targetWeek);
-                            }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-lg shadow-lg text-sm sm:text-base transform hover:scale-105 transition duration-300"
-                        >
-                            {completedWeeksCount === 0 ? 'Start Course' : 'Continue Course'}
-                        </button>
                     </div>
                 </div>
 
-                {/* Course Content - Weekly Breakdown (Accordion) */}
                 <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 sm:mb-6 border-b pb-3 sm:pb-4">Course Curriculum</h2>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6">Course Content</h2>
+                    {course.weeklyContent?.length === 0 ? (
+                        <p className="text-gray-600">No weekly content available for this course yet.</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {course.weeklyContent && course.weeklyContent.map((weekData) => {
+                                // isExpanded: Controls the accordion's open/close state
+                                const isExpanded = expandedWeek === weekData.week;
+                                // isEnabled: Controls if the week is clickable/interactable (unlocked)
+                                const isEnabled = weekData.week <= highestAccessibleWeek;
 
-                    {course.weeklyContent && course.weeklyContent.length > 0 ? (
-                        course.weeklyContent.map((weekData) => {
-                            const isWeekComplete = userCourseProgress.completedWeeks.includes(weekData.week);
-                            const isWeekActive = activeWeek === weekData.week;
+                                const weeklyLessonProgressPercentage = calculateLessonProgress(weekData, userCourseProgress);
+                                const isQuizComplete = userCourseProgress.completedItems[weekData.week]?.quizzes?.includes(weekData.quizId);
 
-                            // Calculate weekly progress
-                            let totalItemsInThisWeek = 0;
-                            let completedItemsInThisWeek = 0;
-
-                            ['lessons', 'videos', 'readings', 'assignments'].forEach(type => {
-                                const itemsOfType = weekData[type] || [];
-                                totalItemsInThisWeek += itemsOfType.length;
-
-                                itemsOfType.forEach(item => {
-                                    const identifier = (typeof item === 'object' && item !== null && item.title) ? item.title : item;
-                                    if (userCourseProgress.completedItems?.[weekData.week]?.[type]?.includes(identifier)) {
-                                        completedItemsInThisWeek++;
-                                    }
-                                });
-                            });
-
-                            const weeklyProgressPercentage = totalItemsInThisWeek > 0
-                                ? Math.round((completedItemsInThisWeek / totalItemsInThisWeek) * 100)
-                                : 0;
-
-                            return (
-                                <div key={weekData.week} id={`week-${weekData.week}`} className="border-b border-gray-200 last:border-b-0">
-                                    <button
-                                        className="flex justify-between items-center w-full py-3 sm:py-4 text-left font-semibold text-lg sm:text-xl text-gray-800 hover:text-blue-600"
-                                        onClick={() => toggleWeek(weekData.week)}
+                                return (
+                                    <div
+                                        key={weekData.week}
+                                        id={`week-${weekData.week}`}
+                                        className={`border rounded-lg overflow-hidden ${isEnabled ? 'border-gray-200' : 'border-gray-300 bg-gray-100 opacity-70 cursor-not-allowed'}`}
                                     >
-                                        <span>Week {weekData.week}: {weekData.title}</span>
-                                        <div className="flex items-center">
-                                            {isWeekComplete && (
-                                                <span className="text-green-500 text-xs sm:text-sm font-bold mr-2">COMPLETED</span>
-                                            )}
-                                            {/* Weekly Progress Bar */}
-                                            <span className="text-sm font-medium text-gray-600 mr-2">{weeklyProgressPercentage}%</span>
-                                            <div className="w-20 bg-gray-200 rounded-full h-2">
-                                                <div
-                                                    className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
-                                                    style={{ width: `${weeklyProgressPercentage}%` }}
-                                                ></div>
+                                        <div
+                                            className={`flex justify-between items-center p-4 sm:p-5 transition duration-150 ease-in-out ${isEnabled ? 'bg-gray-50 hover:bg-gray-100 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'}`}
+                                            onClick={() => isEnabled && toggleWeek(weekData.week)}
+                                        >
+                                            <h3 className={`text-lg sm:text-xl font-semibold ${isEnabled ? 'text-gray-800' : 'text-gray-500'}`}>
+                                                Week {weekData.week}: {weekData.title}
+                                            </h3>
+                                            <div className="flex items-center">
+                                                <svg
+                                                    className={`w-6 h-6 text-gray-600 transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
                                             </div>
-                                            <span className="text-xl sm:text-2xl ml-3">{isWeekActive ? '-' : '+'}</span>
                                         </div>
-                                    </button>
-                                    {isWeekActive && (
-                                        <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200">
-                                            {/* Lessons Section */}
-                                            {weekData.lessons && weekData.lessons.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Lessons:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.lessons.map((lesson, index) => {
-                                                            const isLessonComplete = userCourseProgress.completedItems?.[weekData.week]?.lessons?.includes(lesson);
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">{isLessonComplete ? '✅' : '➡️'}</span>
-                                                                    {lesson}
-                                                                    {!isLessonComplete && (
-                                                                        <button
-                                                                            onClick={() => markContentComplete(weekData.week, 'lessons', lesson)}
-                                                                            className="ml-2 sm:ml-4 text-blue-500 hover:underline text-xs sm:text-sm focus:outline-none"
-                                                                        >
-                                                                            Mark as Complete
-                                                                        </button>
-                                                                    )}
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                </div>
-                                            )}
 
-                                            {/* Videos Section - Mark video complete on ended */}
-                                            {weekData.videos && weekData.videos.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Video Lessons:</h4>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                                                        {weekData.videos.map((video, index) => {
-                                                            const isVideoComplete = userCourseProgress.completedItems?.[weekData.week]?.videos?.includes(video.title);
-                                                            return (
-                                                                <div key={index} className="bg-gray-900 rounded-lg shadow-xl overflow-hidden relative">
-                                                                    {/* Mark as complete badge/button */}
-                                                                    <div className="absolute top-2 right-2 z-10">
-                                                                        {isVideoComplete ? (
-                                                                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
-                                                                        ) : (
+                                        {isExpanded && isEnabled && (
+                                            <div className="p-4 sm:p-5 bg-white border-t border-gray-200">
+                                                {weekData.lessons && weekData.lessons.length > 0 && (
+                                                    <div className="mb-4">
+                                                        <h4 className="text-md sm:text-lg font-bold text-gray-700 mb-2 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Lessons
+                                                        </h4>
+                                                        <ul className="space-y-2">
+                                                            {weekData.lessons.map((lesson, index) => {
+                                                                const identifier = lesson.id || lesson.title || `lesson-${weekData.week}-${index}`;
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.lessons?.includes(identifier);
+                                                                return (
+                                                                    <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
+                                                                        <span className="mr-2 sm:pt-4 ">{isComplete ? '✅' : '➡️'}</span>
+                                                                        {lesson}
+                                                                        {!isComplete && (
                                                                             <button
-                                                                                onClick={() => markContentComplete(weekData.week, 'videos', video.title)}
-                                                                                className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded-full"
+                                                                                onClick={() => markContentComplete(weekData.week, 'lessons', identifier)}
+                                                                                className="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600 transition duration-150"
                                                                             >
                                                                                 Mark Complete
                                                                             </button>
                                                                         )}
-                                                                    </div>
-                                                                    <h5 className="text-white text-md font-semibold p-3 border-b border-gray-700">{video.title}</h5>
-                                                                    <div className="relative pt-[56.25%]"> {/* 16:9 Aspect Ratio */}
-                                                                        {video.url ? (
-                                                                            <video
-                                                                                controls
-                                                                                className="absolute inset-0 w-full h-full object-contain"
-                                                                                poster="https://placehold.co/1280x720/000000/FFFFFF?text=Video+Unavailable" // Placeholder image for video
-                                                                                preload="metadata"
-                                                                                onEnded={() => !isVideoComplete && markContentComplete(weekData.week, 'videos', video.title)}
-                                                                            >
-                                                                                <source src={video.url} type="video/mp4" />
-                                                                                Your browser does not support the video tag.
-                                                                            </video>
-                                                                        ) : (
-                                                                            <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
-                                                                                Video not available.
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
                                                     </div>
-                                                    <p className="text-gray-700 text-xs sm:text-sm mt-3">
-                                                        *If you have trouble playing a video, ensure your internet connection is stable or try a different browser.
-                                                    </p>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            {/* Readings Section */}
-                                            {weekData.readings && weekData.readings.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Readings:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.readings.map((reading, index) => {
-                                                            const readingTitle = (typeof reading === 'object' && reading !== null && reading.title) ? reading.title : reading;
-                                                            const isReadingComplete = userCourseProgress.completedItems?.[weekData.week]?.readings?.includes(readingTitle);
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">{isReadingComplete ? '✅' : '📚'}</span>
-                                                                    {readingTitle}
-                                                                    {reading.url && (
-                                                                        <a href={reading.url} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline">
-                                                                            (Read)
-                                                                        </a>
-                                                                    )}
-                                                                    {!isReadingComplete && (
-                                                                        <button
-                                                                            onClick={() => markContentComplete(weekData.week, 'readings', readingTitle)}
-                                                                            className="ml-2 sm:ml-4 text-blue-500 hover:underline text-xs sm:text-sm focus:outline-none"
-                                                                        >
-                                                                            Mark as Complete
-                                                                        </button>
-                                                                    )}
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                </div>
-                                            )}
+                                                {(weekData.readings && weekData.readings.length > 0) || weekData.quizId ? (
+                                                    <div className="mb-3 sm:mb-4">
+                                                        <h4 className="font-semibold text-md sm:text-lg mb-1.5 sm:mb-2 text-gray-700 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0113 3.414L16.586 7A2 2 0 0118 8.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1-3a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Notes & Quiz:
+                                                        </h4>
+                                                        <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
 
-                                            {/* Assignments Section */}
-                                            {weekData.assignments && weekData.assignments.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Assignments:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.assignments.map((assignment, index) => {
-                                                            const isAssignmentComplete = userCourseProgress.completedItems?.[weekData.week]?.assignments?.includes(assignment.title);
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">{isAssignmentComplete ? '✅' : '📝'}</span>
-                                                                    {assignment.title}
-                                                                    {assignment.url && (
-                                                                        <a href={assignment.url} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline">
-                                                                            (Download)
-                                                                        </a>
-                                                                    )}
-                                                                    {!isAssignmentComplete && (
-                                                                        <button
-                                                                            onClick={() => markContentComplete(weekData.week, 'assignments', assignment.title)}
-                                                                            className="ml-2 sm:ml-4 text-blue-500 hover:underline text-xs sm:text-sm focus:outline-none"
+                                                            {weekData.readings && weekData.readings.length > 0 && weekData.readings.map((reading, index) => {
+                                                                const identifier = reading.id || reading.title || `reading-${weekData.week}-${index}`;
+                                                                const readingTitle = typeof reading === 'object' ? reading.title : reading;
+                                                                const readingUrl = typeof reading === 'object' && reading.url ? reading.url : '#';
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.readings?.includes(identifier);
+
+                                                                return (
+                                                                    <li key={identifier} className={`flex justify-between items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 hover:bg-gray-100`}>
+                                                                        <span className="flex-1">
+                                                                            <span className="mr-2">{isComplete ? '✅' : '➡️'}</span>
+                                                                            {readingUrl !== '#' ? (
+                                                                                <Link to={readingUrl} className="text-blue-600 hover:underline">
+                                                                                    {readingTitle}
+                                                                                </Link>
+                                                                            ) : (
+                                                                                <span>{readingTitle}</span>
+                                                                            )}
+                                                                        </span>
+                                                                        {!isComplete && (
+                                                                            <button
+                                                                                onClick={() => markContentComplete(weekData.week, 'readings', identifier)}
+                                                                                className="bg-purple-600 text-white text-xs px-3 py-1 rounded hover:bg-purple-700 transition duration-150"
+                                                                            >
+                                                                                Mark Complete
+                                                                            </button>
+                                                                        )}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                            {weekData.quizId && (
+                                                                <li className={`flex items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 ${weeklyLessonProgressPercentage >= 80 ? 'hover:bg-gray-100' : ''}`}>
+                                                                    <span className="mr-2 text-purple-600">💡</span>
+                                                                    {weeklyLessonProgressPercentage >= 80 ? (
+                                                                        <Link
+                                                                            to={`/quiz/${weekData.quizId}`}
+                                                                            className="text-purple-600 hover:underline font-bold"
+                                                                            onClick={() => {
+                                                                                if (!isQuizComplete) {
+                                                                                    markContentComplete(weekData.week, 'quizzes', weekData.quizId);
+                                                                                }
+                                                                            }}
                                                                         >
-                                                                            Mark as Complete
-                                                                        </button>
+                                                                            Take Quiz for Week {weekData.week}
+                                                                        </Link>
+                                                                    ) : (
+                                                                        <span
+                                                                            className="text-gray-400 cursor-not-allowed text-sm sm:text-base"
+                                                                            title={`Complete at least 80% of lessons/videos for Week ${weekData.week} to unlock this quiz.`}
+                                                                        >
+                                                                            Take Quiz for Week {weekData.week} (Unlock at 80% lesson/video progress - Current: {weeklyLessonProgressPercentage}%)
+                                                                        </span>
                                                                     )}
+                                                                    {isQuizComplete && <span className="ml-2 text-green-500 font-semibold">✅ Completed!</span>}
                                                                 </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p className="text-gray-600">No curriculum content available for this course yet.</p>
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                ) : null}
+
+                                                  {/* Assignments */}
+                                                {weekData.assignments && weekData.assignments.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-md sm:text-lg font-bold text-gray-700 mb-2 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Assignments
+                                                        </h4>
+                                                        <ul className="space-y-2">
+                                                            {weekData.assignments.map((assignment, index) => {
+                                                                const identifier = assignment.id || assignment.title || `assignment-${weekData.week}-${index}`;
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.assignments?.includes(identifier);
+                                                                return (
+                                                                    <li key={identifier} className={`flex justify-between items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 hover:bg-gray-100`}>
+                                                                        <span className="flex-1">
+                                                                            <span className="mr-2">{isComplete ? '✅' : '➡️'}</span>
+                                                                            {assignment.title || `Assignment ${index + 1}`}
+                                                                            {assignment.downloadLink && (
+                                                                                <a href={assignment.downloadLink} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline text-xs">
+                                                                                    (Download)
+                                                                                </a>
+                                                                            )}
+                                                                            {assignment.deadline && (
+                                                                                <span className="ml-2 text-gray-500 text-xs">(Due: {assignment.deadline})</span>
+                                                                            )}
+                                                                        </span>
+                                                                        {!isComplete && (
+                                                                            <button
+                                                                                onClick={() => markContentComplete(weekData.week, 'assignments', identifier)}
+                                                                                className="bg-purple-600 text-white text-xs px-3 py-1 rounded hover:bg-purple-700 transition duration-150"
+                                                                            >
+                                                                                Mark Complete
+                                                                            </button>
+                                                                        )}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {/* If a week has no content types defined */}
+                                                {!weekData.lessons?.length && !weekData.readings?.length && !weekData.assignments?.length && !weekData.quizId && (
+                                                    <p className="text-gray-500 italic">No content available for this week yet.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     )}
                 </div>
             </div>

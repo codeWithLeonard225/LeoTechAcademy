@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'; // For notifications
 const CLOUD_NAME = "dyt1xzrcv"; // Use the specific Cloud Name you provided
 const UPLOAD_PRESET = "firstTime"; // Use the specific Upload Preset you provided
 
-const CloudinaryImageUserUploader = ({ onUploadSuccess, currentImageUrl }) => {
+const CloudinaryImageUploader = ({ onUploadSuccess, currentImageUrl }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState(currentImageUrl); // To display the current image from props
@@ -143,4 +143,4 @@ const CloudinaryImageUserUploader = ({ onUploadSuccess, currentImageUrl }) => {
   );
 };
 
-export default CloudinaryImageUserUploader;
+export default CloudinaryImageUploader;
