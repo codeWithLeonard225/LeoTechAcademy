@@ -28,12 +28,12 @@ import MsWorkWeek3 from './Component/Reading/MSWORD/WEEK!/MsWorkWeek3';
 import MsWorkWeek4 from './Component/Reading/MSWORD/WEEK!/MsWorkWeek4';
 
 import ProtectedRoute from './ProtectedRoute';
-import { AuthProvider } from "./AuthProvider";
+import { AuthProvider } from './AuthProvider';
 
 
 function App() {
   return (
-        <AuthProvider>
+    <AuthProvider>
     <div className="font-sans antialiased">
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
@@ -53,122 +53,17 @@ function App() {
 
 
         {/* Dedicated routes for other pages base on userid login */}
-        <Route
-          path="/userForm"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <UserProfileForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/distanceCourseForm"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <PaidCourseForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/inPersonCourseForm"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <InPersonCourseForm />
-            </ProtectedRoute>
-          }
-        />
-
+        <Route path="/userForm" element={<UserProfileForm />} />
         <Route path="/freeCourse" element={<FreeCourseForm />} />
+        <Route path="/distanceCourseForm" element={<PaidCourseForm />} />
+        <Route path="/inPersonCourseForm" element={<InPersonCourseForm />} />
+        <Route path="/inPersonDashboard" element={<InPersonDashboard />} />
         <Route path="/inPerson-courses/:courseId" element={<InPersonCoursePage />} />
+        <Route path="/distanceDashboard" element={<DistanceDashboard />} />
         <Route path="/my-courses/:courseId" element={<CoursePage />} />
+       
 
         <Route
-          path="/inPersonDashboard"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <InPersonDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/distanceDashboard"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <DistanceDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-      
-
-
-        {/* Notes */}
-
-        <Route
-          path="/courses/week_1"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <Week1Page />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/courses/MsWorkWeek1"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <MsWorkWeek1 />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/courses/MsWorkWeek2"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <MsWorkWeek2 />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/courses/MsWorkWeek3"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <MsWorkWeek3 />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/courses/MsWorkWeek4"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <MsWorkWeek4 />
-            </ProtectedRoute>
-          }
-        />
-
-
-
-
-
-        {/* --- Correct Route for QuizPage --- */}
-
-         <Route
-          path="/quiz/:quizId"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'student']}>
-              <QuizPage />
-            </ProtectedRoute>
-          }
-        />
-
-
-
-          {/* admin  */}
-          <Route
           path="/admin-panel"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
@@ -176,6 +71,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Notes */}
+        <Route path="/courses/week_1" element={<Week1Page />} />
+        <Route path="/courses/MsWorkWeek1" element={<MsWorkWeek1 />} />
+        <Route path="/courses/MsWorkWeek2" element={<MsWorkWeek2 />} />
+        <Route path="/courses/MsWorkWeek3" element={<MsWorkWeek3 />} />
+        <Route path="/courses/MsWorkWeek4" element={<MsWorkWeek4 />} />
+
+
+
+
+        {/* --- Correct Route for QuizPage --- */}
+        <Route path="/quiz/:quizId" element={<QuizPage />} />
 
 
 
@@ -187,7 +95,7 @@ function App() {
 
     </div>
 
-        </AuthProvider>
+    </AuthProvider>
   );
 }
 
