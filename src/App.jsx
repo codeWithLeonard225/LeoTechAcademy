@@ -63,14 +63,7 @@ function App() {
         <Route path="/my-courses/:courseId" element={<CoursePage />} />
        
 
-        <Route
-          path="/admin-panel"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminPanel />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/admin-panel" element={<AdminPanel />} />
 
         {/* Notes */}
         <Route path="/courses/week_1" element={<Week1Page />} />
@@ -84,6 +77,7 @@ function App() {
 
         {/* --- Correct Route for QuizPage --- */}
         <Route path="/quiz/:quizId" element={<QuizPage />} />
+       
 
 
 

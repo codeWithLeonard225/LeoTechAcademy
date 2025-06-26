@@ -465,9 +465,7 @@ const handleDeleteCourse = async (courseId, courseTitle) => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                         {(week.lessons || []).length}
                                                     </td>
-                                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                                        {(week.videos || []).length} // <--- REMOVED
-                                                    </td> */}
+                                                  
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                         {(week.readings || []).length}
                                                     </td>
@@ -549,64 +547,6 @@ const handleDeleteCourse = async (courseId, courseTitle) => {
                                                                         Add Lesson
                                                                     </button>
                                                                 </div>
-
-                                                                {/* --- Video Section REMOVED --- */}
-                                                                {/* <div className="border p-4 rounded-md bg-white shadow-sm">
-                                                                    <h5 className="text-lg font-semibold text-gray-800 mb-3">Videos</h5>
-                                                                    {week.videos.map((video, videoIndex) => (
-                                                                        <div key={videoIndex} className="space-y-2 mb-4 p-2 border-b last:border-b-0">
-                                                                            <div>
-                                                                                <label className="block text-xs font-medium text-gray-600">Video Title</label>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={video.title}
-                                                                                    onChange={(e) => handleNestedItemChange(weekIndex, 'videos', videoIndex, e.target.value, 'title')}
-                                                                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                    placeholder="Video title"
-                                                                                />
-                                                                            </div>
-                                                                            <div>
-                                                                                <label className="block text-xs font-medium text-gray-600">Video URL</label>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={video.url}
-                                                                                    onChange={(e) => handleNestedItemChange(weekIndex, 'videos', videoIndex, e.target.value, 'url')}
-                                                                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                    placeholder="Enter video URL or upload"
-                                                                                />
-                                                                            </div>
-                                                                            <CloudinaryVideoUploader
-                                                                                onUploadSuccess={(url) => handleVideoUploadSuccess(weekIndex, videoIndex, url)}
-                                                                                currentUrl={video.url}
-                                                                            />
-                                                                            {video.url && (
-                                                                                <div className="mt-2 text-sm text-gray-600">
-                                                                                    Current Video: <a href={video.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{video.url}</a>
-                                                                                </div>
-                                                                            )}
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => removeNestedItem(weekIndex, 'videos', videoIndex)}
-                                                                                className="mt-2 text-red-500 hover:text-red-700 text-sm flex items-center"
-                                                                            >
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
-                                                                                </svg>
-                                                                                Remove Video
-                                                                            </button>
-                                                                        </div>
-                                                                    ))}
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => addNestedItem(weekIndex, 'videos')}
-                                                                        className="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center"
-                                                                    >
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                        Add Video
-                                                                    </button>
-                                                                </div> */}
 
                                                                 {/* Readings */}
                                                                 <div className="border p-4 rounded-md bg-white shadow-sm">

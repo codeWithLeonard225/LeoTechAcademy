@@ -8,14 +8,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from "../../../../firebase"; // Adjust this path as necessary for your project structure
 
-import allQuizzes from './QuizData'; // Adjust path if necessary
+import allQuizzes from '../MSWork/QuizDataMsWrd'; // Adjust path if necessary
 
 // Define total maximum attempts for a quiz
 const MAX_QUIZ_ATTEMPTS = 3;
 // Define the target pass percentage
 const PASS_PERCENTAGE = 0.80; // 80%
 
-const QuizPage = () => {
+const Wk1Quiz = () => {
     const { quizId } = useParams();
     const navigate = useNavigate();
 
@@ -530,11 +530,11 @@ const QuizPage = () => {
                                 ) : (
                                     !quizPassedOverall && <p className="text-red-700 font-semibold mb-4">You have no attempts left for this quiz.</p>
                                 )}
-                                       <button
-                                    onClick={() => navigate(-1)}
-                                    className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300"
+                                <button
+                                    onClick={() => navigate('/distanceDashboard')}
+                                    className={`mt-6 ${attemptsLeft > 0 && !quizPassedOverall ? 'bg-purple-600 hover:bg-purple-700' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300`}
                                 >
-                                    ← Back
+                                    Back to Dashboard
                                 </button>
                             </div>
                         ) : ( // Covers cases where quiz has no questions or user is out of attempts and not passed
@@ -542,12 +542,11 @@ const QuizPage = () => {
                                 <p className="text-xl text-gray-700 mb-4">
                                     {quizData.questions.length === 0 ? "No questions available for this quiz yet." : "You cannot take this quiz."}
                                 </p>
-                               
                                 <button
-                                    onClick={() => navigate(-1)}
+                                    onClick={() => navigate('/distanceDashboard')}
                                     className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300"
                                 >
-                                    ← Back
+                                    Back to Dashboard
                                 </button>
                             </div>
                         )}
@@ -580,4 +579,4 @@ const QuizPage = () => {
     );
 };
 
-export default QuizPage;
+export default Wk1Quiz;
