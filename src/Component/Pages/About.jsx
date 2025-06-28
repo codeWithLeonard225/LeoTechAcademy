@@ -61,14 +61,14 @@ const About = () => {
           </section>
 
           {/* The Team / Instructors */}
-          <section className="bg-white p-8 md:p-10 rounded-xl shadow-lg mb-16 border border-gray-100 animate-fade-in">
+          {/* <section className="bg-white p-8 md:p-10 rounded-xl shadow-lg mb-16 border border-gray-100 animate-fade-in">
             <h2 className="text-3xl font-bold text-leo-blue mb-8 text-center">Meet Our Expert Team & Instructors</h2>
             <p className="text-gray-700 leading-relaxed mb-10 text-center max-w-2xl mx-auto">
               Our greatest asset is our team of dedicated professionals and experienced instructors. They are not just educators; they are industry veterans with a passion for sharing their knowledge and making a real difference in Sierra Leone.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Example Instructor Card 1 */}
+             
               <div className="text-center bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
                 <img src="https://via.placeholder.com/120x120?text=Jane+D" alt="Jane Doe" className="rounded-full w-32 h-32 object-cover mx-auto mb-4 border-4 border-leo-green" />
                 <h3 className="text-xl font-bold text-leo-blue mb-1">Jane Doe</h3>
@@ -78,7 +78,7 @@ const About = () => {
                 </p>
               </div>
 
-              {/* Example Instructor Card 2 */}
+             
               <div className="text-center bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
                 <img src="https://via.placeholder.com/120x120?text=John+K" alt="John Kamara" className="rounded-full w-32 h-32 object-cover mx-auto mb-4 border-4 border-leo-yellow" />
                 <h3 className="text-xl font-bold text-leo-blue mb-1">John Kamara</h3>
@@ -88,7 +88,7 @@ const About = () => {
                 </p>
               </div>
 
-              {/* Example Instructor Card 3 */}
+            
               <div className="text-center bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
                 <img src="https://via.placeholder.com/120x120?text=Mariama+B" alt="Mariama Bangura" className="rounded-full w-32 h-32 object-cover mx-auto mb-4 border-4 border-leo-blue" />
                 <h3 className="text-xl font-bold text-leo-blue mb-1">Mariama Bangura</h3>
@@ -98,13 +98,7 @@ const About = () => {
                 </p>
               </div>
             </div>
-            {/* Add a link to a full team page if you have one */}
-            {/* <div className="text-center mt-12">
-            <a href="/team" className="inline-flex items-center text-leo-blue text-lg font-bold hover:text-leo-green transition duration-300 group">
-              Meet All Our Instructors &rarr;
-            </a>
-          </div> */}
-          </section>
+          </section> */}
 
           {/* Our Values */}
           <section className="bg-white p-8 md:p-10 rounded-xl shadow-lg mb-16 border border-gray-100 animate-fade-in">

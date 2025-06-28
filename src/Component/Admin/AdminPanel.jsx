@@ -5,6 +5,7 @@ import UserProfileForm from "../StudentsForm/UserProfileForm";
 import InPersonCourseForm from "../StudentsForm/InPerson/InPersonCourseForm";
 import DistanceDashboard from "../StudentsForm/Distance/DistanceDashboard";
 import PaidCourseForm from "../PaidCourse/PaidCourseForm";
+import StudentDashboard from "./StudentDashboard";
 
 /**
  * A reusable Button component with Tailwind CSS styling.
@@ -100,7 +101,7 @@ export default function AdminPanel() {
                 );
 
             case "inPersonDashboard":
-                // return <InPersonDashboard />;
+                 return <StudentDashboard />;
                 return (
                     <div className="p-4 bg-white rounded-lg shadow-md">
                         <h2 className="text-xl font-semibold mb-3">In-Person Dashboard Overview</h2>

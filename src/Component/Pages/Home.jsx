@@ -2,6 +2,7 @@
 import React from 'react';
 import Navbar from '../Nav/Navbar';
 import Footer from './Footer';
+import { Link } from "react-router-dom"; // Only Link is needed now
 
 // --- Hero Section Component ---
 const Hero = () => {
@@ -16,18 +17,18 @@ const Hero = () => {
             Empowering youth with in-demand technical and entrepreneurial skills for employment and self-reliance. Learn anytime, anywhere, on any device.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
-            <a href="/all-courses" className="px-8 py-4 bg-leo-green text-white font-semibold rounded-lg shadow-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
+            <Link to="/courses" className="px-8 py-4 bg-leo-green text-white font-semibold rounded-lg shadow-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
               Explore All Courses
-            </a>
-            <a href="/signup" className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg shadow-lg hover:bg-white hover:text-leo-blue transform hover:scale-105 transition duration-300">
+            </Link>
+            <Link to="/contact" className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg shadow-lg hover:bg-white hover:text-leo-blue transform hover:scale-105 transition duration-300">
               Get Started Free
-            </a>
+            </Link>
           </div>
         </div>
         <div className="md:w-1/2 flex justify-center">
           {/* Replace with a relevant, high-quality image of Sierra Leonean youth learning */}
           <img
-            src="https://via.placeholder.com/600x400?text=Empowering+Youth+SL"
+            src="/Commmunity.jpeg"
             alt="Youth learning practical skills in Sierra Leone"
             className="rounded-lg shadow-2xl max-w-full h-auto"
           />
@@ -129,26 +130,28 @@ const HowItWorks = () => {
 const FeaturedCourses = () => {
   const courses = [
     {
-      title: "Basic Electrical Wiring",
-      description: "Gain hands-on experience with domestic and commercial electrical wiring practices.",
-      image: "https://via.placeholder.com/300x200?text=Electrical+Wiring+Course",
+      title: "Frontend Web Development",
+      description: "Learn the foundations of web development using HTML, CSS, and JavaScript to build responsive and interactive websites.",
+      image: "/webdev.png",
       level: "Beginner",
-      duration: "5 Weeks",
-    },
+      duration: "4 Months",
+    }
+    ,
     {
       title: "Computer Hardware Maintenance & Repair",
-      description: "Learn to assemble, repair, and maintain computers for homes and businesses.",
-      image: "https://via.placeholder.com/300x200?text=Hardware+Repair+Course",
+      description: "Learn to assemble, repair, and maintain computers for homes and businesses with hands-on practice.",
+      image: "CmoputerRepare.png",
       level: "Beginner",
-      duration: "4 Weeks",
+      duration: "6 Weeks",
     },
     {
-      title: "Digital Marketing & Social Media Promotion",
-      description: "Master online tools for promoting products, services, and growing your brand.",
-      image: "https://via.placeholder.com/300x200?text=Digital+Marketing+Course",
+      title: "Microsoft Office Suite: Essential Skills for Beginners",
+      description: "Master essential Microsoft Office tools including Word, Excel, PowerPoint, and more — with 4 weeks dedicated to each application.",
+      image: "MsSuit.png",
       level: "Beginner",
-      duration: "3 Weeks",
-    },
+      duration: "Varies – 4 Weeks per Package",
+    }
+    ,
   ];
 
   return (
@@ -161,22 +164,23 @@ const FeaturedCourses = () => {
               <img src={course.image} alt={course.title} className="w-full h-48 object-cover" />
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-leo-blue mb-2">{course.title}</h3>
-                <p className="text-gray-600 text-sm mb-4">{course.description}</p>
+                <p className="text-gray-600 text-sm mb-4 text-left">{course.description}</p>
                 <div className="flex justify-between items-center text-gray-500 text-sm mb-4">
                   <span>Level: {course.level}</span>
                   <span>Duration: {course.duration}</span>
                 </div>
-                <a href="/all-courses" className="inline-block bg-leo-green text-white px-6 py-3 rounded-md hover:bg-green-700 transition duration-300">
+
+                <Link to="/courses" className="inline-block bg-leo-green text-white px-6 py-3 rounded-md hover:bg-green-700 transition duration-300">
                   View Course
-                </a>
+                </Link>
               </div>
             </div>
           ))}
         </div>
         <div className="mt-12">
-          <a href="/all-courses" className="inline-block text-leo-blue text-lg font-semibold hover:text-leo-green transition duration-300">
+          <Link to="/courses" className="inline-block text-leo-blue text-lg font-semibold hover:text-leo-green transition duration-300">
             Browse All Courses &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -230,9 +234,9 @@ const CTA = () => {
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-leo-blue mb-6">Ready to Transform Your Future?</h2>
         <p className="text-lg md:text-xl text-gray-700 mb-8">Join thousands of Sierra Leoneans building valuable skills for today's economy.</p>
-        <a href="/signup" className="px-10 py-5 bg-leo-green text-white text-xl font-semibold rounded-lg shadow-xl hover:bg-green-700 transform hover:scale-105 transition duration-300">
+        <Link to="/contact" className="px-10 py-5 bg-leo-green text-white text-xl font-semibold rounded-lg shadow-xl hover:bg-green-700 transform hover:scale-105 transition duration-300">
           Enroll Now & Start Learning!
-        </a>
+        </Link>
       </div>
     </section>
   );
@@ -243,14 +247,14 @@ const CTA = () => {
 const Home = () => {
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <Hero />
       <WhyLeoTech />
       <HowItWorks />
       <FeaturedCourses />
       <Testimonials />
       <CTA />
-      <Footer/>
+      <Footer />
     </>
   );
 };

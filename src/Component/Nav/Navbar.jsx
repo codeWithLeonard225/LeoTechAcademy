@@ -14,7 +14,7 @@ const Navbar = () => {
     { label: "Services", to: "/services" },
     { label: "Contact Us", to: "/contact" },
     { label: "FAQs", to: "/faqs" },
-    { label: "Blog / News", to: "/blog" }, // Consistent with previous
+    // { label: "Blog / News", to: "/blog" }, 
   ];
 
   return (

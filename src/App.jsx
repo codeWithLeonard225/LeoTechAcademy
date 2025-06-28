@@ -29,6 +29,10 @@ import MsWorkWeek4 from './Component/Reading/MSWORD/WEEK!/MsWorkWeek4';
 
 import ProtectedRoute from './ProtectedRoute';
 import { AuthProvider } from './AuthProvider';
+import StudentDashboard from './Component/Admin/StudentDashboard';
+import StudentCardPage from './Component/Admin/StudentCardPage';
+import CourseDetailPage from './Component/Pages/CourseDetailPage';
+import LearningPathDetailPage from './Component/Pages/LearningPathDetailPage';
 
 
 function App() {
@@ -45,6 +49,8 @@ function App() {
         {/* Dedicated routes for other pages */}
         <Route path="/about" element={<About />} />
         <Route path="/courses" element={<Courses />} />
+         <Route path="/courses/:id" element={<CourseDetailPage />} />
+         <Route path="/learning-paths/:id" element={<LearningPathDetailPage />} />
         <Route path="/login" element={<VerifyPayment />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
@@ -64,6 +70,9 @@ function App() {
        
 
         <Route path="/admin-panel" element={<AdminPanel />} />
+        {/* <Route path="/" element={<AdminPanel />} /> */}
+        <Route path="/students" element={<StudentDashboard />} />
+        <Route path="/students/:id" element={<StudentCardPage />} />
 
         {/* Notes */}
         <Route path="/courses/week_1" element={<Week1Page />} />
