@@ -33,6 +33,10 @@ import StudentDashboard from './Component/Admin/StudentDashboard';
 import StudentCardPage from './Component/Admin/StudentCardPage';
 import CourseDetailPage from './Component/Pages/CourseDetailPage';
 import LearningPathDetailPage from './Component/Pages/LearningPathDetailPage';
+import Week1HTMLIntro from './Component/Reading/HTML/Week1HTMLIntro';
+import Week2HTMLMedia from './Component/Reading/HTML/Week2HTMLMedia';
+import Week3FormsSemantic from './Component/Reading/HTML/Week3HTMLFormsSemantic';
+import Week4BestPracticesCSS from './Component/Reading/HTML/Week4HTLBestPracticesCSS';
 
 
 function App() {
@@ -80,6 +84,12 @@ function App() {
         <Route path="/courses/MsWorkWeek2" element={<MsWorkWeek2 />} />
         <Route path="/courses/MsWorkWeek3" element={<MsWorkWeek3 />} />
         <Route path="/courses/MsWorkWeek4" element={<MsWorkWeek4 />} />
+
+        {/* HTML */}
+        <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />
+        <Route path="/courses/Week2HTMLMedia" element={<Week2HTMLMedia />} />
+        <Route path="//courses/Week3HTMLFormsSemantic" element={<Week3FormsSemantic />} />
+        {/* <Route path="/" element={<Week4BestPracticesCSS />} /> */}
 
 
 

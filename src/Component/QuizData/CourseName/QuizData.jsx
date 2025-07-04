@@ -521,7 +521,545 @@ const allQuizzes = {
         "correctAnswer": "New Comment"
       }
     ]
+  },
+  
+  "HTML_Week1": {
+    "title": "Week 1: HTML Basics Quiz",
+    "description": "Test your understanding of fundamental HTML concepts, document structure, headings, paragraphs, and basic text formatting and lists.",
+    "questions": [
+      {
+        "questionText": "What does HTML stand for?",
+        "options": ["HyperText Markup Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language", "Hyper Transfer Markup Language"],
+        "correctAnswer": "HyperText Markup Language"
+      },
+      {
+        "questionText": "Which tag represents the root of an HTML document?",
+        "options": ["<head>", "<body>", "<html>", "<title>"],
+        "correctAnswer": "<html>"
+      },
+      {
+        "questionText": "The `<!DOCTYPE html>` declaration is used to:",
+        "options": ["Define a hyperlink", "Declare the HTML version (HTML5)", "Insert an image", "Create a paragraph"],
+        "correctAnswer": "Declare the HTML version (HTML5)"
+      },
+      {
+        "questionText": "Which section of an HTML document contains metadata about the page, such as its title and character encoding, but is not visible content?",
+        "options": ["<body>", "<section>", "<head>", "<footer>"],
+        "correctAnswer": "<head>"
+      },
+      {
+        "questionText": "What is the primary purpose of the `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` tag?",
+        "options": ["To set the page's author", "To specify character encoding", "To optimize the page for responsive design", "To link external stylesheets"],
+        "correctAnswer": "To optimize the page for responsive design"
+      },
+      {
+        "questionText": "Which HTML tag is used to display the title of the web page in the browser tab?",
+        "options": ["<h1>", "<meta>", "<title>", "<head>"],
+        "correctAnswer": "<title>"
+      },
+      {
+        "questionText": "All visible content of an HTML page, such as text, images, and links, is placed within which tag?",
+        "options": ["<html>", "<head>", "<section>", "<body>"],
+        "correctAnswer": "<body>"
+      },
+      {
+        "questionText": "What is the difference between an 'element' and a 'tag' in HTML?",
+        "options": [
+          "They are the same thing.",
+          "An element includes the opening tag, content, and closing tag; a tag is just the opening or closing part.",
+          "A tag is for styling, an element is for structure.",
+          "An element is always self-closing, a tag is not."
+        ],
+        "correctAnswer": "An element includes the opening tag, content, and closing tag; a tag is just the opening or closing part."
+      },
+      {
+        "questionText": "Which of the following is an example of a self-closing tag?",
+        "options": ["<p>", "<div>", "<img>", "<span>"],
+        "correctAnswer": "<img>"
+      },
+      {
+        "questionText": "What attribute is used to specify the path to an image file in the `<img>` tag?",
+        "options": ["alt", "href", "src", "link"],
+        "correctAnswer": "src"
+      },
+      {
+        "questionText": "Which attribute provides alternative text for an image, important for accessibility and when the image fails to load?",
+        "options": ["title", "description", "alt", "text"],
+        "correctAnswer": "alt"
+      },
+      {
+        "questionText": "Which HTML tag defines the most important heading on a page?",
+        "options": ["<h3>", "<h2>", "<h1>", "<h6/>"],
+        "correctAnswer": "<h1>"
+      },
+      {
+        "questionText": "Which tag is used to define a standard paragraph of text?",
+        "options": ["<para>", "<text>", "<p>", "<br>"],
+        "correctAnswer": "<p>"
+      },
+      {
+        "questionText": "To insert a single line break within a paragraph, which tag would you use?",
+        "options": ["<lb>", "<break>", "<br>", "<newline>"],
+        "correctAnswer": "<br>"
+      },
+      {
+        "questionText": "The `<hr>` tag is used to:",
+        "options": ["Create a hyperlink", "Insert an image", "Draw a horizontal line across the page", "Define a header for a table"],
+        "correctAnswer": "Draw a horizontal line across the page"
+      },
+      {
+        "questionText": "Which semantic HTML tag should be used for text that is important and should be displayed with strong emphasis (e.g., bold)?",
+        "options": ["<b>", "<strong>", "<em>", "<i>"],
+        "correctAnswer": "<strong>"
+      },
+      {
+        "questionText": "Which semantic HTML tag should be used for text that needs emphasis (e.g., italicized)?",
+        "options": ["<i>", "<em>", "<b>", "<mark>"],
+        "correctAnswer": "<em>"
+      },
+      {
+        "questionText": "Which HTML tag is used to create an ordered (numbered) list?",
+        "options": ["<ul>", "<ol>", "<list>", "<dl>"],
+        "correctAnswer": "<ol>"
+      },
+      {
+        "questionText": "Which HTML tag is used to create an unordered (bulleted) list?",
+        "options": ["<ol>", "<li>", "<ul>", "<lu>"],
+        "correctAnswer": "<ul>"
+      },
+      {
+        "questionText": "To define a single item within both ordered and unordered lists, which tag is used?",
+        "options": ["<item>", "<listitem>", "<li>", "<entry>"],
+        "correctAnswer": "<li>"
+      }
+    ]
+  },
+  "HTML_Week2": {
+    "title": "Week 2: Links, Images, and Basic Media Quiz",
+    "description": "Test your knowledge on creating hyperlinks, embedding images, and structuring data with HTML tables.",
+    "questions": [
+      {
+        "questionText": "What does the `<a>` tag stand for in HTML?",
+        "options": ["Area", "Anchor", "Attribute", "Action"],
+        "correctAnswer": "Anchor"
+      },
+      {
+        "questionText": "Which attribute of the `<a>` tag specifies the destination URL of a hyperlink?",
+        "options": ["src", "link", "url", "href"],
+        "correctAnswer": "href"
+      },
+      {
+        "questionText": "To open a linked document in a new browser window or tab, which `target` attribute value should be used?",
+        "options": ["_self", "_parent", "_blank", "_top"],
+        "correctAnswer": "_blank"
+      },
+      {
+        "questionText": "If you link to an `about.html` file located in the same directory as your `index.html`, what type of path are you using?",
+        "options": ["Absolute URL", "Root-relative path", "Relative path", "Server path"],
+        "correctAnswer": "Relative path"
+      },
+      {
+        "questionText": "How would you create a link to a section within the same page that has `id=\"contact\"`?",
+        "options": ["<a href=\"/contact\">", "<a id=\"contact_link\">", "<a href=\"#contact\">", "<a link=\"contact\">"],
+        "correctAnswer": "<a href=\"#contact\">"
+      },
+      {
+        "questionText": "What is the correct syntax for an email link?",
+        "options": ["<a email=\"test@example.com\">", "<a href=\"mail:test@example.com\">", "<a href=\"mailto:test@example.com\">", "<a src=\"test@example.com\">"],
+        "correctAnswer": "<a href=\"mailto:test@example.com\">"
+      },
+      {
+        "questionText": "Which HTML tag is used to embed an image into a web page?",
+        "options": ["<picture>", "<graphic>", "<img>", "<photo>"],
+        "correctAnswer": "<img>"
+      },
+      {
+        "questionText": "Is the `<img>` tag a self-closing tag?",
+        "options": ["Yes, it doesn't require a separate closing tag.", "No, it always needs a closing `</img>` tag.", "Only when used with the `alt` attribute.", "Only when used with the `src` attribute."],
+        "correctAnswer": "Yes, it doesn't require a separate closing tag."
+      },
+      {
+        "questionText": "What is the primary purpose of the `alt` attribute in the `<img>` tag?",
+        "options": ["To define the image's alignment", "To provide alternative text for screen readers and when the image fails to load", "To specify the image's dimensions", "To add a tooltip when hovering over the image"],
+        "correctAnswer": "To provide alternative text for screen readers and when the image fails to load"
+      },
+      {
+        "questionText": "Which type of image path is a full web address (e.g., `https://www.example.com/image.png`)?",
+        "options": ["Relative path", "Absolute URL", "Local path", "Server path"],
+        "correctAnswer": "Absolute URL"
+      },
+      {
+        "questionText": "While CSS is generally preferred, which HTML attributes can be used directly on the `<img>` tag for basic image dimension control?",
+        "options": ["size and dimension", "x and y", "length and width", "width and height"],
+        "correctAnswer": "width and height"
+      },
+      {
+        "questionText": "Which HTML tag is used to define a table?",
+        "options": ["<tab>", "<grid>", "<table>", "<data>"],
+        "correctAnswer": "<table>"
+      },
+      {
+        "questionText": "In an HTML table, which tag defines a single row?",
+        "options": ["<td>", "<th>", "<tr>", "<tbody>"],
+        "correctAnswer": "<tr>"
+      },
+      {
+        "questionText": "Which HTML tag defines a table header cell?",
+        "options": ["<th>", "<td>", "<thead>", "<header>"],
+        "correctAnswer": "<th>"
+      },
+      {
+        "questionText": "Which HTML tag defines a standard data cell within a table row?",
+        "options": ["<dt>", "<dc>", "<data>", "<td>"],
+        "correctAnswer": "<td>"
+      },
+      {
+        "questionText": "The `colspan` attribute is used to:",
+        "options": ["Make a cell span across multiple rows", "Make a cell span across multiple columns", "Change the background color of a cell", "Align text within a cell"],
+        "correctAnswer": "Make a cell span across multiple columns"
+      },
+      {
+        "questionText": "The `rowspan` attribute is used to:",
+        "options": ["Make a cell span across multiple rows", "Make a cell span across multiple columns", "Add a new row to the table", "Specify the row number"],
+        "correctAnswer": "Make a cell span across multiple rows"
+      },
+      {
+        "questionText": "Which tag is used for semantically grouping the header content of a table?",
+        "options": ["<head>", "<th>", "<thead>", "<header>"],
+        "correctAnswer": "<thead>"
+      },
+      {
+        "questionText": "Which tag is used for semantically grouping the main body content of a table?",
+        "options": ["<body>", "<td>", "<tbody>", "<main>"],
+        "correctAnswer": "<tbody>"
+      },
+      {
+        "questionText": "Which tag is used for semantically grouping the footer content of a table?",
+        "options": ["<foot>", "<tfoot>", "<footer>", "<tf>"],
+        "correctAnswer": "<tfoot>"
+      }
+    ]
+  },
+  "HTML_Week3": {
+    "title": "Week 3: Forms and Semantic HTML Quiz",
+    "description": "Test your knowledge on collecting user input with forms, writing meaningful HTML, and embedding multimedia.",
+    "questions": [
+      {
+        "questionText": "Which HTML tag is used to define an HTML form for user input?",
+        "options": ["<input>", "<form>", "<label>", "<fieldset>"],
+        "correctAnswer": "<form>"
+      },
+      {
+        "questionText": "Which attribute of the `<form>` tag specifies where to send the form data when submitted?",
+        "options": ["type", "method", "action", "name"],
+        "correctAnswer": "action"
+      },
+      {
+        "questionText": "What `type` attribute value for an `<input>` tag is used for single-line text input?",
+        "options": ["textarea", "password", "text", "string"],
+        "correctAnswer": "text"
+      },
+      {
+        "questionText": "To allow a user to select only one option from a group, which `type` attribute value should be used for `<input>` tags (assuming they share the same `name` attribute)?",
+        "options": ["checkbox", "radio", "select", "option"],
+        "correctAnswer": "radio"
+      },
+      {
+        "questionText": "Which tag is used to associate a label with an input field, improving accessibility?",
+        "options": ["<text>", "<label>", "<legend>", "<figcaption>"],
+        "correctAnswer": "<label>"
+      },
+      {
+        "questionText": "The `placeholder` attribute in an `<input>` field provides:",
+        "options": ["The initial value of the input", "A hint for the user about expected input", "The name of the input field", "A unique identifier for the input"],
+        "correctAnswer": "A hint for the user about expected input"
+      },
+      {
+        "questionText": "Which HTML tag is used for creating a multi-line text input area?",
+        "options": ["<input type=\"text-area\">", "<textfield>", "<textarea>", "<p>"],
+        "correctAnswer": "<textarea>"
+      },
+      {
+        "questionText": "What HTML tags are typically used together to create a dropdown list?",
+        "options": ["<list> and <item>", "<dropdown> and <option>", "<select> and <option>", "<datalist> and <value>"],
+        "correctAnswer": "<select> and <option>"
+      },
+      {
+        "questionText": "What is the main idea behind 'Semantic HTML'?",
+        "options": [
+          "Using HTML tags that style content precisely.",
+          "Using HTML tags that clearly describe the meaning or purpose of the content they contain.",
+          "Using HTML tags that reduce the file size of the document.",
+          "Using HTML tags that are only understood by specific browsers."
+        ],
+        "correctAnswer": "Using HTML tags that clearly describe the meaning or purpose of the content they contain."
+      },
+      {
+        "questionText": "Which of the following is considered a non-semantic HTML tag?",
+        "options": ["<header>", "<div>", "<article>", "<nav>"],
+        "correctAnswer": "<div>"
+      },
+      {
+        "questionText": "Which semantic HTML5 element is specifically designed to contain navigation links?",
+        "options": ["<menu>", "<links>", "<nav>", "<direction>"],
+        "correctAnswer": "<nav>"
+      },
+      {
+        "questionText": "There should generally be only one instance of this semantic HTML5 element per page, containing the dominant content of the `<body>`.",
+        "options": ["<section>", "<article>", "<main>", "<div>"],
+        "correctAnswer": "<main>"
+      },
+      {
+        "questionText": "Which semantic HTML5 element is best suited for independent, self-contained content like a blog post or a news article?",
+        "options": ["<section>", "<article>", "<aside>", "<div>"],
+        "correctAnswer": "<article>"
+      },
+      {
+        "questionText": "Content that is tangentially related to the main content (like a sidebar or a callout box) should be placed in which semantic HTML5 element?",
+        "options": ["<aside>", "<supplement>", "<info>", "<sidebar>"],
+        "correctAnswer": "<aside>"
+      },
+      {
+        "questionText": "Which semantic HTML5 element is typically used to contain authorship information, copyright data, or contact information?",
+        "options": ["<bottom>", "<credits>", "<summary>", "<footer>"],
+        "correctAnswer": "<footer>"
+      },
+      {
+        "questionText": "Which HTML5 tag is used to embed audio content directly into a web page?",
+        "options": ["<sound>", "<media>", "<audio>", "<mp3>"],
+        "correctAnswer": "<audio>"
+      },
+      {
+        "questionText": "To display the default browser controls (like play/pause, volume) for an `<audio>` or `<video>` element, which attribute must be included?",
+        "options": ["autoplay", "source", "controls", "visible"],
+        "correctAnswer": "controls"
+      },
+      {
+        "questionText": "Which HTML5 tag is used to embed video content directly into a web page?",
+        "options": ["<movie>", "<clip>", "<video>", "<player>"],
+        "correctAnswer": "<video>"
+      },
+      {
+        "questionText": "The `poster` attribute in the `<video>` tag is used for what purpose?",
+        "options": ["To define the video's resolution", "To specify the video's creator", "To display an image before the video loads", "To link to an external video source"],
+        "correctAnswer": "To display an image before the video loads"
+      },
+      {
+        "questionText": "Which HTML tag is commonly used to embed another HTML document within the current document, often seen with YouTube videos or Google Maps?",
+        "options": ["<embed>", "<frame>", "<iframe>", "<object>"],
+        "correctAnswer": "<iframe>"
+      }
+    ]
+  },
+  "HTML_CSS_Week4": {
+    "title": "Week 4: HTML Best Practices & CSS Introduction Quiz",
+    "description": "Test your understanding of HTML validation, comments, file naming, and the basics of CSS styling (inline, internal, external).",
+    "questions": [
+      {
+        "questionText": "Why is it important to validate your HTML code?",
+        "options": [
+          "To make your code shorter.",
+          "To ensure cross-browser compatibility and better rendering.",
+          "To speed up website loading times.",
+          "To automatically add styling to your page."
+        ],
+        "correctAnswer": "To ensure cross-browser compatibility and better rendering."
+      },
+      {
+        "questionText": "Which online tool is recommended for validating HTML code?",
+        "options": [
+          "Google Chrome Developer Tools",
+          "W3C CSS Validator",
+          "W3C HTML Validator",
+          "Mozilla Firefox Inspector"
+        ],
+        "correctAnswer": "W3C HTML Validator"
+      },
+      {
+        "questionText": "What is the correct syntax for an HTML comment?",
+        "options": [
+          "// This is a comment //",
+          "/* This is a comment */",
+          "",
+          "// This is a comment"
+        ],
+        "correctAnswer": ""
+      },
+      {
+        "questionText": "What is NOT a primary purpose of using comments in HTML?",
+        "options": [
+          "To explain complex code sections.",
+          "To temporarily disable code for debugging.",
+          "To add visual styling to elements.",
+          "To organize code."
+        ],
+        "correctAnswer": "To add visual styling to elements."
+      },
+      {
+        "questionText": "Which file naming convention is recommended for HTML files?",
+        "options": [
+          "my new page.html",
+          "My_New_Page.html",
+          "my-new-page.html",
+          "MyNewPage.html"
+        ],
+        "correctAnswer": "my-new-page.html"
+      },
+      {
+        "questionText": "What does CSS stand for?",
+        "options": [
+          "Computer Style Sheets",
+          "Creative Style Solutions",
+          "Cascading Style Sheets",
+          "Colorful Styling Syntax"
+        ],
+        "correctAnswer": "Cascading Style Sheets"
+      },
+      {
+        "questionText": "Why is it considered good practice to separate HTML (structure) from CSS (style)?",
+        "options": [
+          "It makes HTML files smaller.",
+          "It's only for advanced developers.",
+          "It improves maintainability and organization (separation of concerns).",
+          "It allows HTML to function without a browser."
+        ],
+        "correctAnswer": "It improves maintainability and organization (separation of concerns)."
+      },
+      {
+        "questionText": "What is the basic syntax for a CSS rule?",
+        "options": [
+          "property: value; selector;",
+          "{ selector; property: value; }",
+          "selector { property: value; }",
+          "value: property; selector;"
+        ],
+        "correctAnswer": "selector { property: value; }"
+      },
+      {
+        "questionText": "Applying styles directly to an HTML element using the `style` attribute is known as:",
+        "options": [
+          "External CSS",
+          "Internal CSS",
+          "Inline CSS",
+          "Global CSS"
+        ],
+        "correctAnswer": "Inline CSS"
+      },
+      {
+        "questionText": "Which method of applying CSS is generally discouraged for larger projects due to difficulty in management?",
+        "options": [
+          "External CSS",
+          "Internal CSS",
+          "Inline CSS",
+          "Using a CSS framework"
+        ],
+        "correctAnswer": "Inline CSS"
+      },
+      {
+        "questionText": "Where should internal CSS be placed in an HTML document?",
+        "options": [
+          "At the end of the `<body>` section.",
+          "Within a `<style>` tag in the `<head>` section.",
+          "In a separate `.css` file.",
+          "As an attribute on individual HTML elements."
+        ],
+        "correctAnswer": "Within a `<style>` tag in the `<head>` section."
+      },
+      {
+        "questionText": "Which CSS property is used to change the color of text?",
+        "options": [
+          "text-color",
+          "font-color",
+          "color",
+          "text-style"
+        ],
+        "correctAnswer": "color"
+      },
+      {
+        "questionText": "Which CSS property is used to change the background color of an element?",
+        "options": [
+          "bg-color",
+          "background-color",
+          "color-background",
+          "fill-color"
+        ],
+        "correctAnswer": "background-color"
+      },
+      {
+        "questionText": "What is the most recommended and standard way to apply CSS to an HTML document for better maintainability and reusability?",
+        "options": [
+          "Inline CSS",
+          "Internal CSS",
+          "External CSS",
+          "Using JavaScript for styling"
+        ],
+        "correctAnswer": "External CSS"
+      },
+      {
+        "questionText": "Which HTML tag is used to link an external stylesheet to an HTML document?",
+        "options": [
+          "<style>",
+          "<css>",
+          "<link>",
+          "<stylesheet>"
+        ],
+        "correctAnswer": "<link>"
+      },
+      {
+        "questionText": "What does the `rel=\"stylesheet\"` attribute in a `<link>` tag signify?",
+        "options": [
+          "It's a relative path to the stylesheet.",
+          "It defines the relationship of the linked document as a stylesheet.",
+          "It reloads the stylesheet automatically.",
+          "It specifies the stylesheet is responsive."
+        ],
+        "correctAnswer": "It defines the relationship of the linked document as a stylesheet."
+      },
+      {
+        "questionText": "Which attribute of the `<link>` tag specifies the path to the external CSS file?",
+        "options": [
+          "src",
+          "path",
+          "href",
+          "link"
+        ],
+        "correctAnswer": "href"
+      },
+      {
+        "questionText": "Which of these is NOT an area covered by 'What's next?' topics typically following basic HTML and CSS?",
+        "options": [
+          "JavaScript",
+          "Web Hosting",
+          "Advanced Word Processing",
+          "Version Control (Git/GitHub)"
+        ],
+        "correctAnswer": "Advanced Word Processing"
+      },
+      {
+        "questionText": "What is the purpose of consistent indentation in HTML code?",
+        "options": [
+          "It's required for the browser to render the page correctly.",
+          "It reduces the file size of the HTML document.",
+          "It makes the code easier to read and understand.",
+          "It prevents HTML validation errors."
+        ],
+        "correctAnswer": "It makes the code easier to read and understand."
+      },
+      {
+        "questionText": "Which of the following resources is recommended for continued learning in web development?",
+        "options": [
+          "Wikipedia",
+          "W3Schools",
+          "Microsoft Word Help",
+          "Social Media Feeds"
+        ],
+        "correctAnswer": "W3Schools"
+      }
+    ]
   }
+
+
+
 
 
 };
