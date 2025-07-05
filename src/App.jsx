@@ -88,8 +88,8 @@ function App() {
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />
         <Route path="/courses/Week2HTMLMedia" element={<Week2HTMLMedia />} />
-        <Route path="//courses/Week3HTMLFormsSemantic" element={<Week3FormsSemantic />} />
-        {/* <Route path="/" element={<Week4BestPracticesCSS />} /> */}
+        <Route path="/courses/Week3HTMLFormsSemantic" element={<Week3FormsSemantic />} />
+        <Route path="/courses/Week4IntroductiontoCSS" element={<Week4BestPracticesCSS />} />
 
 
 

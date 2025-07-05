@@ -68,13 +68,13 @@ const Footer = () => {
               <li className="flex items-center justify-center md:justify-start text-sm">
                 <Phone size={18} className="mr-3 text-gray-400" />
                 <a href="tel:+23277123456" className="hover:text-blue-400 transition-colors duration-300">
-                  +232 77 123 456
+                  +232 78 355 416
                 </a> {/* Sierra Leone format */}
               </li>
               <li className="flex items-start justify-center md:justify-start text-sm">
                 <MapPin size={18} className="mr-3 text-gray-400 mt-1" />
                 <span>
-                  123 Academy Road,<br/>
+                  Zadet School Shell New Road,<br/>
                   Freetown, Sierra Leone
                 </span>
               </li>

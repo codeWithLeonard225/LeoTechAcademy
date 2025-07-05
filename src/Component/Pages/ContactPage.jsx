@@ -105,14 +105,14 @@ const Contact = () => { // Renamed from 'Contact' to 'ContactPage'
               <div className="space-y-4 mb-6">
                 <p className="flex flex-col sm:flex-row items-center justify-center lg:justify-start text-base sm:text-lg font-semibold text-gray-700">
                   <span className="text-2xl sm:text-3xl mr-0 sm:mr-3 mb-1 sm:mb-0">📞</span>
-                  WhatsApp: <a href="https://wa.me/23277123456" target="_blank" rel="noopener noreferrer" className="ml-0 sm:ml-2 text-blue-600 hover:underline">
-                    +232 77 123 456
+                  WhatsApp: <a href="https://wa.me/23278355416" target="_blank" rel="noopener noreferrer" className="ml-0 sm:ml-2 text-blue-600 hover:underline">
+                    +232 78 355 416
                   </a> {/* Updated with a real Sierra Leone number placeholder */}
                 </p>
                 <p className="flex flex-col sm:flex-row items-center justify-center lg:justify-start text-base sm:text-lg font-semibold text-gray-700">
                   <span className="text-2xl sm:text-3xl mr-0 sm:mr-3 mb-1 sm:mb-0">✉️</span>
                   Email: <a href="mailto:info@yourplatform.com" className="ml-0 sm:ml-2 text-blue-600 hover:underline">
-                    info@yourplatform.com
+                    leotechacademy@gmail.com
                   </a> {/* Replace with your actual email */}
                 </p>
               </div>
