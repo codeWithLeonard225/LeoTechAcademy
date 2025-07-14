@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore'; // Import collection, query, where, getDocs
 import { db } from "../../../../firebase"; // Adjust path if needed
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -42,6 +42,9 @@ const InPersonCoursePage = () => {
     const [expandedWeek, setExpandedWeek] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    // New state for payment details
+    const [totalPaidForCourse, setTotalPaidForCourse] = useState(0);
+    const [balanceDueForCourse, setBalanceDueForCourse] = useState(0);
 
     /**
      * Calculates the completion percentage of lessons for a given week.
@@ -120,6 +123,27 @@ const InPersonCoursePage = () => {
 
                     if (foundCourse) {
                         setCourse(foundCourse);
+
+                        // --- Fetch Payment Details for the Course ---
+                        if (!foundCourse.isFree && foundCourse.price) {
+                            const paymentsQuery = query(
+                                collection(db, 'Payments'),
+                                where('studentId', '==', userId),
+                                where('courseId', '==', courseId)
+                            );
+                            const paymentsSnapshot = await getDocs(paymentsQuery);
+                            let totalPaid = 0;
+                            paymentsSnapshot.forEach(doc => {
+                                totalPaid += Number(doc.data().amountPaid || 0);
+                            });
+                            setTotalPaidForCourse(totalPaid);
+                            setBalanceDueForCourse(Number(foundCourse.price) - totalPaid);
+                        } else {
+                            // For free courses or courses without a price, set paid/balance to 0
+                            setTotalPaidForCourse(0);
+                            setBalanceDueForCourse(0);
+                        }
+                        // --- End Fetch Payment Details ---
 
                         const userProgressForCourse = userData.userProgress?.[courseId] || { completedItems: {} };
                         let highestAccessibleWeek = 1;
@@ -311,7 +335,6 @@ const InPersonCoursePage = () => {
         }
     }
 
-
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
             <ToastContainer position="bottom-right" autoClose={5000} />
@@ -330,6 +353,20 @@ const InPersonCoursePage = () => {
                         </span>
                     )}
                 </div>
+                {/* Payment Info in Header */}
+                {!course.isFree && course.price && (
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+                        <p className="text-sm sm:text-base text-blue-800">
+                            <span className="font-semibold">Course Price:</span> SLE {Number(course.price).toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-green-700">
+                            <span className="font-semibold">Total Paid:</span> SLE {totalPaidForCourse.toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-red-700">
+                            <span className="font-semibold">Balance Due:</span> SLE {balanceDueForCourse.toFixed(2)}
+                        </p>
+                    </div>
+                )}
                 <button
                     onClick={handleLogout}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base transition duration-200"
@@ -501,7 +538,7 @@ const InPersonCoursePage = () => {
                                                     </div>
                                                 ) : null}
 
-                                                  {/* Assignments */}
+                                                {/* Assignments */}
                                                 {weekData.assignments && weekData.assignments.length > 0 && (
                                                     <div>
                                                         <h4 className="text-md sm:text-lg font-bold text-gray-700 mb-2 flex items-center">

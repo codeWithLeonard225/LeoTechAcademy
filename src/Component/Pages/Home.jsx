@@ -235,7 +235,7 @@ const CTA = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-leo-blue mb-6">Ready to Transform Your Future?</h2>
         <p className="text-lg md:text-xl text-gray-700 mb-8">Join thousands of Sierra Leoneans building valuable skills for today's economy.</p>
         <Link to="/contact" className="px-10 py-5 bg-leo-green text-white text-xl font-semibold rounded-lg shadow-xl hover:bg-green-700 transform hover:scale-105 transition duration-300">
-          Enroll Now & Start Learning!
+          Start Learning!
         </Link>
       </div>
     </section>

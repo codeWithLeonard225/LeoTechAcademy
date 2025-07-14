@@ -98,7 +98,7 @@ const allQuizzes = {
       }
     ]
   },
-    "MSweek_1": {
+  "MSweek_1": {
     "title": "Week 1: MS Word Basics Quiz",
     "description": "Test your knowledge on the fundamental concepts of MS Word, basic typing, lists, editing, and saving documents.",
     "questions": [
@@ -310,7 +310,7 @@ const allQuizzes = {
       }
     ]
   },
-    "MSweek_3": {
+  "MSweek_3": {
     "title": "Week 3: Tables, Images & Drawing Tools Quiz",
     "description": "Test your knowledge on working with tables, inserting images, using shapes, and text boxes in MS Word.",
     "questions": [
@@ -416,7 +416,7 @@ const allQuizzes = {
       }
     ]
   },
-    "MSweek_4": {
+  "MSweek_4": {
     "title": "Week 4: Review, Proofreading, Accessibility & Printing",
     "description": "Review all concepts from previous weeks and test your knowledge of proofreading, accessibility, and printing options in MS Word.",
     "questions": [
@@ -522,7 +522,7 @@ const allQuizzes = {
       }
     ]
   },
-  
+
   "HTML_Week1": {
     "title": "Week 1: HTML Basics Quiz",
     "description": "Test your understanding of fundamental HTML concepts, document structure, headings, paragraphs, and basic text formatting and lists.",
@@ -1056,7 +1056,784 @@ const allQuizzes = {
         "correctAnswer": "W3Schools"
       }
     ]
+  },
+
+  "Python_Week1": {
+    "title": "Week 1: Introduction to Python Quiz",
+    "description": "Test your understanding of Python basics, including 'Hello World!', variables, data types, and user input.",
+    "questions": [
+      {
+        "questionText": "What is programming?",
+        "options": [
+          "Writing documents in a word processor",
+          "Giving instructions to a computer",
+          "Designing graphics for websites",
+          "Browse the internet"
+        ],
+        "correctAnswer": "Giving instructions to a computer"
+      },
+      {
+        "questionText": "Which of the following best describes Python?",
+        "options": [
+          "A low-level, compiled programming language",
+          "A high-level, interpreted, general-purpose programming language",
+          "A markup language for web pages",
+          "A database management system"
+        ],
+        "correctAnswer": "A high-level, interpreted, general-purpose programming language"
+      },
+      {
+        "questionText": "What function is used to print output to the console in Python?",
+        "options": ["display()", "write()", "output()", "print()"],
+        "correctAnswer": "print()"
+      },
+      {
+        "questionText": "How do you run a Python script named `hello.py` from the terminal?",
+        "options": [
+          "execute hello.py",
+          "run hello.py",
+          "python hello.py",
+          "open hello.py"
+        ],
+        "correctAnswer": "python hello.py"
+      },
+      {
+        "questionText": "Which symbol is used for single-line comments in Python?",
+        "options": ["//", "/* */", "#", "--"],
+        "correctAnswer": "#"
+      },
+      {
+        "questionText": "What are multi-line comments in Python often called, especially when used at the beginning of a function or module?",
+        "options": ["Block comments", "Inline comments", "Docstrings", "Multi-comments"],
+        "correctAnswer": "Docstrings"
+      },
+      {
+        "questionText": "What is a variable in programming?",
+        "options": [
+          "A fixed value that cannot be changed",
+          "A type of computer hardware",
+          "A named container for storing data",
+          "A mathematical operation"
+        ],
+        "correctAnswer": "A named container for storing data"
+      },
+      {
+        "questionText": "Which of the following is a valid Python variable name?",
+        "options": ["2my_variable", "my-variable", "my_variable", "my variable"],
+        "correctAnswer": "my_variable"
+      },
+      {
+        "questionText": "What is the assignment operator in Python?",
+        "options": ["==", ":", "=", "->"],
+        "correctAnswer": "="
+      },
+      {
+        "questionText": "Which data type represents whole numbers in Python?",
+        "options": ["float", "string", "boolean", "int"],
+        "correctAnswer": "int"
+      },
+      {
+        "questionText": "What is the data type of the value `3.14` in Python?",
+        "options": ["int", "string", "float", "boolean"],
+        "correctAnswer": "float"
+      },
+      {
+        "questionText": "How do you define a string in Python?",
+        "options": [
+          "Using parentheses: (Hello)",
+          "Using angle brackets: <Hello>",
+          "Using single or double quotes: 'Hello' or \"Hello\"",
+          "Using square brackets: [Hello]"
+        ],
+        "correctAnswer": "Using single or double quotes: 'Hello' or \"Hello\""
+      },
+      {
+        "questionText": "Which built-in function is used to check the data type of a variable in Python?",
+        "options": ["info()", "typeof()", "datatype()", "type()"],
+        "correctAnswer": "type()"
+      },
+      {
+        "questionText": "What is the result of `10 // 3` in Python?",
+        "options": ["3.333...", "3", "1", "0"],
+        "correctAnswer": "3"
+      },
+      {
+        "questionText": "What does the modulo operator (`%`) return?",
+        "options": [
+          "The quotient of a division",
+          "The remainder of a division",
+          "The sum of two numbers",
+          "The product of two numbers"
+        ],
+        "correctAnswer": "The remainder of a division"
+      },
+      {
+        "questionText": "How do you concatenate (join) two strings in Python?",
+        "options": [
+          "Using the & operator",
+          "Using the + operator",
+          "Using the .join() method (only for lists of strings)",
+          "Using the concat() function"
+        ],
+        "correctAnswer": "Using the + operator"
+      },
+      {
+        "questionText": "What is the primary purpose of the `input()` function in Python?",
+        "options": [
+          "To display text on the screen",
+          "To read data from a file",
+          "To get user input from the console",
+          "To perform mathematical calculations"
+        ],
+        "correctAnswer": "To get user input from the console"
+      },
+      {
+        "questionText": "What data type does the `input()` function always return?",
+        "options": ["int", "float", "boolean", "string"],
+        "correctAnswer": "string"
+      },
+      {
+        "questionText": "You get a string '25' from user input. How would you convert it to an integer in Python?",
+        "options": ["to_int('25')", "integer('25')", "int('25')", "convert_int('25')"],
+        "correctAnswer": "int('25')"
+      },
+      {
+        "questionText": "Which of the following is the correct syntax for an f-string (formatted string literal) in Python?",
+        "options": [
+          "\"Hello, {name}!\"",
+          "'Hello, [name]!'",
+          "f'Hello, {name}!'",
+          "format('Hello, {}!', name)"
+        ],
+        "correctAnswer": "f'Hello, {name}!'"
+      }
+    ]
+  },
+
+  "Python_Week2": {
+    "title": "Week 2: Control Flow & Collections Quiz",
+    "description": "Test your knowledge on conditional statements (if, elif, else), loops (for, while), and Python lists.",
+    "questions": [
+      {
+        "questionText": "Which of the following is the correct comparison operator for \"equal to\" in Python?",
+        "options": [
+          "=",
+          "==",
+          "!=",
+          "is"
+        ],
+        "correctAnswer": "=="
+      },
+      {
+        "questionText": "What is the data type that can only hold `True` or `False` values?",
+        "options": [
+          "Integer",
+          "String",
+          "Boolean",
+          "Float"
+        ],
+        "correctAnswer": "Boolean"
+      },
+      {
+        "questionText": "Which logical operator requires *both* conditions to be `True` for the overall condition to be `True`?",
+        "options": [
+          "or",
+          "not",
+          "and",
+          "either"
+        ],
+        "correctAnswer": "and"
+      },
+      {
+        "questionText": "In Python, what is the significance of indentation in `if`, `elif`, and `else` statements?",
+        "options": [
+          "It makes the code look neater.",
+          "It defines which lines of code belong to each block.",
+          "It is optional and has no functional impact.",
+          "It speeds up code execution."
+        ],
+        "correctAnswer": "It defines which lines of code belong to each block."
+      },
+      {
+        "questionText": "What will be the output of the following code?\n```python\nx = 10\nif x > 15:\n    print(\"A\")\nelif x >= 10:\n    print(\"B\")\nelse:\n    print(\"C\")\n```",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "Error"
+        ],
+        "correctAnswer": "B"
+      },
+      {
+        "questionText": "Which type of loop is best suited for iterating over a sequence (like a string or a list) or a fixed number of times using `range()`?",
+        "options": [
+          "`while` loop",
+          "`do-while` loop",
+          "`for` loop",
+          "`until` loop"
+        ],
+        "correctAnswer": "`for` loop"
+      },
+      {
+        "questionText": "What does `range(3)` generate in a `for` loop?",
+        "options": [
+          "1, 2, 3",
+          "0, 1, 2",
+          "0, 1, 2, 3",
+          "1, 2"
+        ],
+        "correctAnswer": "0, 1, 2"
+      },
+      {
+        "questionText": "What is the primary risk of not having a condition that eventually becomes `False` in a `while` loop?",
+        "options": [
+          "The loop will run slower.",
+          "The loop will only run once.",
+          "It will cause a syntax error.",
+          "It will create an infinite loop."
+        ],
+        "correctAnswer": "It will create an infinite loop."
+      },
+      {
+        "questionText": "Which statement immediately terminates the entire loop and moves execution to the code following the loop?",
+        "options": [
+          "`continue`",
+          "`pass`",
+          "`break`",
+          "`exit`"
+        ],
+        "correctAnswer": "`break`"
+      },
+      {
+        "questionText": "What will be printed by the following code?\n```python\nfor i in range(3):\n    if i == 1:\n        continue\n    print(i)\n```",
+        "options": [
+          "0, 1, 2",
+          "0, 2",
+          "1, 2",
+          "0, 1"
+        ],
+        "correctAnswer": "0, 2"
+      },
+      {
+        "questionText": "Which of the following is the correct way to define a Python list?",
+        "options": [
+          "`my_list = {1, 2, 3}`",
+          "`my_list = (1, 2, 3)`",
+          "`my_list = [1, 2, 3]`",
+          "`my_list = \"1, 2, 3\"`"
+        ],
+        "correctAnswer": "`my_list = [1, 2, 3]`"
+      },
+      {
+        "questionText": "What characteristic describes Python lists, allowing their elements to be changed after creation?",
+        "options": [
+          "Immutable",
+          "Static",
+          "Ordered",
+          "Mutable"
+        ],
+        "correctAnswer": "Mutable"
+      },
+      {
+        "questionText": "Given `my_list = [\"apple\", \"banana\", \"cherry\"]`, how do you access the element \"banana\"?",
+        "options": [
+          "`my_list[2]`",
+          "`my_list[1]`",
+          "`my_list[0]`",
+          "`my_list[\"banana\"]`"
+        ],
+        "correctAnswer": "`my_list[1]`"
+      },
+      {
+        "questionText": "What will `fruits[-1]` return from `fruits = [\"grape\", \"kiwi\", \"melon\"]`?",
+        "options": [
+          "\"grape\"",
+          "\"kiwi\"",
+          "\"melon\"",
+          "Error"
+        ],
+        "correctAnswer": "\"melon\""
+      },
+      {
+        "questionText": "Which method is used to add an item to the end of a list?",
+        "options": [
+          "`add()`",
+          "`insert()`",
+          "`extend()`",
+          "`append()`"
+        ],
+        "correctAnswer": "`append()`"
+      },
+      {
+        "questionText": "What is the output of `len(my_list)` if `my_list = [10, 20, 30, 40]`?",
+        "options": [
+          "3",
+          "4",
+          "5",
+          "Error"
+        ],
+        "correctAnswer": "4"
+      },
+      {
+        "questionText": "After executing `numbers = [1, 2, 3]; numbers.remove(2)`, what will `numbers` contain?",
+        "options": [
+          "`[1, 3]`",
+          "`[1, 2]`",
+          "`[3]`",
+          "`[1, 2, 3]` (no change)"
+        ],
+        "correctAnswer": "`[1, 3]`"
+      },
+      {
+        "questionText": "Given `data = [\"A\", \"B\", \"C\", \"D\", \"E\"]`, what does `data[1:4]` return?",
+        "options": [
+          "`[\"A\", \"B\", \"C\"]`",
+          "`[\"B\", \"C\", \"D\"]`",
+          "`[\"B\", \"C\", \"D\", \"E\"]`",
+          "`[\"C\", \"D\", \"E\"]`"
+        ],
+        "correctAnswer": "`[\"B\", \"C\", \"D\"]`"
+      },
+      {
+        "questionText": "Which of the following correctly changes the second element of `colors = [\"red\", \"green\", \"blue\"]` to \"yellow\"?",
+        "options": [
+          "`colors[1] = \"yellow\"`",
+          "`colors.set(1, \"yellow\")`",
+          "`colors.change(1, \"yellow\")`",
+          "`colors[2] = \"yellow\"`"
+        ],
+        "correctAnswer": "`colors[1] = \"yellow\"`"
+      },
+      {
+        "questionText": "When iterating through a list using a `for` loop, what does the loop variable represent in each iteration?\n```python\nmy_list = [10, 20, 30]\nfor item in my_list:\n    # What is 'item' here?\n    pass\n```",
+        "options": [
+          "The index of the current element.",
+          "A copy of the entire list.",
+          "The value of the current element.",
+          "The length of the list."
+        ],
+        "correctAnswer": "The value of the current element."
+      }
+    ]
+  },
+
+  "Python_Week3": {
+    "title": "Week 3: More Collections & Functions Quiz",
+    "description": "Test your understanding of Tuples, Sets, Dictionaries, and Functions in Python.",
+    "questions": [
+      {
+        "questionText": "Which of the following data structures is ordered and immutable?",
+        "options": [
+          "List",
+          "Tuple",
+          "Set",
+          "Dictionary"
+        ],
+        "correctAnswer": "Tuple"
+      },
+      {
+        "questionText": "Given `my_tuple = (10, 20, 30)`, which operation will cause an error?",
+        "options": [
+          "`print(my_tuple[1])`",
+          "`for x in my_tuple: print(x)`",
+          "`my_tuple[0] = 5`",
+          "`len(my_tuple)`"
+        ],
+        "correctAnswer": "`my_tuple[0] = 5`"
+      },
+      {
+        "questionText": "What is a common use case for tuples in Python?",
+        "options": [
+          "Storing a collection of items that will frequently change size",
+          "Efficiently removing duplicate items from a collection",
+          "Representing fixed coordinates like (x, y)",
+          "Mapping unique keys to values"
+        ],
+        "correctAnswer": "Representing fixed coordinates like (x, y)"
+      },
+      {
+        "questionText": "Which of the following best describes a Python Set?",
+        "options": [
+          "An ordered collection of unique items.",
+          "An unordered collection of mutable items.",
+          "An unordered collection of unique items.",
+          "A collection of key-value pairs."
+        ],
+        "correctAnswer": "An unordered collection of unique items."
+      },
+      {
+        "questionText": "What will be the content of `my_set` after this code: `my_set = {1, 2, 3, 2, 4}`?",
+        "options": [
+          "`{1, 2, 3, 2, 4}`",
+          "`{1, 2, 3, 4}`",
+          "`[1, 2, 3, 4]`",
+          "Error, duplicates are not allowed during creation."
+        ],
+        "correctAnswer": "`{1, 2, 3, 4}`"
+      },
+      {
+        "questionText": "How do you create an empty set in Python?",
+        "options": [
+          "`my_set = {}`",
+          "`my_set = []`",
+          "`my_set = set()`",
+          "`my_set = new Set()`"
+        ],
+        "correctAnswer": "`my_set = set()`"
+      },
+      {
+        "questionText": "Which set operation returns all unique items that are present in at least one of two sets?",
+        "options": [
+          "Intersection",
+          "Difference",
+          "Symmetric Difference",
+          "Union"
+        ],
+        "correctAnswer": "Union"
+      },
+      {
+        "questionText": "What distinguishes a Dictionary from a List or a Set in Python?",
+        "options": [
+          "Dictionaries are ordered.",
+          "Dictionaries store items as key-value pairs.",
+          "Dictionaries only store numbers.",
+          "Dictionaries cannot be modified after creation."
+        ],
+        "correctAnswer": "Dictionaries store items as key-value pairs."
+      },
+      {
+        "questionText": "Which of these is generally suitable to be a key in a Python dictionary?",
+        "options": [
+          "List",
+          "Set",
+          "Dictionary",
+          "String"
+        ],
+        "correctAnswer": "String"
+      },
+      {
+        "questionText": "Given `student = {'name': 'John', 'age': 20}`, how do you access John's age?",
+        "options": [
+          "`student.age`",
+          "`student[1]`",
+          "`student['age']`",
+          "`student.get(20)`"
+        ],
+        "correctAnswer": "`student['age']`"
+      },
+      {
+        "questionText": "How do you add a new key-value pair `('city': 'London')` to an existing dictionary `my_dict`?",
+        "options": [
+          "`my_dict.add('city', 'London')`",
+          "`my_dict['city'] = 'London'`",
+          "`my_dict.insert('city', 'London')`",
+          "`my_dict.update('city': 'London')`"
+        ],
+        "correctAnswer": "`my_dict['city'] = 'London'`"
+      },
+      {
+        "questionText": "Which method would you use to iterate over both the keys and values of a dictionary simultaneously?",
+        "options": [
+          "`.keys()`",
+          "`.values()`",
+          "`.items()`",
+          "`.get()`"
+        ],
+        "correctAnswer": "`.items()`"
+      },
+      {
+        "questionText": "What is the main purpose of defining a function in Python?",
+        "options": [
+          "To make the code run faster.",
+          "To avoid repeating blocks of code and improve organization.",
+          "To create a new data type.",
+          "To hide code from other programmers."
+        ],
+        "correctAnswer": "To avoid repeating blocks of code and improve organization."
+      },
+      {
+        "questionText": "Which keyword is used to define a function in Python?",
+        "options": [
+          "`func`",
+          "`define`",
+          "`function`",
+          "`def`"
+        ],
+        "correctAnswer": "`def`"
+      },
+      {
+        "questionText": "In the function definition `def calculate_sum(a, b):`, what are `a` and `b` called?",
+        "options": [
+          "Arguments",
+          "Return values",
+          "Parameters",
+          "Variables"
+        ],
+        "correctAnswer": "Parameters"
+      },
+      {
+        "questionText": "What does a function implicitly return if it does not have an explicit `return` statement?",
+        "options": [
+          "0",
+          "An empty string",
+          "None",
+          "True"
+        ],
+        "correctAnswer": "None"
+      },
+      {
+        "questionText": "What is a 'docstring' in a Python function?",
+        "options": [
+          "A type of error message.",
+          "A comment used to disable parts of the function.",
+          "A triple-quoted string explaining what the function does.",
+          "The name of the function."
+        ],
+        "correctAnswer": "A triple-quoted string explaining what the function does."
+      },
+      {
+        "questionText": "Variables defined inside a function are said to have what kind of scope?",
+        "options": [
+          "Global scope",
+          "Local scope",
+          "Module scope",
+          "Block scope"
+        ],
+        "correctAnswer": "Local scope"
+      },
+      {
+        "questionText": "If a function `greet(name)` is defined, which of the following is a correct way to call it?",
+        "options": [
+          "`greet name`",
+          "`call greet('Alice')`",
+          "`greet('Alice')`",
+          "`function greet('Alice')`"
+        ],
+        "correctAnswer": "`greet('Alice')`"
+      },
+      {
+        "questionText": "What is the output of the following code?\n```python\ndef multiply(x, y):\n    return x * y\n\nresult = multiply(4, 5)\nprint(result)\n```",
+        "options": [
+          "4",
+          "5",
+          "20",
+          "Error"
+        ],
+        "correctAnswer": "20"
+      }
+    ]
+  },
+  
+  "Python_Week4": {
+    "title": "Week 4: Error Handling, File I/O & Modules Quiz",
+    "description": "Test your understanding of error handling (`try-except`), file input/output, and Python modules.",
+    "questions": [
+      {
+        "questionText": "Which block is used to enclose code that might potentially cause an error in Python?",
+        "options": [
+          "`except`",
+          "`finally`",
+          "`try`",
+          "`else`"
+        ],
+        "correctAnswer": "`try`"
+      },
+      {
+        "questionText": "If you perform an operation on an inappropriate data type (e.g., adding a number to a string), what type of error will most likely occur?",
+        "options": [
+          "`SyntaxError`",
+          "`NameError`",
+          "`TypeError`",
+          "`ValueError`"
+        ],
+        "correctAnswer": "`TypeError`"
+      },
+      {
+        "questionText": "Which `except` block would catch an error specifically caused by attempting to divide by zero?",
+        "options": [
+          "`except ValueError:`",
+          "`except ZeroDivisionError:`",
+          "`except Exception:`",
+          "`except TypeError:`"
+        ],
+        "correctAnswer": "`except ZeroDivisionError:`"
+      },
+      {
+        "questionText": "What is the purpose of the `finally` block in a `try...except...finally` structure?",
+        "options": [
+          "It executes only if an error occurs.",
+          "It executes only if no error occurs.",
+          "It always executes, regardless of whether an exception occurred or was handled.",
+          "It defines a new function."
+        ],
+        "correctAnswer": "It always executes, regardless of whether an exception occurred or was handled."
+      },
+      {
+        "questionText": "Which file mode will create a new file if it doesn't exist, or overwrite (truncate) an existing file?",
+        "options": [
+          "`\"r\"` (read)",
+          "`\"a\"` (append)",
+          "`\"w\"` (write)",
+          "`\"x\"` (exclusive creation)"
+        ],
+        "correctAnswer": "`\"w\"` (write)"
+      },
+      {
+        "questionText": "What is the recommended and safest way to open and automatically close a file in Python?",
+        "options": [
+          "Using `file = open(...)` and always remembering `file.close()`",
+          "Using the `with` statement (`with open(...) as file:`)",
+          "By passing the file object to a garbage collector function",
+          "Files are closed automatically by Python; no special handling is needed."
+        ],
+        "correctAnswer": "Using the `with` statement (`with open(...) as file:`)"
+      },
+      {
+        "questionText": "Which method is used to read the entire content of a file as a single string?",
+        "options": [
+          "`file.readline()`",
+          "`file.readlines()`",
+          "`file.read()`",
+          "`file.get_content()`"
+        ],
+        "correctAnswer": "`file.read()`"
+      },
+      {
+        "questionText": "What does iterating directly over a file object (e.g., `for line in file:`) do?",
+        "options": [
+          "Reads the entire file into memory at once.",
+          "Reads only the first line of the file.",
+          "Reads the file line by line, which is efficient for large files.",
+          "Raises a `TypeError`."
+        ],
+        "correctAnswer": "Reads the file line by line, which is efficient for large files."
+      },
+      {
+        "questionText": "What are Python modules primarily used for?",
+        "options": [
+          "To speed up program execution.",
+          "To define new programming languages.",
+          "To organize code into reusable, logical units.",
+          "To encrypt data within a program."
+        ],
+        "correctAnswer": "To organize code into reusable, logical units."
+      },
+      {
+        "questionText": "Given a module named `my_module.py` containing a function `greet()`, how would you import and call `greet()`?",
+        "options": [
+          "`import my_module; my_module.greet()`",
+          "`call my_module.greet()`",
+          "`include my_module.greet()`",
+          "`from my_module import *; greet()`"
+        ],
+        "correctAnswer": "`import my_module; my_module.greet()`"
+      },
+      {
+        "questionText": "Which statement would you use to import only the `randint` function from the `random` module?",
+        "options": [
+          "`import random.randint`",
+          "`from random import randint`",
+          "`include random.randint`",
+          "`use random randint`"
+        ],
+        "correctAnswer": "`from random import randint`"
+      },
+      {
+        "questionText": "What is the expected output of this code if the user inputs 'abc' for the first number?\n```python\ntry:\n    num = int(input('Enter a number: '))\n    print(f'You entered: {num}')\nexcept ValueError:\n    print('That was not a valid number!')\n```",
+        "options": [
+          "You entered: abc",
+          "That was not a valid number!",
+          "An unexpected error occurred: invalid literal for int()",
+          "The program will crash."
+        ],
+        "correctAnswer": "That was not a valid number!"
+      },
+      {
+        "questionText": "You are writing to a file in 'w' mode. If the file already contains data, what happens to that data when you open it with 'w' mode?",
+        "options": [
+          "New data is appended to the end.",
+          "The old data is read first, then new data is added.",
+          "The file's existing content is erased (truncated).",
+          "An error (`FileExistsError`) is raised."
+        ],
+        "correctAnswer": "The file's existing content is erased (truncated)."
+      },
+      {
+        "questionText": "Which module would you typically use for mathematical operations like calculating square roots or using PI?",
+        "options": [
+          "`sys`",
+          "`os`",
+          "`math`",
+          "`random`"
+        ],
+        "correctAnswer": "`math`"
+      },
+      {
+        "questionText": "What is the primary benefit of using `try-except` blocks?",
+        "options": [
+          "To make the code run faster.",
+          "To store data permanently.",
+          "To prevent program crashes due to unexpected errors.",
+          "To create reusable functions."
+        ],
+        "correctAnswer": "To prevent program crashes due to unexpected errors."
+      },
+      {
+        "questionText": "When reading a file, why might you use `.strip()` on each line?",
+        "options": [
+          "To convert the line to an integer.",
+          "To add extra spaces to the line.",
+          "To remove leading/trailing whitespace, including newline characters (`\\n`).",
+          "To make the line uppercase."
+        ],
+        "correctAnswer": "To remove leading/trailing whitespace, including newline characters (`\\n`)."
+      },
+      {
+        "questionText": "What is the main difference between `'w'` and `'a'` file modes?",
+        "options": [
+          "`\"w\"` is for reading, `\"a\"` is for writing.",
+          "`\"w\"` creates/overwrites, `\"a\"` creates/appends.",
+          "`\"w\"` is for binary files, `\"a\"` is for text files.",
+          "There is no difference; they are interchangeable."
+        ],
+        "correctAnswer": "`\"w\"` creates/overwrites, `\"a\"` creates/appends."
+      },
+      {
+        "questionText": "If you open a file with `open(\"data.txt\", \"r\")` and `data.txt` does not exist, what will happen?",
+        "options": [
+          "The file will be created.",
+          "An empty string will be returned.",
+          "A `FileNotFoundError` will be raised.",
+          "The program will continue without issues."
+        ],
+        "correctAnswer": "A `FileNotFoundError` will be raised."
+      },
+      {
+        "questionText": "Which of these is NOT a common area for Python specialization mentioned in the 'Next Steps' section?",
+        "options": [
+          "Web Development",
+          "Data Science & Machine Learning",
+          "Quantum Physics Simulation (without specific Python libraries mentioned)",
+          "Automation & Scripting"
+        ],
+        "correctAnswer": "Quantum Physics Simulation (without specific Python libraries mentioned)"
+      },
+      {
+        "questionText": "What is the primary benefit of Python's 'standard library'?",
+        "options": [
+          "It makes your code run faster.",
+          "It allows Python to run on any operating system.",
+          "It provides a vast collection of pre-built modules for common tasks, saving development time.",
+          "It's a collection of external, third-party libraries."
+        ],
+        "correctAnswer": "It provides a vast collection of pre-built modules for common tasks, saving development time."
+      }
+    ]
   }
+
+
+
+
 
 
 

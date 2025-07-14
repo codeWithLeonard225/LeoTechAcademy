@@ -37,6 +37,15 @@ import Week1HTMLIntro from './Component/Reading/HTML/Week1HTMLIntro';
 import Week2HTMLMedia from './Component/Reading/HTML/Week2HTMLMedia';
 import Week3FormsSemantic from './Component/Reading/HTML/Week3HTMLFormsSemantic';
 import Week4BestPracticesCSS from './Component/Reading/HTML/Week4HTLBestPracticesCSS';
+import Week1PythonIntro from './Component/Reading/Python/Week1PythonIntro';
+import Week2ControlFlow from './Component/Reading/Python/Week2ControlFlow';
+import Week3MoreCollectionsFunctions from './Component/Reading/Python/Week3MoreCollectionsFunctions';
+import Week4ErrorHandlingFileIO from './Component/Reading/Python/Week4ErrorHandlingFileIO';
+import EnrollmentForm from './Component/Admin/EnrollmentForm';
+import FeesForm from './Component/Admin/FeesForm';
+import PrintEnrollmentDetails from './Component/Admin/PrintEnrollmentDetails';
+
+
 
 
 function App() {
@@ -46,6 +55,7 @@ function App() {
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
         <Route path="/" element={<Home />} />
+        
 
 
 
@@ -72,11 +82,13 @@ function App() {
         <Route path="/distanceDashboard" element={<DistanceDashboard />} />
         <Route path="/my-courses/:courseId" element={<CoursePage />} />
        
-
+           {/* Admin */}
         <Route path="/admin-panel" element={<AdminPanel />} />
-        {/* <Route path="/" element={<AdminPanel />} /> */}
         <Route path="/students" element={<StudentDashboard />} />
         <Route path="/students/:id" element={<StudentCardPage />} />
+        <Route path="/enrollment-form" element={<EnrollmentForm />} />
+        <Route path="/fees-form" element={<FeesForm />} />
+        <Route path="/print-enrollment" element={<PrintEnrollmentDetails />} />
 
         {/* Notes */}
         <Route path="/courses/week_1" element={<Week1Page />} />
@@ -90,6 +102,13 @@ function App() {
         <Route path="/courses/Week2HTMLMedia" element={<Week2HTMLMedia />} />
         <Route path="/courses/Week3HTMLFormsSemantic" element={<Week3FormsSemantic />} />
         <Route path="/courses/Week4IntroductiontoCSS" element={<Week4BestPracticesCSS />} />
+
+        {/* Python */}
+        <Route path="/courses/Week1PythonIntro" element={<Week1PythonIntro />} />
+        <Route path="/courses/Week2ControlFlow" element={<Week2ControlFlow />} />
+        <Route path="/courses/Week3MoreCollectionsFunctions" element={<Week3MoreCollectionsFunctions />} />
+        <Route path="/courses/Week4ErrorHandlingFileIO" element={<Week4ErrorHandlingFileIO />} />
+
 
 
 

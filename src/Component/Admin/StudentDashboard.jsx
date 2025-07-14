@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase"; // Ensure this path is correct for your setup
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function StudentDashboard() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // Added error state
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     async function fetchStudents() {
@@ -48,9 +49,16 @@ export default function StudentDashboard() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 min-h-screen bg-gray-100">
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-8 text-center">
-        Student Performance Dashboard
-      </h1>
+      <div className='flex items-center justify-between mb-4'>
+        <h2 className="text-2xl font-semibold text-gray-800">Student Performance Dashboard</h2>
+        <Link
+          to="/"
+           className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition duration-150 ease-in-out text-sm font-medium"
+        >
+          ← Back to Home
+        </Link>
+      </div>
+
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {students.length > 0 ? (
           students.map(student => (

@@ -293,11 +293,15 @@ export const coursesData = [
     category: 'Programming',
     image: '/images/Python.png',
     whatYouWillLearn: [
-      'Understand Python syntax and data types',
-      'Use conditionals and loops for control flow',
-      'Define and call functions',
-      'Perform file input/output',
-      'Hands-on practice: Build a simple calculator app'
+      'How to write basic Python programs',
+      'Work with core data types (numbers, strings, booleans).',
+      'Control program flow (if/else, loops)',
+      'Store and manipulate data in lists, dictionaries, tuples, and sets.',
+      'Organize code into reusable functions',
+      'Handle basic errors',
+      'Read from and write to text files',
+      'Understand how to use external modules',
+      'Hands-on practice: Build a simple calculator app, ATM, Rock Paper Scissors'
     ]
   },
   {
@@ -401,7 +405,7 @@ export const coursesData = [
 export const learningPaths = [
   {
     id: 'frontend-dev-path',
-    title: 'Frontend Web Developer Career Path',
+    title: 'Frontend Web Developer',
     description: 'Become a skilled frontend developer by mastering the foundational tools of the web—HTML, CSS, and JavaScript. Perfect for building real-world websites and preparing for future technologies like React.',
     courses: ['HTML Fundamentals', 'CSS Styling & Layout Basics', 'JavaScript Essentials'],
     duration: '16 Weeks',
