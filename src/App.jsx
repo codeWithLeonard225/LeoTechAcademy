@@ -44,6 +44,7 @@ import Week4ErrorHandlingFileIO from './Component/Reading/Python/Week4ErrorHandl
 import EnrollmentForm from './Component/Admin/EnrollmentForm';
 import FeesForm from './Component/Admin/FeesForm';
 import PrintEnrollmentDetails from './Component/Admin/PrintEnrollmentDetails';
+import ImageManagementNotes from './Component/Reading/MSWORD/Advance/ImageManagementNotes';
 
 
 
@@ -90,12 +91,16 @@ function App() {
         <Route path="/fees-form" element={<FeesForm />} />
         <Route path="/print-enrollment" element={<PrintEnrollmentDetails />} />
 
-        {/* Notes */}
+        {/* MS Word */}
         <Route path="/courses/week_1" element={<Week1Page />} />
         <Route path="/courses/MsWorkWeek1" element={<MsWorkWeek1 />} />
         <Route path="/courses/MsWorkWeek2" element={<MsWorkWeek2 />} />
         <Route path="/courses/MsWorkWeek3" element={<MsWorkWeek3 />} />
         <Route path="/courses/MsWorkWeek4" element={<MsWorkWeek4 />} />
+
+        {/* MS Word Advance */}
+        <Route path="/courses/MsAdkWeek1" element={<ImageManagementNotes />} />
+        
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />
@@ -108,6 +113,8 @@ function App() {
         <Route path="/courses/Week2ControlFlow" element={<Week2ControlFlow />} />
         <Route path="/courses/Week3MoreCollectionsFunctions" element={<Week3MoreCollectionsFunctions />} />
         <Route path="/courses/Week4ErrorHandlingFileIO" element={<Week4ErrorHandlingFileIO />} />
+
+        
 
 
 

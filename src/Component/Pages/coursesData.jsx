@@ -41,7 +41,26 @@ export const coursesData = [
       'Use headers, footers, and page numbers',
       'Proofread and finalize documents for printing or sharing'
     ]
-  }
+  },
+{
+  id: 'ms-word-advanced-office',
+  title: 'Microsoft Word for Office Workers: Advanced Document Design & Efficiency',
+  description: 'Elevate your Word skills beyond the basics! Master advanced document design, complex layouts, automation, and collaborative features to create professional, efficient, and visually impactful office documents.',
+  instructor: 'LeoTech',
+  level: 'Advanced',
+  duration: '6 Weeks',
+  price: 'SLL 500', // Suggested price increase for advanced level
+  category: 'Microsoft Office',
+  image: '/images/ms-word-ad.png', // Suggesting a different image for advanced
+  whatYouWillLearn: [
+    'Design custom layouts using advanced shapes, images, and text boxes',
+    'Automate document creation with styles, themes, and templates',
+    'Manage long documents with advanced navigation and referencing tools',
+    'Collaborate effectively using tracking changes, comments, and document protection',
+    'Create sophisticated forms and mail merges for mass communication',
+    'Optimize documents for sharing, printing, and digital distribution'
+  ]
+}
   ,
   {
     id: 'ms-excel',

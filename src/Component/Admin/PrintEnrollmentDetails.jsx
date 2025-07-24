@@ -151,7 +151,7 @@ export default function PrintEnrollmentDetails() {
             <body>
                 <div class="print-container">
                     <div class="academy-header">
-                        <img src="https://placehold.co/60x60/3b82f6/ffffff?text=LOGO" alt="LeoTech Academy Logo" class="academy-logo"/>
+                        <img src="/images/logo.png" alt="LeoTech Academy Logo" className="h-28 w-28 mr-4 rounded-lg" />
                         <div class="academy-info">
                             <h1>LeoTech Academy</h1>
                             <p>123 Tech Lane, Freetown, Sierra Leone</p>
@@ -223,7 +223,7 @@ export default function PrintEnrollmentDetails() {
 
                 {/* Academy Header for Preview */}
                 <div className="flex items-center justify-center mb-6 pb-4 border-b-2 border-blue-500">
-                    <img src="https://placehold.co/60x60/3b82f6/ffffff?text=LOGO" alt="LeoTech Academy Logo" className="h-16 w-16 mr-4 rounded-lg" />
+                    <img src="/images/logo.png" alt="LeoTech Academy Logo" className="h-28 w-28 mr-4 rounded-lg" />
                     <div>
                         <h2 className="text-3xl font-bold text-gray-900 mb-1">LeoTech Academy</h2>
                         <p className="text-sm text-gray-600">Zadet School Shell New Road, Freetown, Sierra Leone</p>
