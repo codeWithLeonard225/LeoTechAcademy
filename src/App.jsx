@@ -45,6 +45,10 @@ import EnrollmentForm from './Component/Admin/EnrollmentForm';
 import FeesForm from './Component/Admin/FeesForm';
 import PrintEnrollmentDetails from './Component/Admin/PrintEnrollmentDetails';
 import ImageManagementNotes from './Component/Reading/MSWORD/Advance/ImageManagementNotes';
+import MsExcelWeek1 from './Component/Reading/MSEXCEL/Beg/MsExcelWeek1';
+import MsExcelWeek2 from './Component/Reading/MSEXCEL/Beg/MsExcelWeek2';
+import MsExcelWeek3 from './Component/Reading/MSEXCEL/Beg/MsExcelWeek3';
+import MsExcelWeek4 from './Component/Reading/MSEXCEL/Beg/MsExcelWeek4';
 
 
 
@@ -91,7 +95,7 @@ function App() {
         <Route path="/fees-form" element={<FeesForm />} />
         <Route path="/print-enrollment" element={<PrintEnrollmentDetails />} />
 
-        {/* MS Word */}
+        {/* MS Word Beginer  */}
         <Route path="/courses/week_1" element={<Week1Page />} />
         <Route path="/courses/MsWorkWeek1" element={<MsWorkWeek1 />} />
         <Route path="/courses/MsWorkWeek2" element={<MsWorkWeek2 />} />
@@ -101,6 +105,14 @@ function App() {
         {/* MS Word Advance */}
         <Route path="/courses/MsAdkWeek1" element={<ImageManagementNotes />} />
         
+
+        {/* MS Excel Beginer*/}
+        <Route path="/courses/MsExcelWeek1" element={<MsExcelWeek1 />} />
+        <Route path="/courses/MsExcelWeek2" element={<MsExcelWeek2 />} />
+        <Route path="/courses/MsExcelWeek3" element={<MsExcelWeek3 />} />
+        <Route path="/courses/MsExcelWeek4" element={<MsExcelWeek4 />} />
+        {/* <Route path="/" element={<MsExcelWeek4 />} /> */}
+
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />

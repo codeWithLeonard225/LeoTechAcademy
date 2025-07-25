@@ -721,24 +721,24 @@ const DocumentFeaturesNotes = () => {
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
                 What we'll cover: How to place and style text within your designs, working seamlessly with images and shapes.
             </p>
-             <div className="flex flex-wrap justify-center mt-4 gap-4">
-                        <div className="text-center w-full sm:w-60 md:w-72">
-                            <img
-                                src="/images/textbox.png"
-                                alt="Objects before grouping"
-                                className="rounded-md shadow-md mb-2 w-full h-auto"
-                            />
-                            <p className="text-sm text-gray-600">Text Box</p>
-                        </div>
-                        <div className="text-center w-full sm:w-60 md:w-72">
-                            <img
-                                src="/images/wordArt.png"
-                                alt="Objects after grouping"
-                                className="rounded-md shadow-md mb-2 w-full h-auto"
-                            />
-                            <p className="text-sm text-gray-600">WordArt</p>
-                        </div>
-                    </div>
+            <div className="flex flex-wrap justify-center mt-4 gap-4">
+                <div className="text-center w-full sm:w-60 md:w-72">
+                    <img
+                        src="/images/textbox.png"
+                        alt="Objects before grouping"
+                        className="rounded-md shadow-md mb-2 w-full h-auto"
+                    />
+                    <p className="text-sm text-gray-600">Text Box</p>
+                </div>
+                <div className="text-center w-full sm:w-60 md:w-72">
+                    <img
+                        src="/images/wordArt.png"
+                        alt="Objects after grouping"
+                        className="rounded-md shadow-md mb-2 w-full h-auto"
+                    />
+                    <p className="text-sm text-gray-600">WordArt</p>
+                </div>
+            </div>
 
             {/* Section 1: Text Boxes (Advanced Usage) */}
             <section className="mb-10">
@@ -777,7 +777,7 @@ const DocumentFeaturesNotes = () => {
                     </ul>
 
                     <h4 className="text-xl font-medium text-gray-700 mb-2 mt-4">Text Direction:</h4>
-                     <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-4">
                         <img
                             src="/images/text-direction.png"
                             alt="Screenshot of Selection Pane"
@@ -794,7 +794,7 @@ const DocumentFeaturesNotes = () => {
                 {/* Linking Text Boxes */}
                 <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
                     <h3 className="text-2xl font-medium text-gray-700 mb-3">Linking Text Boxes (Advanced & Powerful!):</h3>
-                      <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-4">
                         <img
                             src="/images/linked.jpg"
                             alt="Screenshot of Selection Pane"
@@ -814,13 +814,13 @@ const DocumentFeaturesNotes = () => {
                 <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
                     2. WordArt for Impactful Headings & Stylized Text
                 </h2>
-                 <div className="flex justify-center mt-4">
-                        <img
-                            src="/images/wwordaart.jpg"
-                            alt="Screenshot of Selection Pane"
-                            className="rounded-md shadow-md w-full max-w-sm md:max-w-md lg:max-w-lg h-auto mb-2"
-                        />
-                    </div>
+                <div className="flex justify-center mt-4">
+                    <img
+                        src="/images/wwordaart.jpg"
+                        alt="Screenshot of Selection Pane"
+                        className="rounded-md shadow-md w-full max-w-sm md:max-w-md lg:max-w-lg h-auto mb-2"
+                    />
+                </div>
 
                 <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
                     <h3 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h3>

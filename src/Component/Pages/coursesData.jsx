@@ -68,8 +68,8 @@ export const coursesData = [
     description: 'Master spreadsheets for data entry, calculations, charts, and analysis. Learn formulas, functions, and data organization.',
     instructor: 'LeoTech',
     level: 'Beginner',
-    duration: '5 Weeks',
-    price: 'SLL 300',
+    duration: '4 Weeks',
+    price: 'SLL 250',
     category: 'Microsoft Office',
     image: '/images/MSExcel.png',
     whatYouWillLearn: [

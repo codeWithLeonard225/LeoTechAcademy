@@ -98,6 +98,7 @@ const allQuizzes = {
       }
     ]
   },
+  // ms word for beginners
   "MSweek_1": {
     "title": "Week 1: MS Word Basics Quiz",
     "description": "Test your knowledge on the fundamental concepts of MS Word, basic typing, lists, editing, and saving documents.",
@@ -522,7 +523,584 @@ const allQuizzes = {
       }
     ]
   },
+  // ms excel for beginers
+  "MSexcel_1": {
+    "title": "Week 1: MS Excel Basics Quiz",
+    "description": "Test your knowledge on the fundamental concepts of Microsoft Excel, including interface navigation, data entry, formatting, formulas, and basic functions.",
+    "questions": [
+      {
+        "questionText": "Which area in Excel displays the address of the currently selected cell or named ranges?",
+        "options": ["Formula Bar", "Status Bar", "Name Box", "Ribbon"],
+        "correctAnswer": "Name Box"
+      },
+      {
+        "questionText": "What character must precede every formula in Excel to ensure it performs a calculation?",
+        "options": ["#", "@", "=", "$"],
+        "correctAnswer": "="
+      },
+      {
+        "questionText": "Which feature allows you to quickly extend a series of data (like 'Monday, Tuesday...' or '1, 2, 3...') by dragging a small square at the bottom-right corner of a cell?",
+        "options": ["AutoSum", "Flash Fill", "AutoFill", "Data Validation"],
+        "correctAnswer": "AutoFill"
+      },
+      {
+        "questionText": "If a formula contains `A1` and you copy it down a column, how will the cell reference behave by default?",
+        "options": ["It will remain `A1`.", "It will change to `$A$1`.", "It will adjust to `A2`, `A3`, etc.", "It will become an error."],
+        "correctAnswer": "It will adjust to `A2`, `A3`, etc."
+      },
+      {
+        "questionText": "Which function would you use to calculate the average of a range of numbers in Excel?",
+        "options": ["SUM", "COUNT", "MEAN", "AVERAGE"],
+        "correctAnswer": "AVERAGE"
+      },
+      {
+        "questionText": "Which tab and group would you find options like 'Bold', 'Italic', and 'Fill Color' for cells?",
+        "options": ["Data Tab > Sort & Filter Group", "Insert Tab > Illustrations Group", "Home Tab > Font Group", "Page Layout Tab > Themes Group"],
+        "correctAnswer": "Home Tab > Font Group"
+      },
+      {
+        "questionText": "What does 'Wrap Text' do to content within an Excel cell?",
+        "options": ["It merges multiple cells into one.", "It changes the font size to fit the cell width.", "It displays long text on multiple lines within a cell.", "It hides the text that is too long for the cell."],
+        "correctAnswer": "It displays long text on multiple lines within a cell."
+      },
+      {
+        "questionText": "If you are entering data into cell A1 and press 'Tab', where will your cursor move next?",
+        "options": ["Down to cell A2", "Up to cell A0", "Right to cell B1", "Left to cell Z1"],
+        "correctAnswer": "Right to cell B1"
+      },
+      {
+        "questionText": "You need to change the width of Column C to exactly fit its widest content. What is the quickest way to do this using a mouse action?",
+        "options": ["Drag the right border of column C manually.", "Double-click the line between column C and column D in the column headers.", "Right-click on column C header and select 'Column Width'.", "Select column C and press Ctrl + A."],
+        "correctAnswer": "Double-click the line between column C and column D in the column headers."
+      },
+      {
+        "questionText": "In the formula `= (5 + 3) * 2`, what is the purpose of the parentheses?",
+        "options": ["They indicate a cell range.", "They convert the result to a currency format.", "They ensure the addition is performed before the multiplication.", "They make the cell reference absolute."],
+        "correctAnswer": "They ensure the addition is performed before the multiplication."
+      }
+    ]
+  },
+  "MSexcel_2": {
+    "title": "Week 2: Working with Data in Excel Quiz",
+    "description": "Assess your understanding of managing rows, columns, and cells, working with cell ranges, basic data sorting and filtering, and applying conditional formatting in Excel.",
+    "questions": [
+      {
+        "questionText": "What is the primary purpose of inserting or deleting rows and columns in Excel?",
+        "options": [
+          "To change the font size of data",
+          "To adjust the spreadsheet's layout and organize data",
+          "To apply mathematical formulas",
+          "To save the workbook"
+        ],
+        "correctAnswer": "To adjust the spreadsheet's layout and organize data"
+      },
+      {
+        "questionText": "When you insert a new column using the standard method, where does it typically appear relative to the selected column?",
+        "options": [
+          "To the right",
+          "Below",
+          "To the left",
+          "Above"
+        ],
+        "correctAnswer": "To the left"
+      },
+      {
+        "questionText": "Which action would you take to hide a column without deleting its data?",
+        "options": [
+          "Press the Delete key",
+          "Right-click the column header and select 'Hide'",
+          "Double-click the column header",
+          "Change the column's font color to white"
+        ],
+        "correctAnswer": "Right-click the column header and select 'Hide'"
+      },
+      {
+        "questionText": "What does 'A1:C5' represent in Excel?",
+        "options": [
+          "A single, individual cell",
+          "The entire worksheet",
+          "A collection of cells from A1 to C5",
+          "A formula"
+        ],
+        "correctAnswer": "A collection of cells from A1 to C5"
+      },
+      {
+        "questionText": "Which keyboard shortcut is commonly used to select an entire column?",
+        "options": [
+          "Ctrl + R",
+          "Ctrl + C",
+          "Ctrl + Spacebar",
+          "Ctrl + V"
+        ],
+        "correctAnswer": "Ctrl + Spacebar"
+      },
+      {
+        "questionText": "To select multiple non-contiguous cells or ranges, what key must you hold down while clicking?",
+        "options": [
+          "Shift",
+          "Alt",
+          "Ctrl",
+          "Tab"
+        ],
+        "correctAnswer": "Ctrl"
+      },
+      {
+        "questionText": "What is the main benefit of naming a range in Excel?",
+        "options": [
+          "It makes the text bold",
+          "It allows for easier navigation and formula creation",
+          "It hides the data",
+          "It prints the data automatically"
+        ],
+        "correctAnswer": "It allows for easier navigation and formula creation"
+      },
+      {
+        "questionText": "Which tab on the Ribbon would you typically use to define a named range?",
+        "options": [
+          "Home",
+          "Insert",
+          "Formulas",
+          "Data"
+        ],
+        "correctAnswer": "Formulas"
+      },
+      {
+        "questionText": "What does sorting data in Excel primarily allow you to do?",
+        "options": [
+          "Change the color of cells",
+          "Rearrange data in a specific order (e.g., alphabetical, numerical)",
+          "Create charts and graphs",
+          "Delete duplicate entries"
+        ],
+        "correctAnswer": "Rearrange data in a specific order (e.g., alphabetical, numerical)"
+      },
+      {
+        "questionText": "If you want to sort a list of names from Z to A, which sort order would you choose?",
+        "options": [
+          "Ascending",
+          "Largest to Smallest",
+          "Descending",
+          "Oldest to Newest"
+        ],
+        "correctAnswer": "Descending"
+      },
+      {
+        "questionText": "When performing a custom sort on multiple columns, why would you use the 'Add Level' button?",
+        "options": [
+          "To add more data to the spreadsheet",
+          "To create an additional sorting criterion",
+          "To remove existing sort levels",
+          "To change the worksheet name"
+        ],
+        "correctAnswer": "To create an additional sorting criterion"
+      },
+      {
+        "questionText": "What is the primary function of filtering data in Excel?",
+        "options": [
+          "To permanently delete unwanted rows",
+          "To rearrange the order of data",
+          "To display only the rows that meet specific criteria",
+          "To calculate sums and averages"
+        ],
+        "correctAnswer": "To display only the rows that meet specific criteria"
+      },
+      {
+        "questionText": "After applying a filter to a column, what visual cue indicates that a filter is active on that column?",
+        "options": [
+          "The column header will change color.",
+          "A small funnel icon appears next to the column header.",
+          "The entire column disappears.",
+          "The numbers in the column turn red."
+        ],
+        "correctAnswer": "A small funnel icon appears next to the column header."
+      },
+      {
+        "questionText": "What is Conditional Formatting used for in Excel?",
+        "options": [
+          "To lock cells so they cannot be edited",
+          "To apply formatting (like colors, icons, data bars) to cells based on their values",
+          "To convert data from text to numbers",
+          "To automatically create a chart"
+        ],
+        "correctAnswer": "To apply formatting (like colors, icons, data bars) to cells based on their values"
+      },
+      {
+        "questionText": "If you want to highlight all numbers greater than 500 in a range, which Conditional Formatting rule type would you most likely use?",
+        "options": [
+          "Top/Bottom Rules",
+          "Data Bars",
+          "Highlight Cells Rules (e.g., 'Greater Than')",
+          "Icon Sets"
+        ],
+        "correctAnswer": "Highlight Cells Rules (e.g., 'Greater Than')"
+      },
+      {
+        "questionText": "Which Conditional Formatting option visually represents the value of a cell by drawing a bar within the cell?",
+        "options": [
+          "Color Scales",
+          "Icon Sets",
+          "Highlight Cells Rules",
+          "Data Bars"
+        ],
+        "correctAnswer": "Data Bars"
+      },
+      {
+        "questionText": "When you filter data in Excel, what happens to the rows that do not meet the filter criteria?",
+        "options": [
+          "They are permanently deleted.",
+          "They are moved to a new worksheet.",
+          "They are temporarily removed from view but still exist in the worksheet.",
+          "They are converted into charts."
+        ],
+        "correctAnswer": "They are temporarily removed from view but still exist in the worksheet."
+      },
+      {
+        "questionText": "Which tab on the Ribbon contains the 'Sort & Filter' commands?",
+        "options": [
+          "Insert",
+          "Formulas",
+          "Data",
+          "Review"
+        ],
+        "correctAnswer": "Data"
+      },
+      {
+        "questionText": "To quickly select all contiguous data from the currently active cell to the end of the data block, which keyboard combination can you use?",
+        "options": [
+          "Ctrl + Z",
+          "Ctrl + Shift + Arrow Keys",
+          "Ctrl + P",
+          "Ctrl + S"
+        ],
+        "correctAnswer": "Ctrl + Shift + Arrow Keys"
+      },
+      {
+        "questionText": "If you want to quickly clear all filters from your data, what is a common way to do it?",
+        "options": [
+          "Close and reopen the workbook",
+          "Go to Data tab > Sort & Filter group > Clear",
+          "Delete all filtered rows",
+          "Change the font color of filtered cells"
+        ],
+        "correctAnswer": "Go to Data tab > Sort & Filter group > Clear"
+      }
+    ]
+  },
+  "MSexcel_3": {
+    "title": "Week 3: Essential Functions and Data Quiz",
+    "description": "Test your knowledge on Text Functions, Date Functions, Logical IF statements, and Data Validation in Microsoft Excel.",
+    "questions": [
+      {
+        "questionText": "Which Excel function is used to join several text strings into one?",
+        "options": [
+          "COMBINE",
+          "JOIN",
+          "CONCATENATE",
+          "TEXTJOIN"
+        ],
+        "correctAnswer": "CONCATENATE"
+      },
+      {
+        "questionText": "If cell A1 contains 'Apple Pie', what would the formula `=LEFT(A1, 5)` return?",
+        "options": [
+          "Apple",
+          "Pie",
+          "Apple ",
+          "Apple P"
+        ],
+        "correctAnswer": "Apple"
+      },
+      {
+        "questionText": "To extract the last 3 characters from a cell containing 'Product-XYZ', which function would you use?",
+        "options": [
+          "LEFT",
+          "MID",
+          "RIGHT",
+          "FIND"
+        ],
+        "correctAnswer": "RIGHT"
+      },
+      {
+        "questionText": "Cell B2 contains 'Data Analysis'. What will `=LEN(B2)` return?",
+        "options": [
+          "13",
+          "12",
+          "11",
+          "10"
+        ],
+        "correctAnswer": "13"
+      },
+      {
+        "questionText": "What does the formula `=UPPER(\"excel\")` return?",
+        "options": [
+          "excel",
+          "Excel",
+          "EXCEL",
+          "ExCeL"
+        ],
+        "correctAnswer": "EXCEL"
+      },
+      {
+        "questionText": "Which function returns the current date and time, updating automatically when the workbook is opened or recalculated?",
+        "options": [
+          "DATE()",
+          "TODAY()",
+          "NOW()",
+          "CURRENTDATE()"
+        ],
+        "correctAnswer": "NOW()"
+      },
+      {
+        "questionText": "If cell A3 contains '15-March-2024', what will the formula `=MONTH(A3)` return?",
+        "options": [
+          "March",
+          "3",
+          "15",
+          "2024"
+        ],
+        "correctAnswer": "3"
+      },
+      {
+        "questionText": "To find out how many days have passed since '01-January-2024' until today, which arithmetic operation would you use with dates?",
+        "options": [
+          "Addition (+)",
+          "Multiplication (*)",
+          "Subtraction (-)",
+          "Division (/)"
+        ],
+        "correctAnswer": "Subtraction (-)"
+      },
+      {
+        "questionText": "Which Excel function allows you to perform a calculation or return a value based on whether a condition is true or false?",
+        "options": [
+          "SUMIF",
+          "AND",
+          "OR",
+          "IF"
+        ],
+        "correctAnswer": "IF"
+      },
+      {
+        "questionText": "What is the correct syntax for a simple IF function?",
+        "options": [
+          "=IF(value_if_true, logical_test, value_if_false)",
+          "=IF(logical_test, value_if_true, value_if_false)",
+          "=IF(logical_test; value_if_true; value_if_false)",
+          "=IF(value_if_false, value_if_true, logical_test)"
+        ],
+        "correctAnswer": "=IF(logical_test, value_if_true, value_if_false)"
+      },
+      {
+        "questionText": "In the formula `=IF(C2>50, \"Pass\", \"Fail\")`, what is `\"Pass\"`?",
+        "options": [
+          "The logical_test",
+          "The value if the condition is false",
+          "The value if the condition is true",
+          "An error message"
+        ],
+        "correctAnswer": "The value if the condition is true"
+      },
+      {
+        "questionText": "When using an IF function, if you want to return text like 'High' or 'Low', how must the text be enclosed in the formula?",
+        "options": [
+          "In single quotes ('')",
+          "In parentheses ()",
+          "In double quotes (\"\")",
+          "No enclosure is needed"
+        ],
+        "correctAnswer": "In double quotes (\"\")"
+      },
+      {
+        "questionText": "What is the primary benefit of using Data Validation in Excel?",
+        "options": [
+          "To change cell colors",
+          "To prevent common data entry errors",
+          "To speed up calculations",
+          "To automatically create charts"
+        ],
+        "correctAnswer": "To prevent common data entry errors"
+      },
+      {
+        "questionText": "Which tab on the Excel Ribbon do you go to access Data Validation?",
+        "options": [
+          "Home",
+          "Insert",
+          "Data",
+          "Review"
+        ],
+        "correctAnswer": "Data"
+      },
+      {
+        "questionText": "You want to ensure users can only enter whole numbers between 1 and 100 into a cell. Which 'Allow' option in Data Validation should you choose?",
+        "options": [
+          "Decimal",
+          "List",
+          "Whole number",
+          "Text length"
+        ],
+        "correctAnswer": "Whole number"
+      },
+      {
+        "questionText": "To create a dropdown menu of predefined options (e.g., 'Yes', 'No', 'N/A') in a cell, which Data Validation 'Allow' option is used?",
+        "options": [
+          "Any value",
+          "List",
+          "Custom",
+          "Text length"
+        ],
+        "correctAnswer": "List"
+      },
+      {
+        "questionText": "What is the purpose of an 'Input Message' in Data Validation?",
+        "options": [
+          "To stop invalid data from being entered",
+          "To display a warning after invalid data is entered",
+          "To provide helpful guidance when a user selects the cell",
+          "To clear existing validation rules"
+        ],
+        "correctAnswer": "To provide helpful guidance when a user selects the cell"
+      },
+      {
+        "questionText": "If you set an 'Error Alert' style to 'Stop', what happens when a user tries to enter data that doesn't meet the validation rule?",
+        "options": [
+          "The entry is allowed, and a small warning icon appears.",
+          "The entry is allowed without any notification.",
+          "The entry is prevented, and the user must correct it.",
+          "The cell's background turns red."
+        ],
+        "correctAnswer": "The entry is prevented, and the user must correct it."
+      },
+      {
+        "questionText": "Which option would you click in the Data Validation dialog box to remove all validation rules from the selected cells?",
+        "options": [
+          "Delete Rule",
+          "Remove Formatting",
+          "Clear All",
+          "Reset Settings"
+        ],
+        "correctAnswer": "Clear All"
+      },
+      {
+        "questionText": "If you need to extract characters from the middle of a text string, which function would be most appropriate?",
+        "options": [
+          "LEFT",
+          "RIGHT",
+          "MID",
+          "SEARCH"
+        ],
+        "correctAnswer": "MID"
+      }
+    ]
+  },
+  "MSexcel_4": {
+    "title": "Week 4: Data Lookups, Visualization, and Printing Quiz",
+    "description": "Test your knowledge on Lookup Functions (VLOOKUP, HLOOKUP), Creating Basic Charts, and Preparing Worksheets for Printing in Microsoft Excel.",
+    "questions": [
+      {
+        "questionText": "Which Excel function is primarily used to search for a value in the first column of a table and return a corresponding value from a specified column in the same row?",
+        "options": [
+          "HLOOKUP",
+          "INDEX",
+          "MATCH",
+          "VLOOKUP"
+        ],
+        "correctAnswer": "VLOOKUP"
+      },
+      {
+        "questionText": "In the VLOOKUP formula `=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])`, what does `col_index_num` represent?",
+        "options": [
+          "The column number where the `lookup_value` is located.",
+          "The row number from which to return a value.",
+          "The column number in the `table_array` from which to return a value.",
+          "The total number of columns in the `table_array`."
+        ],
+        "correctAnswer": "The column number in the `table_array` from which to return a value."
+      },
+      {
+        "questionText": "When should you use `FALSE` for the `range_lookup` argument in VLOOKUP?",
+        "options": [
+          "When your table is sorted numerically.",
+          "When you need an approximate match.",
+          "When you require an exact match for the `lookup_value`.",
+          "When searching for text values only."
+        ],
+        "correctAnswer": "When you require an exact match for the `lookup_value`."
+      },
+      {
+        "questionText": "Which chart type is best suited for showing trends over time or continuous data?",
+        "options": [
+          "Pie Chart",
+          "Bar Chart",
+          "Scatter Plot",
+          "Line Chart"
+        ],
+        "correctAnswer": "Line Chart"
+      },
+      {
+        "questionText": "To quickly add or remove elements like Chart Title or Axis Titles from a selected chart in Excel, which icon should you look for next to the chart?",
+        "options": [
+          "A paintbrush icon",
+          "A plus (+) icon",
+          "A funnel icon",
+          "A filter icon"
+        ],
+        "correctAnswer": "A plus (+) icon"
+      },
+      {
+        "questionText": "If you want to print only a specific section of your worksheet and exclude other data, what feature should you use?",
+        "options": [
+          "Page Breaks",
+          "Scale to Fit",
+          "Print Area",
+          "Print Titles"
+        ],
+        "correctAnswer": "Print Area"
+      },
+      {
+        "questionText": "In Excel's Print Preview, if your data spans too many columns for one page, which scaling option would you choose to ensure all columns fit on a single page width?",
+        "options": [
+          "Fit Sheet on One Page",
+          "Fit All Rows on One Page",
+          "Fit All Columns on One Page",
+          "Custom Scale to 100%"
+        ],
+        "correctAnswer": "Fit All Columns on One Page"
+      },
+      {
+        "questionText": "Which of the following built-in codes would you use in a footer to automatically display the current page number?",
+        "options": [
+          "&[Date]",
+          "&[File]",
+          "&[Page]",
+          "&[Tab]"
+        ],
+        "correctAnswer": "&[Page]"
+      },
+      {
+        "questionText": "What is the primary difference between VLOOKUP and HLOOKUP?",
+        "options": [
+          "VLOOKUP searches vertically, HLOOKUP searches horizontally.",
+          "VLOOKUP uses exact matches, HLOOKUP uses approximate matches.",
+          "VLOOKUP is for numbers, HLOOKUP is for text.",
+          "There is no significant difference; they are interchangeable."
+        ],
+        "correctAnswer": "VLOOKUP searches vertically, HLOOKUP searches horizontally."
+      },
+      {
+        "questionText": "You've created a sales report and want to display the proportion of sales contributed by each product category. Which chart type would be most appropriate?",
+        "options": [
+          "Column Chart",
+          "Line Chart",
+          "Pie Chart",
+          "Area Chart"
+        ],
+        "correctAnswer": "Pie Chart"
+      }
+    ]
+  },
 
+
+  // html
   "HTML_Week1": {
     "title": "Week 1: HTML Basics Quiz",
     "description": "Test your understanding of fundamental HTML concepts, document structure, headings, paragraphs, and basic text formatting and lists.",
@@ -1057,7 +1635,7 @@ const allQuizzes = {
       }
     ]
   },
-
+  //python
   "Python_Week1": {
     "title": "Week 1: Introduction to Python Quiz",
     "description": "Test your understanding of Python basics, including 'Hello World!', variables, data types, and user input.",
@@ -1623,7 +2201,7 @@ const allQuizzes = {
       }
     ]
   },
-  
+
   "Python_Week4": {
     "title": "Week 4: Error Handling, File I/O & Modules Quiz",
     "description": "Test your understanding of error handling (`try-except`), file input/output, and Python modules.",
