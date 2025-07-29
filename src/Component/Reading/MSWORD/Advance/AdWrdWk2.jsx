@@ -71,7 +71,7 @@ const AdWrdWk2 = () => {
                     <h3 className="text-2xl font-medium text-gray-700 mb-3">What are Styles?</h3>
                     <p className="text-gray-700 leading-relaxed">
                         Think of them as pre-packaged sets of formatting (like font type, size, color, bold/italic, alignment, line spacing, paragraph spacing) that you can apply with a single click.
-                        In Word, you can find the Styles Gallery on the Home tab. The **Styles Pane** (accessible via a small arrow in the bottom right of the Styles group) provides a more detailed view and control over all available styles.
+                        In Word, you can find the **Styles Gallery** on the **Home tab**. The **Styles Pane** (accessible via a small arrow in the bottom right of the Styles group) provides a more detailed view and control over all available styles.
                     </p>
                     <div className="flex justify-center mt-6">
                         <img
@@ -116,7 +116,7 @@ const AdWrdWk2 = () => {
                 <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
                     <h3 className="text-2xl font-medium text-gray-700 mb-3">Applying Styles:</h3>
                     <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">How:</span> Select the text or place your cursor in the paragraph you want to format. Go to the Home Tab &gt; Styles group. Click on the desired style in the gallery or open the Styles Pane (small arrow in bottom right of Styles group).</li>
+                        <li><span className="font-semibold">How:</span> Select the text or place your cursor in the paragraph you want to format. Go to the **Home Tab** &gt; **Styles** group. Click on the desired style in the gallery or open the **Styles Pane** (small arrow in bottom right of Styles group).</li>
                         <li><span className="font-semibold">Shortcut (Apply a Style):</span> <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Shift</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">S</kbd> (opens the Apply Styles dialog box, where you can type the style name quickly).</li>
                     </ul>
                     <div className="flex justify-center mt-6">
@@ -156,7 +156,7 @@ const AdWrdWk2 = () => {
                     <h3 className="text-2xl font-medium text-gray-700 mb-3">Clearing Formatting:</h3>
                     <ul className="list-disc list-inside text-gray-600 space-y-2">
                         <li><span className="font-semibold">Purpose:</span> To remove all direct formatting (bold, color, etc.) and return text to its underlying style (usually Normal).</li>
-                        <li><span className="font-semibold">How:</span> Select text &gt; Home Tab &gt; Font group &gt; Clear All Formatting button (the A with an eraser).</li>
+                        <li><span className="font-semibold">How:</span> Select text &gt; Home Tab &gt; Font group &gt; <span className="font-semibold">Clear All Formatting</span> button (the A with an eraser).</li>
                         <li><span className="font-semibold">Shortcut:</span> <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Spacebar</kbd> (clears character-level formatting) or <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Q</kbd> (clears paragraph-level formatting).</li>
                     </ul>
                     <div className="flex justify-center mt-6">
@@ -186,47 +186,47 @@ const AdWrdWk2 = () => {
                 </div>
 
                 <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (Based on Selection - Quickest Way):</h3>
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (Based on Selection - <span className="font-semibold">Quickest Way</span>):</h3>
                     <ul className="list-disc list-inside text-gray-600 space-y-2">
                         <li>Format a paragraph or text exactly how you want your new style to look.</li>
-                        <li>Go to the Home Tab &gt; Styles group &gt; Click the small <span className="font-semibold">More</span> arrow in the bottom right of the Styles Gallery.</li>
+                        <li>Go to the **Home Tab** &gt; **Styles** group &gt; Click the small <span className="font-semibold">More</span> arrow in the bottom right of the Styles Gallery.</li>
                         <li>Choose <span className="font-semibold">Create a Style</span>. Give it a meaningful name.</li>
                     </ul>
-                    {/* <div className="flex justify-center mt-6">
+                    <div className="flex justify-center mt-6">
                         <img
                             src="/images/create-style-from-selection.PNG" // Placeholder image
                             alt="Screenshot showing the 'Create a Style' option in the Styles dropdown."
                             className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
                         />
-                    </div> */}
-                    {/* <p className="text-sm text-gray-600 mt-2 text-center italic">
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
                         Creating a new style based on selected text.
-                    </p> */}
+                    </p>
                 </div>
 
                 <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (From Scratch - More Control):</h3>
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (From Scratch - <span className="font-semibold">More Control</span>):</h3>
                     <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li>Open the Styles Pane (Home Tab &gt; click the small arrow in bottom right of Styles group).</li>
+                        <li>Open the **Styles Pane** (Home Tab &gt; click the small arrow in bottom right of Styles group).</li>
                         <li>Click the <span className="font-semibold">New Style</span> button (bottom left of Styles Pane).</li>
                         <li>Define all settings (name, font, size, color, paragraph spacing, border, etc.).</li>
                     </ul>
-                    {/* <div className="flex justify-center mt-6">
+                    <div className="flex justify-center mt-6">
                         <img
                             src="/images/new-style-dialog.PNG" // Placeholder image
                             alt="Screenshot of the 'Create New Style from Formatting' dialog box."
                             className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
                         />
-                    </div> */}
-                    {/* <p className="text-sm text-gray-600 mt-2 text-center italic">
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
                         The 'Create New Style from Formatting' dialog for detailed control.
-                    </p> */}
+                    </p>
                 </div>
             </section>
 
             ---
 
-            {/* --- Topic 2: Document Themes & Quick Parts for Efficiency --- */}
+           {/* --- Topic 2: Document Themes & Quick Parts for Efficiency --- */}
             <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-purple-400 pb-3">
                 Topic 2: Document Themes & Quick Parts for Efficiency
             </h1>
@@ -442,6 +442,186 @@ const AdWrdWk2 = () => {
                     </p>
                 </div>
             </section>
+
+            ---
+
+            {/* --- Topic 3: Harnessing Templates for Streamlined Document Creation --- */}
+            <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-purple-400 pb-3">
+                Topic 3: Harnessing Templates for Streamlined Document Creation
+            </h1>
+
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                What we'll cover: Templates are the ultimate tool for ensuring consistent document look and feel across an entire organization.
+            </p>
+
+            {/* Section 1: Understanding Templates */}
+            <section className="mb-10">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
+                    1. Understanding Templates (<span className="font-semibold">.dotx</span> files)
+                </h2>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">What are Templates?</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                        They are master blueprints for documents. A template is a pre-designed file that serves as a starting point for new documents. It can include:
+                    </p>
+                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                        <li>Pre-set styles (from <span className="font-semibold">Topic 1</span>).</li>
+                        <li>A document theme (from <span className="font-semibold">Topic 2</span>).</li>
+                        <li>Pre-defined page layout settings (margins, orientation).</li>
+                        <li>Placeholder text.</li>
+                        <li>Quick Parts (from <span className="font-semibold">Topic 2</span>).</li>
+                        <li>Boilerplate content (text that rarely changes).</li>
+                    </ul>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/template-concept.png" // Placeholder for a conceptual image of a template or a template gallery
+                            alt="Illustration of a document template as a blueprint."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Templates act as a blueprint for consistent document creation.
+                    </p>
+
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3 mt-6">Why use them?</h3>
+                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                        <li><span className="font-semibold">Ensures Consistency:</span> Every document created from the template will have the same foundational look.</li>
+                        <li><span className="font-semibold">Automates Setup:</span> No need to re-format margins, fonts, or insert standard text blocks every time.</li>
+                        <li><span className="font-semibold">Prevents Accidental Changes:</span> Users create a new document based on the template, so the original template remains untouched and ready for future use.</li>
+                    </ul>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Template vs. Document:</span> When you open a <span className="font-semibold">.docx</span> file, you are opening the document itself. When you open a <span className="font-semibold">.dotx</span> file (a template) or create a "<span className="font-semibold">New</span>" document from a template, Word actually creates a new, unsaved document based on that template, leaving the original template intact.
+                    </p>
+                </div>
+            </section>
+
+            {/* Section 2: Using Built-in & Online Templates */}
+            <section className="mb-10">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
+                    2. Using Built-in & Online Templates
+                </h2>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How:</h3>
+                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                        <li><span className="font-semibold">File</span> &gt; <span className="font-semibold">New</span>. You'll see many built-in templates (e.g., resumes, calendars, reports, letters) and can search for more online.</li>
+                    </ul>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/file-new-templates.jpg" // Placeholder for File > New showing built-in templates
+                            alt="Screenshot of Word's File > New screen with template options."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Accessing built-in and online templates via **File  New**.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mt-4">
+                        <span className="font-semibold">Practical Use:</span> Don't start from scratch for common document types if Word already has a good template!
+                    </p>
+                </div>
+            </section>
+
+            {/* Section 3: Creating Custom Templates */}
+            <section className="mb-10">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
+                    3. Creating Custom Templates
+                </h2>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                        To build your own company-specific templates for frequently used documents (e.g., company letterhead, meeting minutes, project proposal forms, invoice templates).
+                    </p>
+                </div>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (From an Existing Document - <span className="font-semibold">Easiest Way</span>):</h3>
+                    <ul className="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Create and format a document exactly how you want your template to look (include your custom styles, themes, Quick Parts, company logo, placeholder text).</li>
+                        <li>Go to <span className="font-semibold">File</span> &gt; <span className="font-semibold">Save As</span> &gt; <span className="font-semibold">Browse</span> to your preferred location (often <span className="font-semibold">Documents\Custom Office Templates</span>).</li>
+                        <li>In the "<span className="font-semibold">Save as type</span>" dropdown, choose <span className="font-semibold">Word Template (*.dotx)</span>.</li>
+                        <li>Give it a clear name (e.g., <span className="font-semibold">Company_Letterhead.dotx</span>, <span className="font-semibold">Meeting_Minutes_Template.dotx</span>).</li>
+                    </ul>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/save-as-dotx.png" // Placeholder for Save As dialog showing .dotx selection
+                            alt="Screenshot of Word's Save As dialog box with Word Template (.dotx) selected."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Saving a document as a Word Template (<span className="font-semibold">.dotx</span> file).
+                    </p>
+                </div>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (Starting from Scratch - <span className="font-semibold">More Control</span>):</h3>
+                    <ul className="list-disc list-inside text-gray-600 space-y-2">
+                        <li><span className="font-semibold">File</span> &gt; <span className="font-semibold">New</span> &gt; <span className="font-semibold">Blank Document</span>.</li>
+                        <li>Set up all your styles, theme, page layout, insert Quick Parts, and any boilerplate text.</li>
+                        <li>Then <span className="font-semibold">File</span> &gt; <span className="font-semibold">Save As</span> &gt; <span className="font-semibold">Word Template (*.dotx)</span>.</li>
+                    </ul>
+                    <p className="text-gray-700 leading-relaxed">
+                        <span className="font-semibold">Practical Use:</span> This is highly valuable for offices, ensuring all staff can easily create consistent, branded documents without manual effort.
+                    </p>
+                </div>
+            </section>
+
+            {/* Section 4: Protecting Template Content */}
+            <section className="mb-10">
+                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
+                    4. Protecting Template Content (<span className="font-semibold">Basic Intro</span>)
+                </h2>
+
+                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h3>
+                    <p className="text-gray-700 leading-relaxed mb-3">
+                        To prevent users from accidentally changing parts of the template that should remain fixed (e.g., company logo, specific disclaimers).
+                    </p>
+
+                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (Brief Mention):</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                        This often involves using "<span className="font-semibold">Developer</span>" tools to create fillable fields and restrict editing to certain sections, which we might explore in a later week. For now, understand that templates can be protected.
+                    </p>
+                    {/* <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/developer-tab-restrict-editing.PNG" // Placeholder for Developer tab showing Restrict Editing
+                            alt="Screenshot of Word's Developer tab with the Restrict Editing option highlighted."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div> */}
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        The **Developer** tab, where options like **Restrict Editing** can be found for template protection.
+                    </p>
+                </div>
+            </section>
+
+            <h3 className="text-2xl font-medium text-gray-700 mb-3">How:</h3>
+            <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                <li><span className="font-semibold">File</span> &gt; <span className="font-semibold">Options</span> &gt; <span className="font-semibold">Proofing</span> &gt; <span className="font-semibold">AutoCorrect Options...</span></li>
+                <li>In the dialog box:
+                    <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
+                        <li>In the "<span className="font-semibold">Replace</span>" field, type a short, unique abbreviation (e.g., "slgov", "mylogo").</li>
+                        <li>In the "<span className="font-semibold">With</span>" field, type the full text or insert the formatted text/graphic you want it to expand to.</li>
+                    </ul>
+                </li>
+                <li>Click <span className="font-semibold">Add</span>, then <span className="font-semibold">OK</span>.</li>
+            </ul>
+            <p className="text-gray-700 leading-relaxed">
+                <span className="font-semibold">Practical Use:</span>
+            </p>
+            <ul className="list-disc list-inside text-gray-600 space-y-1 pl-6 mt-2">
+                <li>Typing "slgov" to automatically insert "Government of Sierra Leone".</li>
+                <li>Typing "addys" to insert your full company address.</li>
+                <li>Typing "sigblk" to insert your complete signature block with contact info and logo.</li>
+            </ul>
+
+            {/* Footer Section (Optional) */}
+            <footer className="bg-indigo-700 text-white p-4 text-center text-sm rounded-b-lg mt-4">
+                <p>&copy; 2025 Study Notes. All rights reserved.</p>
+            </footer>
 
         </div>
     );

@@ -27,7 +27,7 @@ const BeforeAfterToggle = ({ beforeSrc, afterSrc, description }) => {
     );
 };
 
-const DocumentFeaturesNotes = () => {
+const Adwrdwk1 = () => {
     const navigate = useNavigate();
 
     const handleBackClick = () => {
@@ -270,7 +270,7 @@ const DocumentFeaturesNotes = () => {
                         </div>
                         <div className="flex flex-col items-center w-full sm:w-36 md:w-40">
                             <img
-                                src="/images/effect-glow.PNG" // Local image path (using normal image for glow example)
+                                src="/images/effect-gloww.PNG" // Local image path (using normal image for glow example)
                                 alt="Image with glow"
                                 className="shadow-blue-500/50 shadow-2xl mb-2 w-full h-auto" // Simulating glow
                             />
@@ -890,8 +890,13 @@ const DocumentFeaturesNotes = () => {
                     </ul>
                 </div>
             </section>
+
+            {/* Footer Section (Optional) */}
+            <footer className="bg-indigo-700 text-white p-4 text-center text-sm rounded-b-lg mt-4">
+                <p>&copy; 2025 Study Notes. All rights reserved.</p>
+            </footer>
         </div>
     );
 };
 
-export default DocumentFeaturesNotes;
+export default Adwrdwk1;

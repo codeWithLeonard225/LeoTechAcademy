@@ -523,7 +523,420 @@ const allQuizzes = {
       }
     ]
   },
+
+  // ms word advance for office
+  "Adwrdwk1": {
+    "title": "Week 1: Image Management Fundamentals Quiz",
+    "description": "Assess your understanding of inserting, resizing, positioning, wrapping, and basic adjustments of images in Microsoft Word.",
+    "questions": [
+      {
+        "questionText": "Which tab in Word is primarily used for inserting images?",
+        "options": ["Home", "Insert", "Layout", "Design"],
+        "correctAnswer": "Insert"
+      },
+      {
+        "questionText": "What is the most common method to resize an image proportionally in Word?",
+        "options": [
+          "Drag any side handle",
+          "Drag a corner handle",
+          "Drag the top handle only",
+          "Use the Crop tool"
+        ],
+        "correctAnswer": "Drag a corner handle"
+      },
+      {
+        "questionText": "Which feature allows text to flow around an image?",
+        "options": [
+          "Image Border",
+          "Text Wrapping",
+          "Image Alignment",
+          "Picture Style"
+        ],
+        "correctAnswer": "Text Wrapping"
+      },
+      {
+        "questionText": "To make an image move freely on the page, independent of the text, which Text Wrapping option would you typically choose?",
+        "options": [
+          "In Line with Text",
+          "Square",
+          "Tight",
+          "Through"
+        ],
+        "correctAnswer": "Through"
+      },
+      {
+        "questionText": "Which option would you select to remove an unwanted part of an image?",
+        "options": [
+          "Rotate",
+          "Compress Picture",
+          "Crop",
+          "Recolor"
+        ],
+        "correctAnswer": "Crop"
+      },
+      {
+        "questionText": "Where do you typically find the 'Corrections' options (Brightness, Contrast, Sharpen/Soften) for an image?",
+        "options": [
+          "Home tab",
+          "Insert tab",
+          "Picture Format tab (or Format tab for Pictures)",
+          "Review tab"
+        ],
+        "correctAnswer": "Picture Format tab (or Format tab for Pictures)"
+      },
+      {
+        "questionText": "What does 'In Line with Text' text wrapping mean for an image?",
+        "options": [
+          "The image floats above the text",
+          "The image is treated like a character within the text line",
+          "Text wraps tightly around the image's irregular shape",
+          "The image is always centered on the page"
+        ],
+        "correctAnswer": "The image is treated like a character within the text line"
+      },
+      {
+        "questionText": "You want to lighten or darken an image. Which adjustment would you use?",
+        "options": [
+          "Artistic Effects",
+          "Color Saturation",
+          "Brightness/Contrast (Corrections)",
+          "Transparency"
+        ],
+        "correctAnswer": "Brightness/Contrast (Corrections)"
+      },
+      {
+        "questionText": "To add a border or shadow to an image, you would use which set of options?",
+        "options": [
+          "Text Effects",
+          "Picture Styles",
+          "Page Borders",
+          "Paragraph Borders"
+        ],
+        "correctAnswer": "Picture Styles"
+      },
+      {
+        "questionText": "Which option allows you to send an image behind text?",
+        "options": [
+          "Bring Forward",
+          "Bring to Front",
+          "Send Backward",
+          "Send to Back"
+        ],
+        "correctAnswer": "Send to Back"
+      },
+      {
+        "questionText": "What is the purpose of the 'Compress Pictures' option?",
+        "options": [
+          "To make the image larger",
+          "To reduce the file size of the image",
+          "To add more details to the image",
+          "To change the image format (e.g., from JPG to PNG)"
+        ],
+        "correctAnswer": "To reduce the file size of the image"
+      },
+      {
+        "questionText": "Which text wrapping option causes text to wrap around the bounding box of the image, even if the image is irregularly shaped?",
+        "options": [
+          "Tight",
+          "Through",
+          "Square",
+          "Top and Bottom"
+        ],
+        "correctAnswer": "Square"
+      },
+      {
+        "questionText": "If you want to place an image directly on top of specific text, which text wrapping might you use?",
+        "options": [
+          "In Front of Text",
+          "Behind Text",
+          "In Line with Text",
+          "Top and Bottom"
+        ],
+        "correctAnswer": "In Front of Text"
+      },
+      {
+        "questionText": "To apply a predefined visual effect like a reflection or glow to an image, you would look under:",
+        "options": [
+          "Colors",
+          "Artistic Effects",
+          "Picture Effects",
+          "Corrections"
+        ],
+        "correctAnswer": "Picture Effects"
+      },
+      {
+        "questionText": "What does the 'Remove Background' tool allow you to do?",
+        "options": [
+          "Delete the entire image",
+          "Make the image transparent",
+          "Isolate the main subject of an image by making the background transparent",
+          "Change the background color of the Word document"
+        ],
+        "correctAnswer": "Isolate the main subject of an image by making the background transparent"
+      },
+      {
+        "questionText": "Which action allows you to precisely move an image by a small increment?",
+        "options": [
+          "Dragging with the mouse only",
+          "Using the arrow keys after selecting the image",
+          "Copying and pasting the image",
+          "Changing the document's margins"
+        ],
+        "correctAnswer": "Using the arrow keys after selecting the image"
+      },
+      {
+        "questionText": "What is the benefit of grouping multiple images and shapes together?",
+        "options": [
+          "It makes them transparent",
+          "They can be moved and resized as a single object",
+          "It converts them to text",
+          "It applies a watermark to them"
+        ],
+        "correctAnswer": "They can be moved and resized as a single object"
+      },
+      {
+        "questionText": "To revert an image to its original state after applying several adjustments, you would use which option?",
+        "options": [
+          "Crop",
+          "Recolor",
+          "Reset Picture",
+          "Compress Picture"
+        ],
+        "correctAnswer": "Reset Picture"
+      },
+      {
+        "questionText": "When an image is 'In Line with Text', what happens if you add or remove text before it?",
+        "options": [
+          "The image stays in a fixed position on the page",
+          "The image moves with the text as if it were a character",
+          "The text wrapping changes automatically",
+          "The image becomes uneditable"
+        ],
+        "correctAnswer": "The image moves with the text as if it were a character"
+      },
+      {
+        "questionText": "Which option enables you to change the color tone of an image (e.g., grayscale, sepia)?",
+        "options": [
+          "Artistic Effects",
+          "Transparency",
+          "Color (Recolor/Saturation/Tone)",
+          "Border"
+        ],
+        "correctAnswer": "Color (Recolor/Saturation/Tone)"
+      }
+    ]
+  },
+  "AdWrdwk2": {
+    "title": "Week 2: Styles & Themes Quiz",
+    "description": "Test your understanding of Microsoft Word Styles and Themes, including their application, modification, and benefits.",
+    "questions": [
+      {
+        "questionText": "What is the primary purpose of using Styles in a Word document?",
+        "options": [
+          "To add decorative borders to pages",
+          "To ensure consistent formatting and streamline updates",
+          "To insert images and charts easily",
+          "To automatically translate text into different languages"
+        ],
+        "correctAnswer": "To ensure consistent formatting and streamline updates"
+      },
+      {
+        "questionText": "Which type of style affects the entire paragraph, including indentation and line spacing?",
+        "options": [
+          "Character Style",
+          "Table Style",
+          "Paragraph Style",
+          "List Style"
+        ],
+        "correctAnswer": "Paragraph Style"
+      },
+      {
+        "questionText": "Where can you find the Styles pane in Microsoft Word?",
+        "options": [
+          "Insert tab",
+          "Review tab",
+          "Home tab",
+          "View tab"
+        ],
+        "correctAnswer": "Home tab"
+      },
+      {
+        "questionText": "You've applied 'Heading 1' to a title. If you change the font size of 'Heading 1' in the Styles pane, what happens to the title?",
+        "options": [
+          "It remains unchanged until manually updated",
+          "It automatically updates to the new font size",
+          "It reverts to the default font size",
+          "The document crashes"
+        ],
+        "correctAnswer": "It automatically updates to the new font size"
+      },
+      {
+        "questionText": "How would you create a *new* Paragraph Style based on the formatting of existing text in your document?",
+        "options": [
+          "Right-click the text and choose 'Copy Formatting'",
+          "Select the text, then in the Styles pane, click 'New Style' and choose 'Paragraph'",
+          "Go to File > Options > Styles",
+          "Use the Format Painter tool"
+        ],
+        "correctAnswer": "Select the text, then in the Styles pane, click 'New Style' and choose 'Paragraph'"
+      },
+      {
+        "questionText": "What is a Document Theme primarily composed of?",
+        "options": [
+          "Only font styles and sizes",
+          "Margins, page breaks, and column settings",
+          "Theme Colors, Theme Fonts, and Theme Effects",
+          "Headers, footers, and page numbers"
+        ],
+        "correctAnswer": "Theme Colors, Theme Fonts, and Theme Effects"
+      },
+      {
+        "questionText": "Which tab in Word contains options for applying Document Themes?",
+        "options": [
+          "Home tab",
+          "Insert tab",
+          "Design tab",
+          "Layout tab"
+        ],
+        "correctAnswer": "Design tab"
+      },
+      {
+        "questionText": "If you apply a new Document Theme, what generally happens to text that was formatted with built-in Word Styles (like Heading 1, Normal)?",
+        "options": [
+          "Their formatting remains unchanged",
+          "They automatically update to reflect the new Theme's colors and fonts",
+          "They are converted to plain text",
+          "Only their font color changes, not the font style"
+        ],
+        "correctAnswer": "They automatically update to reflect the new Theme's colors and fonts"
+      },
+      {
+        "questionText": "You want to create a custom color palette for your company's documents. Where would you go to define and save these custom colors as part of a Theme?",
+        "options": [
+          "File > Print Options",
+          "Home tab > Font group > Color palette",
+          "Design tab > Colors > Customize Colors",
+          "Review tab > Language options"
+        ],
+        "correctAnswer": "Design tab > Colors > Customize Colors"
+      },
+      {
+        "questionText": "What is the key advantage of saving a custom Document Theme?",
+        "options": [
+          "It encrypts your document for security",
+          "It allows you to quickly apply a consistent look (colors, fonts, effects) across multiple documents",
+          "It compresses the file size of your document",
+          "It enables real-time collaboration with others"
+        ],
+        "correctAnswer": "It allows you to quickly apply a consistent look (colors, fonts, effects) across multiple documents"
+      },
+      {
+        "questionText": "Which action will update an existing Style to match changes you've manually made to selected text?",
+        "options": [
+          "Double-clicking the style name in the Styles pane",
+          "Right-clicking the style name in the Styles pane and choosing 'Update [Style Name] to Match Selection'",
+          "Pressing Ctrl+Z (Undo)",
+          "Saving the document as a new file type"
+        ],
+        "correctAnswer": "Right-clicking the style name in the Styles pane and choosing 'Update [Style Name] to Match Selection'"
+      },
+      {
+        "questionText": "What is a 'Character Style' used for?",
+        "options": [
+          "Formatting entire paragraphs",
+          "Formatting individual words or characters within a paragraph",
+          "Applying a background color to the entire page",
+          "Creating bulleted and numbered lists"
+        ],
+        "correctAnswer": "Formatting individual words or characters within a paragraph"
+      },
+      {
+        "questionText": "What happens if you delete a custom Style that is currently applied to text in your document?",
+        "options": [
+          "The text formatted with that style also gets deleted",
+          "The text formatted with that style reverts to the 'Normal' style",
+          "Word applies a random style to the affected text",
+          "You are prevented from deleting the style"
+        ],
+        "correctAnswer": "The text formatted with that style reverts to the 'Normal' style"
+      },
+      {
+        "questionText": "You've defined custom Theme Fonts. Where do you go to save these custom fonts as part of your overall Theme?",
+        "options": [
+          "Insert tab > Symbols",
+          "Layout tab > Page Setup",
+          "Design tab > Fonts > Customize Fonts",
+          "Home tab > Clipboard"
+        ],
+        "correctAnswer": "Design tab > Fonts > Customize Fonts"
+      },
+      {
+        "questionText": "True or False: Styles help improve document navigation and the creation of automatic Tables of Contents.",
+        "options": ["True", "False"],
+        "correctAnswer": "True"
+      },
+      {
+        "questionText": "If you apply a new Theme, and then apply a custom Style you created, which formatting takes precedence for the elements defined in both?",
+        "options": [
+          "The Theme's formatting always overrides the Style's",
+          "The Style's formatting overrides the Theme's for that specific text",
+          "Neither, they cancel each other out",
+          "It depends on the order in which they were applied"
+        ],
+        "correctAnswer": "The Style's formatting overrides the Theme's for that specific text"
+      },
+      {
+        "questionText": "Which option is NOT a component of a Word Document Theme?",
+        "options": [
+          "Theme Colors",
+          "Theme Fonts",
+          "Theme Effects",
+          "Paragraph Spacing"
+        ],
+        "correctAnswer": "Paragraph Spacing"
+      },
+      {
+        "questionText": "To reuse a specific combination of heading and body fonts across multiple documents, what should you do?",
+        "options": [
+          "Manually select the fonts each time",
+          "Save them as a custom Theme Font set",
+          "Print a copy and refer to it",
+          "Only use built-in font combinations"
+        ],
+        "correctAnswer": "Save them as a custom Theme Font set"
+      },
+      {
+        "questionText": "Which of these is a benefit of using Styles?",
+        "options": [
+          "It makes your document load faster",
+          "It makes it easier to change the formatting of all similar elements (e.g., all headings) with a single click",
+          "It adds security to your document",
+          "It converts your document to a PDF"
+        ],
+        "correctAnswer": "It makes it easier to change the formatting of all similar elements (e.g., all headings) with a single click"
+      },
+      {
+        "questionText": "What is the advantage of using 'Linked Styles' (combining Paragraph and Character formatting)?",
+        "options": [
+          "They only apply to tables",
+          "They can be applied to either a whole paragraph or just a selection of text within it",
+          "They automatically translate text",
+          "They prevent anyone from editing the document"
+        ],
+        "correctAnswer": "They can be applied to either a whole paragraph or just a selection of text within it"
+      }
+    ]
+  },
+
+
+
+
+
+
+
+
   // ms excel for beginers
+  
   "MSexcel_1": {
     "title": "Week 1: MS Excel Basics Quiz",
     "description": "Test your knowledge on the fundamental concepts of Microsoft Excel, including interface navigation, data entry, formatting, formulas, and basic functions.",
@@ -577,6 +990,56 @@ const allQuizzes = {
         "questionText": "In the formula `= (5 + 3) * 2`, what is the purpose of the parentheses?",
         "options": ["They indicate a cell range.", "They convert the result to a currency format.", "They ensure the addition is performed before the multiplication.", "They make the cell reference absolute."],
         "correctAnswer": "They ensure the addition is performed before the multiplication."
+      },
+      {
+        "questionText": "What is the term for a collection of related worksheets saved in a single file?",
+        "options": ["Document", "Presentation", "Workbook", "Database"],
+        "correctAnswer": "Workbook"
+      },
+      {
+        "questionText": "Which of the following is NOT a common data type you can enter into an Excel cell?",
+        "options": ["Text", "Number", "Image", "Date"],
+        "correctAnswer": "Image"
+      },
+      {
+        "questionText": "To select an entire row in Excel, where should you click?",
+        "options": ["The row number on the left side of the worksheet.", "The column letter at the top of the worksheet.", "Any cell within that row.", "The 'Select All' button."],
+        "correctAnswer": "The row number on the left side of the worksheet."
+      },
+      {
+        "questionText": "Which function is used to find the highest value in a range of numbers?",
+        "options": ["MIN", "SUM", "COUNT", "MAX"],
+        "correctAnswer": "MAX"
+      },
+      {
+        "questionText": "If you want to quickly add up a column of numbers, which button on the Home tab would you most likely use?",
+        "options": ["Sort", "Filter", "AutoSum", "Conditional Formatting"],
+        "correctAnswer": "AutoSum"
+      },
+      {
+        "questionText": "What does the green square at the bottom-right corner of a selected cell indicate?",
+        "options": ["It's a merge point.", "It's the fill handle.", "It's a comment indicator.", "It means the cell is locked."],
+        "correctAnswer": "It's the fill handle."
+      },
+      {
+        "questionText": "Which keyboard shortcut is commonly used to undo the last action in Excel?",
+        "options": ["Ctrl + S", "Ctrl + C", "Ctrl + Z", "Ctrl + V"],
+        "correctAnswer": "Ctrl + Z"
+      },
+      {
+        "questionText": "To display a number as a percentage (e.g., 0.25 as 25%), which number format would you apply?",
+        "options": ["Currency", "General", "Percentage", "Date"],
+        "correctAnswer": "Percentage"
+      },
+      {
+        "questionText": "When you open a new, blank Excel file, what is the default name given to the first sheet?",
+        "options": ["Sheet1", "Workbook1", "Data1", "NewSheet"],
+        "correctAnswer": "Sheet1"
+      },
+      {
+        "questionText": "What is the primary purpose of the 'Ribbon' in Excel?",
+        "options": ["To display calculation results.", "To show the current file path.", "To organize and display commands and tools.", "To provide a quick access toolbar."],
+        "correctAnswer": "To organize and display commands and tools."
       }
     ]
   },
