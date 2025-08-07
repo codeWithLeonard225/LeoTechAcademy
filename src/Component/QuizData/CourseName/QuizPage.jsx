@@ -14,6 +14,8 @@ import allQuizzes from './QuizData'; // Adjust path if necessary
 const MAX_QUIZ_ATTEMPTS = 3;
 // Define the target pass percentage
 const PASS_PERCENTAGE = 0.80; // 80%
+// Set a fallback value for the timer if none is found in the database
+const DEFAULT_TIMER_SECONDS = 10; 
 
 const QuizPage = () => {
     const { quizId } = useParams();
@@ -42,12 +44,14 @@ const QuizPage = () => {
     const [quizPassedOverall, setQuizPassedOverall] = useState(false); // New state: true if user has *ever* passed this quiz
 
     // Timer States
-    const TIMER_SECONDS = 10; // This is per question
-    const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
+    // MODIFICATION: Use state for the timer value from the database
+    const [timerValueFromDb, setTimerValueFromDb] = useState(DEFAULT_TIMER_SECONDS);
+    const [timeLeft, setTimeLeft] = useState(DEFAULT_TIMER_SECONDS);
     const timerRef = useRef(null);
 
     // --- Helper to initialize or reset quiz state ---
-    const initializeQuiz = useCallback((quiz) => {
+    // MODIFICATION: The initializeQuiz now takes a timer value as a parameter
+    const initializeQuiz = useCallback((quiz, timerValue) => {
         const initialAnswers = {};
         quiz.questions.forEach((q, index) => {
             initialAnswers[index] = '';
@@ -56,14 +60,14 @@ const QuizPage = () => {
         setCurrentQuestionIndex(0);
         setScore(null); // Reset score for new attempt
         setShowResults(false); // Hide results for new attempt
-        setTimeLeft(TIMER_SECONDS);
+        // MODIFICATION: Use the passed timerValue to set the initial time left
+        setTimeLeft(timerValue);
         clearInterval(timerRef.current); // Ensure timer is reset for a new question
         timerRef.current = null; // Clear the ref value
         setQuestionsAttempted(0);
         setQuestionsNotAttempted(0);
         setWrongAnswers(0);
         setCorrectAnswers(0);
-        // Do NOT reset attemptsLeft or quizPassedOverall here, they are loaded from currentUser via Firebase
     }, []);
 
     // --- Helper function to update user's quiz progress in Firestore and local state ---
@@ -96,7 +100,6 @@ const QuizPage = () => {
             toast.error('Failed to save quiz progress. Please try again.');
         }
     }, [currentUser]); // currentUser is a dependency as we're reading and updating it
-
 
     // --- Memoized handleSubmitQuiz for stable reference ---
     const handleSubmitQuiz = useCallback(async () => {
@@ -219,6 +222,11 @@ const QuizPage = () => {
                     const userData = { id: userDocSnap.id, ...userDocSnap.data() };
                     setCurrentUser(userData); // Set the full user data from Firebase
 
+                    // MODIFICATION START: Get user's custom timer value from the database
+                    const userTimerValue = userData.timerValue || DEFAULT_TIMER_SECONDS;
+                    setTimerValueFromDb(userTimerValue);
+                    // MODIFICATION END
+
                     // Also update the `loggedInUser` in localStorage with the fresh data from Firebase
                     localStorage.setItem('loggedInUser', JSON.stringify(userData));
 
@@ -226,7 +234,8 @@ const QuizPage = () => {
 
                     if (selectedQuiz) {
                         setQuizData(selectedQuiz);
-                        initializeQuiz(selectedQuiz);
+                        // MODIFICATION: Pass the fetched timer value to the initializer
+                        initializeQuiz(selectedQuiz, userTimerValue);
 
                         // Load existing attempts and pass status from the user's Firebase data
                         const userQuizProgress = userData.quizzesTaken?.[quizId] || {
@@ -279,7 +288,8 @@ const QuizPage = () => {
             return;
         }
 
-        setTimeLeft(TIMER_SECONDS);
+        // MODIFICATION: Use the timer value from the database state
+        setTimeLeft(timerValueFromDb);
         clearInterval(timerRef.current);
 
         timerRef.current = setInterval(() => {
@@ -308,7 +318,7 @@ const QuizPage = () => {
                 timerRef.current = null;
             }
         };
-    }, [currentQuestionIndex, quizData, showResults, attemptsLeft, quizPassedOverall, handleSubmitQuiz]);
+    }, [currentQuestionIndex, quizData, showResults, attemptsLeft, quizPassedOverall, handleSubmitQuiz, timerValueFromDb]); // MODIFICATION: Added timerValueFromDb to dependencies
 
     const handleAnswerChange = (questionIndex, answer) => {
         // Only allow answer changes if quiz is active and not already passed
@@ -342,7 +352,8 @@ const QuizPage = () => {
     const handlePlayAgain = () => {
         // Allow playing again only if the quiz has NOT been passed overall AND there are attempts left
         if (!quizPassedOverall && attemptsLeft > 0) {
-            initializeQuiz(quizData); // Reset quiz for a new attempt
+            // MODIFICATION: Pass the fetched timer value when initializing a new attempt
+            initializeQuiz(quizData, timerValueFromDb);
         } else if (quizPassedOverall) {
             toast.info("You've already passed this quiz! No need to play again.");
         } else {
@@ -530,7 +541,7 @@ const QuizPage = () => {
                                 ) : (
                                     !quizPassedOverall && <p className="text-red-700 font-semibold mb-4">You have no attempts left for this quiz.</p>
                                 )}
-                                       <button
+                                <button
                                     onClick={() => navigate(-1)}
                                     className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300"
                                 >
@@ -542,7 +553,6 @@ const QuizPage = () => {
                                 <p className="text-xl text-gray-700 mb-4">
                                     {quizData.questions.length === 0 ? "No questions available for this quiz yet." : "You cannot take this quiz."}
                                 </p>
-                               
                                 <button
                                     onClick={() => navigate(-1)}
                                     className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg shadow-md transition duration-300"

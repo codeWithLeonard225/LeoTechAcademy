@@ -1,37 +1,39 @@
-// src/components/StudentCardPage.jsx
-import React, { useEffect, useState }from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { doc, getDoc, updateDoc, collection, getDocs } from "firebase/firestore"; // Import collection and getDocs
-import { db } from "../../../firebase"; // Ensure this path is correct
+import { doc, getDoc, updateDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase";
 
 export default function StudentCardPage() {
   const { id } = useParams();
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [allCoursesStructure, setAllCoursesStructure] = useState({}); // State to store fetched course structure
+  const [allCoursesStructure, setAllCoursesStructure] = useState({});
 
   // States for editing quiz attempts
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentQuizName, setCurrentQuizName] = useState("");
   const [currentAttemptIndex, setCurrentAttemptIndex] = useState(null);
   const [editedScore, setEditedScore] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false); // To disable buttons during update
+  const [isUpdating, setIsUpdating] = useState(false);
+  
+  // New state for the timer value
+  const [timerValue, setTimerValue] = useState("");
 
   // State for selected course in Course Progress section
   const [selectedCourseProgress, setSelectedCourseProgress] = useState("");
 
-  // --- Message Box / Error Handling (Copied from VerifyPayment for consistency) ---
+  // --- Message Box / Error Handling ---
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [messageBoxContent, setMessageBoxContent] = useState({ title: '', body: '', type: '' });
 
   const showMessage = (title, body, type = 'info', onConfirm = null) => {
     setMessageBoxContent({ title, body, type, onConfirm });
     setShowMessageBox(true);
-    if (type !== 'confirm') { // Only auto-hide if not a confirmation message
+    if (type !== 'confirm') {
       setTimeout(() => {
         hideMessageBox();
-      }, 2000); // Hide after 2 seconds
+      }, 2000);
     }
   };
 
@@ -44,10 +46,9 @@ export default function StudentCardPage() {
     setError(msg);
     setTimeout(() => {
       setError('');
-    }, 2000); // Clear error after 2 seconds
+    }, 2000);
   };
   // --- End Message Box / Error Handling ---
-
 
   // Function to fetch student data
   const fetchStudent = async () => {
@@ -58,10 +59,11 @@ export default function StudentCardPage() {
       if (docSnap.exists()) {
         const studentData = docSnap.data();
         setStudent(studentData);
-        // Set the initial selected course to the first enrolled course if available
         if (studentData.enrolledCourseIds && studentData.enrolledCourseIds.length > 0) {
           setSelectedCourseProgress(studentData.enrolledCourseIds[0]);
         }
+        // Set the timer value from the fetched student data
+        setTimerValue(studentData.timerValue || "");
       } else {
         setStudent(null);
         setTimedError("Student not found.");
@@ -77,20 +79,17 @@ export default function StudentCardPage() {
   // Function to fetch all course structures
   const fetchCourseStructures = async () => {
     try {
-      const coursesCollectionRef = collection(db, 'InPersonCourses'); // Your course collection name
+      const coursesCollectionRef = collection(db, 'InPersonCourses');
       const querySnapshot = await getDocs(coursesCollectionRef);
       const coursesData = {};
-
       querySnapshot.docs.forEach(doc => {
         const course = doc.data();
-        const courseId = course.id; // Assuming 'id' field in course document is the course identifier
+        const courseId = course.id;
         const sections = {};
-
-        // Map weeklyContent to sections
         course.weeklyContent.forEach(week => {
-          sections[week.week.toString()] = { // Use week number as section key
+          sections[week.week.toString()] = {
             totalLessons: week.lessons?.length || 0,
-            totalQuizzes: week.quizId ? 1 : 0, // Assuming 1 quiz if quizId exists
+            totalQuizzes: week.quizId ? 1 : 0,
             totalReadings: week.readings?.length || 0,
           };
         });
@@ -103,37 +102,58 @@ export default function StudentCardPage() {
     }
   };
 
+  // Function to handle saving the timer value
+  const handleSaveTimer = async () => {
+    // Basic validation
+    if (timerValue === "" || isNaN(timerValue) || Number(timerValue) < 0) {
+        showMessage("Error", "Please enter a valid positive number for the timer.", "error");
+        return;
+    }
+
+    setIsUpdating(true);
+
+    try {
+        const studentDocRef = doc(db, "Users", id);
+        await updateDoc(studentDocRef, {
+            timerValue: Number(timerValue), // Ensure the value is saved as a number
+        });
+        showMessage("Success", "Timer value saved successfully!", "success");
+    } catch (error) {
+        console.error("Error saving timer value:", error);
+        showMessage("Error", "Failed to save timer value.", "error");
+    } finally {
+        setIsUpdating(false);
+    }
+  };
+
   useEffect(() => {
     fetchStudent();
-    fetchCourseStructures(); // Fetch course structures on component mount
-  }, [id]); // Dependency array includes 'id' to refetch if the ID in the URL changes
+    fetchCourseStructures();
+  }, [id]);
 
 
   // --- Quiz Attempt Management Functions ---
-
-  const recalculateQuizData = (quizData, quizName) => { // Pass quizName here
+  const recalculateQuizData = (quizData, quizName) => {
     const attempts = quizData.attempts || [];
     let latestAttemptScore = "N/A";
     let hasPassedQuiz = false;
 
     if (attempts.length > 0) {
-      // Find the latest attempt by date
       const sortedAttempts = [...attempts].sort((a, b) => new Date(b.date) - new Date(a.date));
       latestAttemptScore = sortedAttempts[0].score;
 
-      // Dynamic passing score logic (can be refined further if passing scores are in course structure)
       if (quizName === "MSweek_1") {
-         hasPassedQuiz = latestAttemptScore >= 7; // Example passing score for MSweek_1
+        hasPassedQuiz = latestAttemptScore >= 7;
       } else if (quizName === "HTML_Week1") {
-         hasPassedQuiz = latestAttemptScore >= 15; // Example passing score for HTML_Week1
+        hasPassedQuiz = latestAttemptScore >= 15;
       } else {
-         hasPassedQuiz = latestAttemptScore >= 7; // Default passing score
+        hasPassedQuiz = latestAttemptScore >= 7;
       }
     }
 
     return {
       ...quizData,
-      attempts, // Ensure attempts array is updated
+      attempts, // This line is crucial for returning the updated array
       latestAttemptScore,
       hasPassedQuiz,
     };
@@ -162,10 +182,19 @@ export default function StudentCardPage() {
             const updatedQuizzesTaken = { ...currentStudentData.quizzesTaken };
 
             if (updatedQuizzesTaken[quizName] && updatedQuizzesTaken[quizName].attempts) {
-              const newAttempts = [...updatedQuizzesTaken[quizName].attempts];
-              newAttempts.splice(attemptIndex, 1); // Remove the attempt
+              // Create a new array without the attempt to be removed
+              const newAttempts = updatedQuizzesTaken[quizName].attempts.filter(
+                (_, idx) => idx !== attemptIndex
+              );
 
-              updatedQuizzesTaken[quizName] = recalculateQuizData(updatedQuizzesTaken[quizName], quizName);
+              // Update the quizzesTaken object with the new attempts array
+              const updatedQuizData = {
+                ...updatedQuizzesTaken[quizName],
+                attempts: newAttempts,
+              };
+
+              // Recalculate the latest score and pass status based on the new attempts
+              updatedQuizzesTaken[quizName] = recalculateQuizData(updatedQuizData, quizName);
 
               await updateDoc(studentDocRef, {
                 quizzesTaken: updatedQuizzesTaken,
@@ -192,7 +221,7 @@ export default function StudentCardPage() {
     }
 
     setIsUpdating(true);
-    setShowEditModal(false); // Close modal immediately
+    setShowEditModal(false);
 
     try {
       const studentDocRef = doc(db, "Users", id);
@@ -200,19 +229,17 @@ export default function StudentCardPage() {
 
       if (currentStudentSnap.exists()) {
         const currentStudentData = currentStudentSnap.data();
-        // Deep copy to ensure nested objects are mutable
         const updatedQuizzesTaken = JSON.parse(JSON.stringify(currentStudentData.quizzesTaken));
 
         if (updatedQuizzesTaken[currentQuizName] && updatedQuizzesTaken[currentQuizName].attempts) {
           updatedQuizzesTaken[currentQuizName].attempts[currentAttemptIndex].score = Number(editedScore);
-
           updatedQuizzesTaken[currentQuizName] = recalculateQuizData(updatedQuizzesTaken[currentQuizName], currentQuizName);
 
           await updateDoc(studentDocRef, {
             quizzesTaken: updatedQuizzesTaken,
           });
           showMessage("Success", "Quiz score updated successfully!", "success");
-          fetchStudent(); // Re-fetch student data to update UI
+          fetchStudent();
         }
       }
     } catch (error) {
@@ -221,7 +248,6 @@ export default function StudentCardPage() {
       showMessage("Error", "Failed to update score.", "error");
     } finally {
       setIsUpdating(false);
-      // Reset editing states
       setCurrentQuizName("");
       setCurrentAttemptIndex(null);
       setEditedScore("");
@@ -259,7 +285,6 @@ export default function StudentCardPage() {
     );
   }
 
-  // Destructure for easier access and provide defaults
   const {
     username,
     email,
@@ -285,7 +310,6 @@ export default function StudentCardPage() {
         allAttempts.push(attempt.score);
       });
     }
-    // Use the hasPassedQuiz property from the data, which is recalculated on update
     if (quizData.hasPassedQuiz) {
       quizzesPassedCount++;
     }
@@ -302,7 +326,6 @@ export default function StudentCardPage() {
       : "N/A";
 
   // --- Helper Render Functions ---
-
   const renderQuizAttempts = (attempts, quizName) => {
     if (!attempts || attempts.length === 0) {
       return <p className="text-sm text-gray-600 italic">No attempts recorded.</p>;
@@ -347,17 +370,12 @@ export default function StudentCardPage() {
     if (!progressData || Object.keys(progressData).length === 0) {
       return <p className="text-gray-600 italic">No course progress recorded.</p>;
     }
-
-    // Filter to show only the selected course's progress
     const coursesToRender = selectedCourse ? { [selectedCourse]: progressData[selectedCourse] } : progressData;
 
     return (
       <div className="space-y-6">
         {Object.entries(coursesToRender).map(([courseName, courseContent]) => {
-          // Get the total structure for this specific course from the fetched data
           const currentCourseTotalStructure = courseStructureData[courseName];
-
-          // Calculate overall course progress (simple average of section progress)
           let totalSectionsWithData = 0;
           let overallCourseProgressPercentage = 0;
 
@@ -370,27 +388,19 @@ export default function StudentCardPage() {
               {currentCourseTotalStructure && Object.keys(currentCourseTotalStructure.sections).length > 0 ? (
                 Object.entries(currentCourseTotalStructure.sections).map(([sectionKey, sectionTotals]) => {
                   const sectionData = courseContent.completedItems?.[sectionKey] || { lessons: [], quizzes: [], readings: [] };
-
-                  // Calculate lesson progress
                   const completedLessonsCount = sectionData.lessons?.length || 0;
                   const totalLessons = sectionTotals.totalLessons || 0;
                   const lessonProgress = totalLessons > 0 ? (completedLessonsCount / totalLessons) * 100 : 0;
                   const lessonsRemaining = totalLessons - completedLessonsCount;
-
-                  // Calculate quiz progress
                   const completedQuizzesCount = sectionData.quizzes?.length || 0;
                   const totalQuizzes = sectionTotals.totalQuizzes || 0;
                   const quizProgress = totalQuizzes > 0 ? (completedQuizzesCount / totalQuizzes) * 100 : 0;
                   const quizzesRemaining = totalQuizzes - completedQuizzesCount;
-
-                  // Calculate reading progress
                   const completedReadingsCount = sectionData.readings?.length || 0;
                   const totalReadings = sectionTotals.totalReadings || 0;
                   const readingProgress = totalReadings > 0 ? (completedReadingsCount / totalReadings) * 100 : 0;
                   const readingsRemaining = totalReadings - completedReadingsCount;
 
-
-                  // Sum up for overall course progress (average of available progress types)
                   let sectionItemsCount = 0;
                   let sectionProgressSum = 0;
                   if (totalLessons > 0) { sectionItemsCount++; sectionProgressSum += lessonProgress; }
@@ -402,12 +412,9 @@ export default function StudentCardPage() {
                       overallCourseProgressPercentage += (sectionProgressSum / sectionItemsCount);
                   }
 
-
                   return (
                     <div key={sectionKey} className="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-100">
                       <p className="font-medium text-lg text-gray-800 mb-2">Section {sectionKey}:</p>
-
-                      {/* Lesson Progress */}
                       <p className="text-md text-gray-700 mb-1">
                         Lessons: {completedLessonsCount} / {totalLessons} Completed{" "}
                         <span className="font-semibold text-sm">({lessonProgress.toFixed(0)}%)</span>
@@ -425,8 +432,6 @@ export default function StudentCardPage() {
                       ) : (
                         totalLessons > 0 && <p className="text-sm text-green-600 italic">All lessons completed!</p>
                       )}
-
-                      {/* Quiz Progress */}
                       <p className="text-md text-gray-700 mt-3 mb-1">
                         Quizzes: {completedQuizzesCount} / {totalQuizzes} Completed{" "}
                         <span className="font-semibold text-sm">({quizProgress.toFixed(0)}%)</span>
@@ -444,8 +449,6 @@ export default function StudentCardPage() {
                       ) : (
                         totalQuizzes > 0 && <p className="text-sm text-green-600 italic">All quizzes completed!</p>
                       )}
-
-                      {/* Reading Progress */}
                       {totalReadings > 0 && (
                         <>
                           <p className="text-md text-gray-700 mt-3 mb-1">
@@ -514,7 +517,6 @@ export default function StudentCardPage() {
           <p className="mb-2">
             <strong className="text-indigo-800">Enrolled Courses:</strong>{" "}
             {enrolledCourseIds.length > 0 ? (
-                // Map over enrolledCourseIds to create clickable links
                 enrolledCourseIds.map((courseId, index) => (
                     <React.Fragment key={courseId}>
                         <Link
@@ -532,6 +534,27 @@ export default function StudentCardPage() {
             <strong className="text-indigo-800">In-Person Classes:</strong>{" "}
             {inPersonClassIds.length > 0 ? inPersonClassIds.join(", ") : "None"}
           </p>
+          {/* New Timer input and save button */}
+          <div className="mt-6">
+            <div className="flex items-center space-x-2">
+                <label htmlFor="timerValue" className="text-indigo-800 font-bold">Timer (mins):</label>
+                <input
+                    type="number"
+                    id="timerValue"
+                    value={timerValue}
+                    onChange={(e) => setTimerValue(e.target.value)}
+                    className="w-24 p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    min="0"
+                />
+                <button
+                    onClick={handleSaveTimer}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                    disabled={isUpdating}
+                >
+                    {isUpdating ? 'Saving...' : 'Save'}
+                </button>
+            </div>
+          </div>
         </div>
 
         <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
@@ -560,7 +583,7 @@ export default function StudentCardPage() {
                     </span>
                   </p>
                   <p className="font-medium text-gray-800 mb-1">Attempts:</p>
-                  {renderQuizAttempts(quizData.attempts, quizName)} {/* Pass quizName */}
+                  {renderQuizAttempts(quizData.attempts, quizName)}
                 </div>
               ))
             ) : (
@@ -572,7 +595,6 @@ export default function StudentCardPage() {
         <div className="p-6 bg-green-50 rounded-lg border border-green-200">
           <h2 className="text-2xl font-semibold text-green-700 mb-4">Course Progress</h2>
 
-          {/* Course Selection Dropdown */}
           {enrolledCourseIds.length > 0 && (
             <div className="mb-6">
               <label htmlFor="courseSelect" className="block text-gray-700 text-lg font-medium mb-2">
@@ -593,7 +615,6 @@ export default function StudentCardPage() {
             </div>
           )}
 
-          {/* Render progress only for the selected course */}
           {selectedCourseProgress ? (
             renderCourseProgress(userProgress, allCoursesStructure, selectedCourseProgress)
           ) : (
@@ -602,7 +623,6 @@ export default function StudentCardPage() {
         </div>
       </div>
 
-      {/* Edit Quiz Score Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm border-t-4 border-blue-500">
@@ -616,9 +636,8 @@ export default function StudentCardPage() {
               onChange={(e) => setEditedScore(e.target.value)}
               placeholder="Enter new score"
               className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-              min="0" // Assuming scores are non-negative
-              // Dynamically set max score based on the quiz name from the course structure if available
-              max={currentQuizName === "HTML_Week1" ? "20" : "10"} // This still uses hardcoded values.
+              min="0"
+              max={currentQuizName === "HTML_Week1" ? "20" : "10"}
             />
             <div className="flex justify-end space-x-3">
               <button
@@ -641,7 +660,6 @@ export default function StudentCardPage() {
         </div>
       )}
 
-      {/* Custom Message Box (from VerifyPayment) */}
       {showMessageBox && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4">
               <div className={`bg-white p-6 rounded-lg shadow-xl w-full max-w-sm border-t-4 ${

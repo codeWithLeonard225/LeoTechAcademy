@@ -51,6 +51,10 @@ import MsExcelWeek4 from './Component/Reading/MSEXCEL/Beg/MsExcelWeek4';
 import Adwrdwk1 from './Component/Reading/MSWORD/Advance/Adwrdwk1';
 import AdWrdWk2 from './Component/Reading/MSWORD/Advance/AdWrdWk2';
 import AdWrdWk3 from './Component/Reading/MSWORD/Advance/AdWrdWk3';
+import CbWk1 from './Component/Reading/ComputerBasics/CbWk1';
+import CbWk2 from './Component/Reading/ComputerBasics/CbWk2';
+import CbWk3 from './Component/Reading/ComputerBasics/CbWk3';
+import CbWk4 from './Component/Reading/ComputerBasics/CbWk4';
 
 
 
@@ -97,6 +101,13 @@ function App() {
         <Route path="/fees-form" element={<FeesForm />} />
         <Route path="/print-enrollment" element={<PrintEnrollmentDetails />} />
 
+        
+        {/* Computer Basics  */}
+        <Route path="/courses/CbWeek1" element={<CbWk1 />} />
+        <Route path="/courses/CbWeek2" element={<CbWk2 />} />
+        <Route path="/courses/CbWeek3" element={<CbWk3 />} />
+        <Route path="/courses/CbWeek4" element={<CbWk4 />} />
+
         {/* MS Word Beginer  */}
         <Route path="/courses/week_1" element={<Week1Page />} />
         <Route path="/courses/MsWorkWeek1" element={<MsWorkWeek1 />} />
@@ -107,7 +118,7 @@ function App() {
         {/* MS Word Advance */}
         <Route path="/courses/MsAdkWeek1" element={<Adwrdwk1 />} />
         <Route path="/courses/MsAdkWeek2" element={<AdWrdWk2 />} />
-        {/* <Route path="/" element={<AdWrdWk3 />} /> */}
+        <Route path="/courses/MsAdkWeek3" element={<AdWrdWk3 />} />
         
 
         {/* MS Excel Beginer*/}

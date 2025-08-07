@@ -1,450 +1,600 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore'; // Import collection, query, where, getDocs
+import { db } from "../../../../firebase"; // Adjust path if needed
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
-// Simple Toggle Component for Before/After Effect (Consider moving to its own file like BeforeAfterToggle.jsx)
-const BeforeAfterToggle = ({ beforeSrc, afterSrc, description }) => {
-    const [showAfter, setShowAfter] = useState(false);
+// --- CORRECTED getCourseDetails function ---
+// Fetch course from either 'InPersonCourses' or 'freeCourse' (matching InPersonDashboard)
+const getCourseDetails = async (courseId) => {
+    try {
+        const inPersonCourseDocRef = doc(db, 'InPersonCourses', courseId);
+        const inPersonCourseDocSnap = await getDoc(inPersonCourseDocRef);
 
-    return (
-        <div className="flex flex-col items-center my-6 p-4 bg-white rounded-lg shadow-sm">
-            <p className="text-sm text-gray-600 mb-3 italic text-center">{description}</p>
-            <div className="relative w-full max-w-xs md:max-w-md lg:max-w-lg h-48 md:h-64 lg:h-80 bg-gray-100 flex items-center justify-center overflow-hidden rounded-lg shadow-md border border-gray-200">
-                <img
-                    src={showAfter ? afterSrc : beforeSrc}
-                    alt={showAfter ? "After effect" : "Before effect"}
-                    className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
-                />
-            </div>
-            <div className="mt-4">
-                <button
-                    onClick={() => setShowAfter(!showAfter)}
-                    className="px-4 py-2 bg-blue-500 text-white text-base rounded-md shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus->ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
-                >
-                    Show {showAfter ? 'Original' : 'Modified'}
-                </button>
-            </div>
-        </div>
-    );
+        if (inPersonCourseDocSnap.exists()) {
+            return { id: inPersonCourseDocSnap.id, ...inPersonCourseDocSnap.data(), isFree: false };
+        }
+
+        const freeCourseDocRef = doc(db, 'freeCourse', courseId);
+        const freeCourseDocSnap = await getDoc(freeCourseDocRef);
+
+        if (freeCourseDocSnap.exists()) {
+            return { id: freeCourseDocSnap.id, ...freeCourseDocSnap.data(), isFree: true };
+        }
+
+        console.warn(`Course with ID ${courseId} not found in 'InPersonCourses' or 'freeCourse'.`);
+        return null;
+    } catch (error) {
+        console.error(`Error fetching course with ID ${courseId}:`, error);
+        return null;
+    }
 };
+// --- End of corrected getCourseDetails function ---
 
 
-const AdWrdWk2 = () => {
+const InPersonCoursePage = () => {
+    const { courseId } = useParams();
     const navigate = useNavigate();
+    const [course, setCourse] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    // Renamed for clarity: this now tracks the EXPANDED week, not the highest unlocked.
+    const [expandedWeek, setExpandedWeek] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    // New state for payment details
+    const [totalPaidForCourse, setTotalPaidForCourse] = useState(0);
+    const [balanceDueForCourse, setBalanceDueForCourse] = useState(0);
 
-    const handleBackClick = () => {
-        navigate(-1); // Navigates back one step in the history
+    /**
+     * Calculates the completion percentage of lessons for a given week.
+     * @param {object} weekData - The data for the current week.
+     * @param {object} userCourseProgress - The user's progress for the course.
+     * @returns {number} The percentage of lessons completed for the week.
+     */
+    const calculateLessonProgress = useCallback((weekData, userCourseProgress) => {
+        const completedLessons = userCourseProgress.completedItems[weekData.week]?.lessons?.length || 0;
+        const totalLessons = weekData.lessons?.length || 0;
+        return totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+    }, []);
+
+    /**
+     * Determines if a week is "completed" based on 80% lesson progress and quiz completion.
+     * This is the criterion for UNLOCKING THE NEXT WEEK.
+     * @param {object} weekData - The data for the current week.
+     * @param {object} userCourseProgress - The user's progress for the course.
+     * @returns {boolean} True if the week's unlock criteria are met, false otherwise.
+     */
+    const isWeekUnlockCriteriaMet = useCallback((weekData, userCourseProgress) => {
+        if (!weekData) return false;
+
+        const lessonProgress = calculateLessonProgress(weekData, userCourseProgress);
+        const hasQuiz = !!weekData.quizId;
+        const isQuizComplete = hasQuiz ? (userCourseProgress.completedItems[weekData.week]?.quizzes?.includes(weekData.quizId) || false) : true;
+
+        if (!weekData.lessons?.length && !hasQuiz) {
+            return true; // Week with no content is considered "met" for progression
+        }
+
+        if (!hasQuiz) {
+            return lessonProgress >= 80;
+        }
+
+        return lessonProgress >= 80 && isQuizComplete;
+    }, [calculateLessonProgress]);
+
+
+    useEffect(() => {
+        const fetchCourseAndUser = async () => {
+            setLoading(true);
+            setError(null);
+
+            const storedUserString = localStorage.getItem('loggedInUser');
+            if (!storedUserString) {
+                navigate('/login');
+                return;
+            }
+            let userId = null;
+            try {
+                const tempUser = JSON.parse(storedUserString);
+                userId = tempUser.id;
+            } catch (parseError) {
+                console.error("Error parsing user from localStorage:", parseError);
+                navigate('/login');
+                return;
+            }
+
+            if (!userId) {
+                setError("User ID not found in local storage. Please log in again.");
+                navigate('/login');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const userDocRef = doc(db, 'Users', userId);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    const userData = { id: userDocSnap.id, ...userDocSnap.data() };
+                    setCurrentUser(userData);
+
+                    let foundCourse = await getCourseDetails(courseId);
+
+                    if (foundCourse) {
+                        setCourse(foundCourse);
+
+                        // --- Fetch Payment Details for the Course ---
+                        if (!foundCourse.isFree && foundCourse.price) {
+                            const paymentsQuery = query(
+                                collection(db, 'Payments'),
+                                where('studentId', '==', userId),
+                                where('courseId', '==', courseId)
+                            );
+                            const paymentsSnapshot = await getDocs(paymentsQuery);
+                            let totalPaid = 0;
+                            paymentsSnapshot.forEach(doc => {
+                                totalPaid += Number(doc.data().amountPaid || 0);
+                            });
+                            setTotalPaidForCourse(totalPaid);
+                            setBalanceDueForCourse(Number(foundCourse.price) - totalPaid);
+                        } else {
+                            // For free courses or courses without a price, set paid/balance to 0
+                            setTotalPaidForCourse(0);
+                            setBalanceDueForCourse(0);
+                        }
+                        // --- End Fetch Payment Details ---
+
+                        const userProgressForCourse = userData.userProgress?.[courseId] || { completedItems: {} };
+                        let highestAccessibleWeek = 1;
+
+                        if (foundCourse.weeklyContent && foundCourse.weeklyContent.length > 0) {
+                            for (let i = 0; i < foundCourse.weeklyContent.length; i++) {
+                                const week = foundCourse.weeklyContent[i];
+                                // We don't need to check prevWeek for week 1, as it's always accessible.
+                                // For subsequent weeks, check if the *previous* week's criteria are met.
+                                if (week.week > 1) {
+                                    const prevWeek = foundCourse.weeklyContent.find(w => w.week === week.week - 1);
+                                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userProgressForCourse)) {
+                                        highestAccessibleWeek = week.week;
+                                    } else {
+                                        break; // Stop at the first locked week
+                                    }
+                                }
+                            }
+                        }
+                        // Set the initially expanded week to the highest accessible week.
+                        // Or, you could set it to week 1 by default and let the user expand others.
+                        setExpandedWeek(highestAccessibleWeek);
+
+                    } else {
+                        console.warn(`Course with ID: "${courseId}" not found in Firebase. Redirecting to courses list.`);
+                        toast.error(`Course "${courseId}" not found.`);
+                        navigate('/in-person-courses-list');
+                    }
+                } else {
+                    setError(`User profile not found in database for ID: ${userId}. Please contact support or log in again.`);
+                    navigate('/login');
+                }
+            } catch (err) {
+                console.error("Error fetching user or course data from Firebase:", err);
+                setError("Failed to load user or course data. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourseAndUser();
+    }, [courseId, navigate, isWeekUnlockCriteriaMet]);
+
+    // Toggles the visibility of a week's content
+    const toggleWeek = (weekNumber) => {
+        // Find the highest accessible week for the current user's progress.
+        // This logic needs to be run dynamically when a user clicks,
+        // as progress might have just been updated.
+        const userProgressForCourse = currentUser?.userProgress?.[courseId] || { completedItems: {} };
+        let currentHighestAccessibleWeek = 1;
+        if (course?.weeklyContent && course.weeklyContent.length > 0) {
+            for (let i = 0; i < course.weeklyContent.length; i++) {
+                const week = course.weeklyContent[i];
+                if (week.week > 1) {
+                    const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userProgressForCourse)) {
+                        currentHighestAccessibleWeek = week.week;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Only allow toggling if the week is less than or equal to the highest accessible week.
+        if (weekNumber <= currentHighestAccessibleWeek) {
+            setExpandedWeek(expandedWeek === weekNumber ? null : weekNumber);
+        } else {
+            toast.warn(`Please complete the previous week's requirements to unlock Week ${weekNumber}.`);
+        }
     };
 
+    const markContentComplete = async (weekNumber, contentType, itemIdentifier) => {
+        if (!currentUser || !course || !currentUser.id) {
+            toast.error('Cannot mark content complete: User data missing or User ID not found.');
+            console.warn('Cannot mark content complete: currentUser, course data, or currentUser.id is missing.');
+            return;
+        }
+
+        const updatedUserProgress = JSON.parse(JSON.stringify(currentUser.userProgress || {}));
+
+        if (!updatedUserProgress[courseId]) {
+            updatedUserProgress[courseId] = { completedItems: {} };
+        }
+
+        const courseProgress = updatedUserProgress[courseId];
+
+        if (!courseProgress.completedItems) courseProgress.completedItems = {};
+        if (!courseProgress.completedItems[weekNumber]) courseProgress.completedItems[weekNumber] = {};
+        if (!courseProgress.completedItems[weekNumber][contentType]) courseProgress.completedItems[weekNumber][contentType] = [];
+
+        if (courseProgress.completedItems[weekNumber][contentType].includes(itemIdentifier)) {
+            toast.info(`'${itemIdentifier}' is already complete.`);
+            return;
+        }
+
+        courseProgress.completedItems[weekNumber][contentType].push(itemIdentifier);
+        courseProgress.completedItems[weekNumber][contentType].sort();
+        toast.success(`'${itemIdentifier}' marked complete!`);
+
+        // Update local state first for immediate UI feedback
+        setCurrentUser(prevUser => ({
+            ...prevUser,
+            userProgress: updatedUserProgress
+        }));
+
+        // After updating the user's progress, re-evaluate the highest accessible week
+        // to ensure the UI correctly reflects newly unlocked weeks immediately.
+        let highestAccessibleWeekAfterCompletion = 1;
+        if (course.weeklyContent && course.weeklyContent.length > 0) {
+            for (let i = 0; i < course.weeklyContent.length; i++) {
+                const week = course.weeklyContent[i];
+                if (week.week > 1) {
+                    const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                    if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, updatedUserProgress[courseId])) {
+                        highestAccessibleWeekAfterCompletion = week.week;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        // If a new week was unlocked, expand it automatically.
+        if (highestAccessibleWeekAfterCompletion > (expandedWeek || 0)) { // Use 0 for initial null check
+            setExpandedWeek(highestAccessibleWeekAfterCompletion);
+            toast.success(`Week ${highestAccessibleWeekAfterCompletion} unlocked!`);
+        }
+
+
+        try {
+            const userDocRef = doc(db, 'Users', currentUser.id);
+            await updateDoc(userDocRef, {
+                userProgress: updatedUserProgress
+            });
+            console.log('User progress updated in Firestore successfully!');
+        } catch (firebaseError) {
+            console.error('Error updating user progress in Firestore:', firebaseError);
+            toast.error('Failed to save progress to cloud. Please try again.');
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('loggedInUser');
+        navigate('/login');
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <p className="text-gray-700 text-lg">Loading course data...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+                <p className="text-red-600 text-lg mb-4">{error}</p>
+                <button
+                    onClick={() => navigate('/in-person-courses-list')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+                >
+                    Go to In-Person Courses
+                </button>
+            </div>
+        );
+    }
+
+    if (!course || !currentUser) {
+        return null;
+    }
+
+    const userCourseProgress = currentUser.userProgress?.[course.id] || { completedItems: {} };
+
+    // This variable will determine if a week is visually 'enabled' or 'disabled'
+    // based on the user's progress. It's computed dynamically.
+    let highestAccessibleWeek = 1;
+    if (course.weeklyContent && course.weeklyContent.length > 0) {
+        for (let i = 0; i < course.weeklyContent.length; i++) {
+            const week = course.weeklyContent[i];
+            if (week.week > 1) {
+                const prevWeek = course.weeklyContent.find(w => w.week === week.week - 1);
+                if (prevWeek && isWeekUnlockCriteriaMet(prevWeek, userCourseProgress)) {
+                    highestAccessibleWeek = week.week;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
     return (
-        <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-            <button
-                onClick={handleBackClick}
-                className="mb-6 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
-            >
-                &larr; Back
-            </button>
+        <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
+            <ToastContainer position="bottom-right" autoClose={5000} />
 
-            {/* --- Introduction to Week 2 --- */}
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-4 border-b-4 border-emerald-400 pb-3">
-                Introduction to Week 2: Mastering Styles, Themes, Quick Parts & Templates
-            </h1>
-            <p className="text-lg text-gray-700 mb-10 leading-relaxed">
-                This week is a game-changer for moving beyond manual typing and formatting. We'll learn how to use Word's powerful Styles, Themes, Quick Parts, and Templates. These tools allow you to apply consistent formatting with a click, reuse content, and create professional-looking documents quickly, saving you immense time in your daily office tasks.
-            </p>
-
-            {/* --- Topic 1: Mastering Styles for Consistent Formatting --- */}
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-blue-300 pb-3">
-                Topic 1: Mastering Styles for Consistent Formatting
-            </h1>
-
-            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                What we'll cover: Styles are the secret to consistent, professional-looking documents that are easy to update. They'll transform how you format.
-            </p>
-
-            {/* Section 1: Understanding Styles */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    1. Understanding Styles
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">What are Styles?</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                        Think of them as pre-packaged sets of formatting (like font type, size, color, bold/italic, alignment, line spacing, paragraph spacing) that you can apply with a single click.
-                        In Word, you can find the Styles Gallery on the Home tab. The **Styles Pane** (accessible via a small arrow in the bottom right of the Styles group) provides a more detailed view and control over all available styles.
-                    </p>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/styles-gallery-pane.PNG" // Placeholder image
-                            alt="Screenshot of Word's Styles Gallery and Styles Pane"
-                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
-                        />
+            <header className="bg-white shadow-md p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center">
+                <div className="flex items-center mb-2 sm:mb-0">
+                    <Link
+                        to="/inPersonDashboard"
+                        className="text-blue-600 hover:text-blue-800 font-semibold text-base sm:text-lg mr-4"
+                    >
+                        ← Back to Dashboard
+                    </Link>
+                    {currentUser.id && (
+                        <span className="text-gray-700 text-sm sm:text-base font-medium bg-gray-100 px-3 py-1 rounded-full">
+                            User ID: <span className="font-bold text-gray-800">{currentUser.id}</span>
+                        </span>
+                    )}
+                </div>
+                {/* Payment Info in Header */}
+                {!course.isFree && course.price && (
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+                        <p className="text-sm sm:text-base text-blue-800">
+                            <span className="font-semibold">Course Price:</span> SLE {Number(course.price).toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-green-700">
+                            <span className="font-semibold">Total Paid:</span> SLE {totalPaidForCourse.toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-red-700">
+                            <span className="font-semibold">Balance Due:</span> SLE {balanceDueForCourse.toFixed(2)}
+                        </p>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The Styles Gallery on the Home tab (top) and the Styles Pane (right) in Word.
-                    </p>
-                </div>
+                )}
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base transition duration-200"
+                >
+                    Log Out
+                </button>
+            </header>
 
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Why use them?</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li><span className="font-semibold">Time-Saving:</span> Apply complex formatting in an instant.</li>
-                        <li><span className="font-semibold">Consistency:</span> Ensures all headings, body text, or quotes in your document (and across documents) look exactly the same.</li>
-                        <li><span className="font-semibold">Easy Updates:</span> Change a style once, and all text formatted with that style updates automatically throughout your document.</li>
-                        <li><span className="font-semibold">Foundation for Advanced Features:</span> Styles are essential for automatically generating a Table of Contents, for document navigation, and for many automation tools.</li>
-                    </ul>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Style Types:</h3>
-                    <p className="text-gray-700 leading-relaxed mb-2">
-                        Word has different styles for Paragraphs, Characters, Lists, and Tables.
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li>We'll focus mostly on <span className="font-semibold">Paragraph Styles</span> as they are the most commonly used for structuring documents.</li>
-                        <li><span className="font-semibold">Built-in Styles:</span> Word comes with many pre-defined styles like Normal, Heading 1, Heading 2, Title, Subtitle, Quote.</li>
-                    </ul>
-                </div>
-            </section>
-
-            {/* Section 2: Applying & Modifying Styles */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    2. Applying & Modifying Styles
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Applying Styles:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">How:</span> Select the text or place your cursor in the paragraph you want to format. Go to the Home Tab &gt; Styles group. Click on the desired style in the gallery or open the Styles Pane (small arrow in bottom right of Styles group).</li>
-                        <li><span className="font-semibold">Shortcut (Apply a Style):</span> <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Shift</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">S</kbd> (opens the Apply Styles dialog box, where you can type the style name quickly).</li>
-                    </ul>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/apply-style-example.png" // Placeholder image
-                            alt="Screenshot showing text selected and a style being applied from the Styles Gallery."
-                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        Applying a style from the Styles Gallery.
-                    </p>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Modifying Existing Styles:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">Purpose:</span> To customize Word's built-in styles or your own existing styles to match your company's branding or your preferences.</li>
-                        <li><span className="font-semibold">How:</span>
-                            <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
-                                <li>Format some text the way you want the style to look (e.g., change Heading 1 to green, bold, Arial 16pt).</li>
-                                <li>Right-click on the style name in the Styles Gallery or Styles Pane.</li>
-                                <li>Choose <span className="font-semibold">Update [Style Name] to Match Selection.</span> (This is the quickest way!)</li>
-                                <li>Alternatively, choose <span className="font-semibold">Modify...</span> to open a dialog box with more detailed options.</li>
-                            </ul>
-                        </li>
-                        <li><span className="font-semibold">Important Concept: Global Changes:</span> When you modify a style, all text in your document that uses that style will instantly update. Imagine updating all 50 headings in a long report with two clicks!</li>
-                    </ul>
-                    <BeforeAfterToggle
-                        beforeSrc="/images/heading1-default.PNG" // Placeholder: Image of default Heading 1
-                        afterSrc="/images/heading1-modified.PNG" // Placeholder: Image of Heading 1 after modification
-                        description="Toggle to see how modifying a style updates all instances globally."
+            <div className="container mx-auto p-4 lg:p-10">
+                <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 mb-6 sm:mb-8 flex flex-col lg:flex-row items-center border border-gray-100">
+                    <img
+                        src={course.image || 'https://placehold.co/128x128/cccccc/ffffff?text=Course+Image'}
+                        alt={course.title}
+                        className="w-full lg:w-1/3 h-48 sm:h-56 md:h-64 object-cover rounded-lg mb-6 lg:mb-0 lg:mr-8 shadow-lg"
                     />
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Clearing Formatting:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li><span className="font-semibold">Purpose:</span> To remove all direct formatting (bold, color, etc.) and return text to its underlying style (usually Normal).</li>
-                        <li><span className="font-semibold">How:</span> Select text &gt; Home Tab &gt; Font group &gt; Clear All Formatting button (the A with an eraser).</li>
-                        <li><span className="font-semibold">Shortcut:</span> <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Spacebar</kbd> (clears character-level formatting) or <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Ctrl</kbd> + <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">Q</kbd> (clears paragraph-level formatting).</li>
-                    </ul>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/clear-formatting-button.PNG" // Placeholder image
-                            alt="Screenshot of the Clear All Formatting button in Word."
-                            className="rounded-md shadow-md w-full max-w-xs md:max-w-sm h-auto border border-gray-200"
-                        />
+                    <div className="flex-1">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 sm:mb-3">{course.title}</h1>
+                        <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-3 sm:mb-4">{course.description}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-gray-700 text-sm sm:text-base mb-4 sm:mb-6">
+                            <p><span className="font-semibold">Instructor:</span> {course.instructor}</p>
+                            <p><span className="font-semibold">Level:</span> {course.level}</p>
+                            <p><span className="font-semibold">Duration:</span> {course.duration}</p>
+                            <p><span className="font-semibold">Price:</span> {course.price}</p>
+                        </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The 'Clear All Formatting' button.
-                    </p>
-                </div>
-            </section>
-
-            {/* Section 3: Creating New Styles */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    3. Creating New Styles
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                        To define your own custom styles for specific types of text not covered by built-in styles (e.g., "Company Disclaimer," "Project Code," "Quote Block").
-                    </p>
                 </div>
 
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (Based on Selection - Quickest Way):</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li>Format a paragraph or text exactly how you want your new style to look.</li>
-                        <li>Go to the Home Tab &gt; Styles group &gt; Click the small <span className="font-semibold">More</span> arrow in the bottom right of the Styles Gallery.</li>
-                        <li>Choose <span className="font-semibold">Create a Style</span>. Give it a meaningful name.</li>
-                    </ul>
-                    {/* <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/create-style-from-selection.PNG" // Placeholder image
-                            alt="Screenshot showing the 'Create a Style' option in the Styles dropdown."
-                            className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
-                        />
-                    </div> */}
-                    {/* <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        Creating a new style based on selected text.
-                    </p> */}
+                <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6">Course Content</h2>
+                    {course.weeklyContent?.length === 0 ? (
+                        <p className="text-gray-600">No weekly content available for this course yet.</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {course.weeklyContent && course.weeklyContent.map((weekData) => {
+                                // isExpanded: Controls the accordion's open/close state
+                                const isExpanded = expandedWeek === weekData.week;
+                                // isEnabled: Controls if the week is clickable/interactable (unlocked)
+                                const isEnabled = weekData.week <= highestAccessibleWeek;
+
+                                const weeklyLessonProgressPercentage = calculateLessonProgress(weekData, userCourseProgress);
+                                const isQuizComplete = userCourseProgress.completedItems[weekData.week]?.quizzes?.includes(weekData.quizId);
+
+                                return (
+                                    <div
+                                        key={weekData.week}
+                                        id={`week-${weekData.week}`}
+                                        className={`border rounded-lg overflow-hidden ${isEnabled ? 'border-gray-200' : 'border-gray-300 bg-gray-100 opacity-70 cursor-not-allowed'}`}
+                                    >
+                                        <div
+                                            className={`flex justify-between items-center p-4 sm:p-5 transition duration-150 ease-in-out ${isEnabled ? 'bg-gray-50 hover:bg-gray-100 cursor-pointer' : 'bg-gray-100 cursor-not-allowed'}`}
+                                            onClick={() => isEnabled && toggleWeek(weekData.week)}
+                                        >
+                                            <h3 className={`text-lg sm:text-xl font-semibold ${isEnabled ? 'text-gray-800' : 'text-gray-500'}`}>
+                                                Week {weekData.week}: {weekData.title}
+                                            </h3>
+                                            <div className="flex items-center">
+                                                <svg
+                                                    className={`w-6 h-6 text-gray-600 transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        {isExpanded && isEnabled && (
+                                            <div className="p-4 sm:p-5 bg-white border-t border-gray-200">
+                                                {weekData.lessons && weekData.lessons.length > 0 && (
+                                                    <div className="mb-4">
+                                                        <h4 className="text-md sm:text-lg font-bold text-gray-700 mb-2 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Lessons
+                                                        </h4>
+                                                        <ul className="space-y-2">
+                                                            {weekData.lessons.map((lesson, index) => {
+                                                                const identifier = lesson.id || lesson.title || `lesson-${weekData.week}-${index}`;
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.lessons?.includes(identifier);
+                                                                return (
+                                                                    <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
+                                                                        <span className="mr-2 sm:pt-4 ">{isComplete ? '✅' : '➡️'}</span>
+                                                                        {lesson}
+                                                                        {!isComplete && (
+                                                                            <button
+                                                                                onClick={() => markContentComplete(weekData.week, 'lessons', identifier)}
+                                                                                className="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600 transition duration-150"
+                                                                            >
+                                                                                Mark Complete
+                                                                            </button>
+                                                                        )}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {(weekData.readings && weekData.readings.length > 0) || weekData.quizId ? (
+                                                    <div className="mb-3 sm:mb-4">
+                                                        <h4 className="font-semibold text-md sm:text-lg mb-1.5 sm:mb-2 text-gray-700 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0113 3.414L16.586 7A2 2 0 0118 8.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 10a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1-3a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Notes & Quiz:
+                                                        </h4>
+                                                        <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
+
+                                                            {weekData.readings && weekData.readings.length > 0 && weekData.readings.map((reading, index) => {
+                                                                const identifier = reading.id || reading.title || `reading-${weekData.week}-${index}`;
+                                                                const readingTitle = typeof reading === 'object' ? reading.title : reading;
+                                                                const readingUrl = typeof reading === 'object' && reading.url ? reading.url : '#';
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.readings?.includes(identifier);
+
+                                                                return (
+                                                                    <li key={identifier} className={`flex justify-between items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 hover:bg-gray-100`}>
+                                                                        <span className="flex-1">
+                                                                            <span className="mr-2">{isComplete ? '✅' : '➡️'}</span>
+                                                                            {readingUrl !== '#' ? (
+                                                                                <Link to={readingUrl} className="text-blue-600 hover:underline">
+                                                                                    {readingTitle}
+                                                                                </Link>
+                                                                            ) : (
+                                                                                <span>{readingTitle}</span>
+                                                                            )}
+                                                                        </span>
+                                                                        {!isComplete && (
+                                                                            <button
+                                                                                onClick={() => markContentComplete(weekData.week, 'readings', identifier)}
+                                                                                className="bg-purple-600 text-white text-xs px-3 py-1 rounded hover:bg-purple-700 transition duration-150"
+                                                                            >
+                                                                                Mark Complete
+                                                                            </button>
+                                                                        )}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                            {weekData.quizId && (
+                                                                <li className={`flex items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 ${weeklyLessonProgressPercentage >= 80 ? 'hover:bg-gray-100' : ''}`}>
+                                                                    <span className="mr-2 text-purple-600">💡</span>
+                                                                    {weeklyLessonProgressPercentage >= 80 ? (
+                                                                        <Link
+                                                                            to={`/quiz/${weekData.quizId}`}
+                                                                            className="text-purple-600 hover:underline font-bold"
+                                                                            onClick={() => {
+                                                                                if (!isQuizComplete) {
+                                                                                    markContentComplete(weekData.week, 'quizzes', weekData.quizId);
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            Take Quiz for Week {weekData.week}
+                                                                        </Link>
+                                                                    ) : (
+                                                                        <span
+                                                                            className="text-gray-400 cursor-not-allowed text-sm sm:text-base"
+                                                                            title={`Complete at least 80% of lessons/videos for Week ${weekData.week} to unlock this quiz.`}
+                                                                        >
+                                                                            Take Quiz for Week {weekData.week} (Unlock at 80% lesson/video progress - Current: {weeklyLessonProgressPercentage}%)
+                                                                        </span>
+                                                                    )}
+                                                                    {isQuizComplete && <span className="ml-2 text-green-500 font-semibold">✅ Completed!</span>}
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                ) : null}
+
+                                                {/* Assignments */}
+                                                {weekData.assignments && weekData.assignments.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-md sm:text-lg font-bold text-gray-700 mb-2 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Assignments
+                                                        </h4>
+                                                        <ul className="space-y-2">
+                                                            {weekData.assignments.map((assignment, index) => {
+                                                                const identifier = assignment.id || assignment.title || `assignment-${weekData.week}-${index}`;
+                                                                const isComplete = userCourseProgress.completedItems[weekData.week]?.assignments?.includes(identifier);
+                                                                return (
+                                                                    <li key={identifier} className={`flex justify-between items-center p-3 rounded-md transition-colors duration-150 bg-gray-50 hover:bg-gray-100`}>
+                                                                        <span className="flex-1">
+                                                                            <span className="mr-2">{isComplete ? '✅' : '➡️'}</span>
+                                                                            {assignment.title || `Assignment ${index + 1}`}
+                                                                            {assignment.downloadLink && (
+                                                                                <a href={assignment.downloadLink} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline text-xs">
+                                                                                    (Download)
+                                                                                </a>
+                                                                            )}
+                                                                            {assignment.deadline && (
+                                                                                <span className="ml-2 text-gray-500 text-xs">(Due: {assignment.deadline})</span>
+                                                                            )}
+                                                                        </span>
+                                                                        {!isComplete && (
+                                                                            <button
+                                                                                onClick={() => markContentComplete(weekData.week, 'assignments', identifier)}
+                                                                                className="bg-purple-600 text-white text-xs px-3 py-1 rounded hover:bg-purple-700 transition duration-150"
+                                                                            >
+                                                                                Mark Complete
+                                                                            </button>
+                                                                        )}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {/* If a week has no content types defined */}
+                                                {!weekData.lessons?.length && !weekData.readings?.length && !weekData.assignments?.length && !weekData.quizId && (
+                                                    <p className="text-gray-500 italic">No content available for this week yet.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How (From Scratch - More Control):</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2">
-                        <li>Open the Styles Pane (Home Tab &gt; click the small arrow in bottom right of Styles group).</li>
-                        <li>Click the <span className="font-semibold">New Style</span> button (bottom left of Styles Pane).</li>
-                        <li>Define all settings (name, font, size, color, paragraph spacing, border, etc.).</li>
-                    </ul>
-                    {/* <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/new-style-dialog.PNG" // Placeholder image
-                            alt="Screenshot of the 'Create New Style from Formatting' dialog box."
-                            className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
-                        />
-                    </div> */}
-                    {/* <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The 'Create New Style from Formatting' dialog for detailed control.
-                    </p> */}
-                </div>
-            </section>
-
-            ---
-
-            {/* --- Topic 2: Document Themes & Quick Parts for Efficiency --- */}
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b-4 border-purple-400 pb-3">
-                Topic 2: Document Themes & Quick Parts for Efficiency
-            </h1>
-
-            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                What we'll cover: Beyond individual styles, we'll look at how to apply a complete document "look" with Themes, and how to store and reuse frequently used text and graphics with Quick Parts.
-            </p>
-
-            {/* Section 1: Document Themes */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    1. Document Themes
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">What are Themes?</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                        A comprehensive design package that includes a set of coordinated colors, fonts, and effects. When you apply a theme, it instantly changes the overall visual appearance of your entire document. All your styles (Heading 1, Normal, etc.) will automatically adapt to the theme's colors and fonts.
-                    </p>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/document-themes-gallery.png" // Placeholder for Themes gallery
-                            alt="Screenshot of the Document Themes gallery in Word."
-                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The Themes gallery on the Design tab allows you to quickly change your document's overall look.
-                    </p>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Applying & Customizing Themes:</h3>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                        Themes in Microsoft Word allow you to quickly change the entire visual aesthetic of your document by controlling its default fonts, colors, and effects. This ensures a consistent and professional look across all your materials.
-                    </p>
-
-                    <h4 className="text-xl font-semibold text-gray-700 mb-3">Step 1: Prepare Your Document with Styles (<span className="font-semibold">ESSENTIAL FIRST STEP!</span>)</h4>
-                    <p className="text-gray-700 leading-relaxed mb-3">
-                        For themes to work their magic effectively, your document's content needs to be structured using Word's built-in styles. Themes don't change text that's just manually bolded or given a specific font size; they change the appearance of styles.
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">Open Your Word Document:</span> Start with your Word document (the text you pasted earlier is perfect).</li>
-                        <li><span className="font-semibold">Apply Built-in Styles to Your Text:</span>
-                            <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
-                                <li>For your <span className="font-semibold">Main Title</span> (e.g., "The Future of Technology in Sierra Leone"): Select the text. Go to the <span className="font-semibold">Home tab</span> &gt; "<span className="font-semibold">Styles</span>" group &gt; Click "<span className="font-semibold">Title</span>".</li>
-                                <li>For your <span className="font-semibold">Main Headings</span> (e.g., "Embracing Digital Transformation", "Key Areas of Technological Advancement", etc.): Select each heading. Go to the <span className="font-semibold">Home tab</span> &gt; "<span className="font-semibold">Styles</span>" group &gt; Click "<span className="font-semibold">Heading 1</span>".</li>
-                                <li>For <span className="font-semibold">Sub-headings</span> (if you had them, e.g., sections within "Key Areas"): Select each sub-heading. Go to the <span className="font-semibold">Home tab</span> &gt; "<span className="font-semibold">Styles</span>" group &gt; Click "<span className="font-semibold">Heading 2</span>".</li>
-                                <li>For your <span className="font-semibold">main body paragraphs</span>: Select a paragraph. Go to the <span className="font-semibold">Home tab</span> &gt; "<span className="font-semibold">Styles</span>" group &gt; Click "<span className="font-semibold">Normal</span>". (Most body text is already "<span className="font-semibold">Normal</span>" by default, but it's good to confirm).</li>
-                                <li>For <span className="font-semibold">lists</span> (like your bullet points): Select the list. Go to the <span className="font-semibold">Home tab</span> &gt; "<span className="font-semibold">Styles</span>" group &gt; Click "<span className="font-semibold">List Paragraph</span>" (if visible, or just ensure they're using "<span className="font-semibold">Normal</span>" with bullet points).</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="text-gray-700 leading-relaxed italic mb-4">
-                        <span className="font-semibold">Why this is essential:</span> By applying these styles, you "tag" your text. When you change a theme, Word knows exactly which part of your document is a "Title," which is a "Heading 1," and which is "Normal" text, and it updates their appearance according to the new theme's definitions for those specific styles.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                        <span className="font-semibold">Consider Objects (Shapes, Charts - Optional but Recommended):</span> If you have inserted shapes, charts, or SmartArt, when you apply colors to them, try to choose colors from the "<span className="font-semibold">Theme Colors</span>" section in the color picker. This ensures their colors will also update automatically when you switch themes.
-                    </p>
-
-                    <h4 className="text-xl font-semibold text-gray-700 mb-3">Step 2: Applying a Pre-Set Theme</h4>
-                    <p className="text-gray-700 leading-relaxed mb-3">
-                        Once your document is styled correctly, applying themes is simple.
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">Go to the Design Tab:</span> On the Word ribbon, click the <span className="font-semibold">Design tab</span>. This tab is specifically for overall document formatting and branding.</li>
-                        <li><span className="font-semibold">Choose a Theme from the Gallery:</span>
-                            <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
-                                <li>In the "<span className="font-semibold">Document Formatting</span>" group on the <span className="font-semibold">Design tab</span> (usually on the left side), click on the <span className="font-semibold">Themes button</span>.</li>
-                                <li>A dropdown gallery of pre-designed themes will appear.</li>
-                                <li>Hover your mouse over different themes. You'll see a live preview in your document of how the fonts, colors, and overall appearance will change.</li>
-                                <li>Click on the theme you want to apply.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="text-gray-700 leading-relaxed italic mb-4">
-                        <span className="font-semibold">Result:</span> Your document's fonts and colors (for elements using styles or theme colors) will instantly update to match the chosen theme.
-                    </p>
-
-                    <h4 className="text-xl font-semibold text-gray-700 mb-3">Step 3: Customizing Your Current Theme (Colors & Fonts)</h4>
-                    <p className="text-gray-700 leading-relaxed mb-3">
-                        After applying a theme, you can fine-tune its individual components (colors and fonts) to better match specific needs or brand guidelines without switching to a completely different theme.
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">Ensure You're on the Design Tab:</span> If you've navigated away, click back on the <span className="font-semibold">Design tab</span>.</li>
-                        <li><span className="font-semibold">Change the Theme's Color Palette:</span>
-                            <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
-                                <li>In the "<span className="font-semibold">Document Formatting</span>" group, click the <span className="font-semibold">Colors button</span>.</li>
-                                <li>A dropdown will appear, showing various color palettes that work with your current theme.</li>
-                                <li>Hover over different color sets. Notice how the colors of your headings, body text, and any shapes/charts using theme colors will change.</li>
-                                <li>Click on the color set you prefer.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="text-gray-700 leading-relaxed italic mb-4">
-                        <span className="font-semibold">Result:</span> The color scheme of your document will update.
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">Change the Theme's Font Set:</span>
-                            <ul className="list-circle list-inside text-gray-600 space-y-1 pl-6 mt-1">
-                                <li>In the "<span className="font-semibold">Document Formatting</span>" group, click the <span className="font-semibold">Fonts button</span>.</li>
-                                <li>A dropdown will show pairs of fonts (one for headings, one for body text).</li>
-                                <li>Hover over different font sets. You'll see your headings and body text change fonts (while maintaining their original numerical sizes, as defined by their respective styles).</li>
-                                <li>Click on the font set you prefer.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="text-gray-700 leading-relaxed italic mb-4">
-                        <span className="font-semibold">Result:</span> Your document's typography will update according to the new font set.
-                    </p>
-
-                    <BeforeAfterToggle
-                        beforeSrc="/images/theme-default.PNG" // Placeholder for default theme example
-                        afterSrc="/images/theme-modified.PNG" // Placeholder for modified theme example
-                        description="Toggle to see how applying a new theme transforms the document's appearance."
-                    />
-                </div>
-            </section>
-
-            {/* Section 2: Quick Parts (Building Blocks) */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    2. Quick Parts (Building Blocks)
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">What are Quick Parts?</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                        They are reusable chunks of content (text, graphics, tables, formatted paragraphs, even fields) that you can save and insert into any Word document with ease. They are stored in "galleries."
-                    </p>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/quick-parts-gallery.png" // Placeholder for Quick Parts gallery
-                            alt="Screenshot of the Quick Parts gallery in Word."
-                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The Quick Parts gallery, accessible from the Insert tab.
-                    </p>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Creating & Saving Quick Parts:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li>Select the text, image, table, or combination you want to save as a Quick Part.</li>
-                        <li>Go to <span className="font-semibold">Insert Tab</span> &gt; Text group &gt; <span className="font-semibold">Quick Parts</span> &gt; <span className="font-semibold">Save Selection to Quick Part Gallery.</span></li>
-                        <li>Give it a descriptive name (e.g., "Company Address Block," "Standard Disclaimer," "Signature with Logo").</li>
-                    </ul>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/save-selection-quick-part.PNG" // Placeholder for Save Selection dialog
-                            alt="Screenshot of the 'Save Selection to Quick Part Gallery' dialog box."
-                            className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        Saving a selected piece of content as a reusable Quick Part.
-                    </p>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Inserting Quick Parts:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li><span className="font-semibold">How:</span> Place your cursor where you want to insert it. Go to <span className="font-semibold">Insert Tab</span> &gt; Text group &gt; <span className="font-semibold">Quick Parts</span> &gt; select your saved Quick Part from the gallery.</li>
-                        <li><span className="font-semibold">Shortcut (If you know the name):</span> Type the full name of your Quick Part (e.g., "Company Address Block") and press <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">F3</kbd>.</li>
-                    </ul>
-                    <p className="text-gray-700 leading-relaxed">
-                        <span className="font-semibold">Practical Use:</span>
-                    </p>
-                    <ul className="list-disc list-inside text-gray-600 space-y-1 pl-6 mt-2">
-                        <li>Inserting standard company addresses, legal disclaimers, frequently used paragraphs in reports, complex signature blocks, or pre-formatted tables.</li>
-                        <li>Massive time-saver for repetitive tasks – no more copying and pasting from old documents!</li>
-                    </ul>
-                </div>
-            </section>
-
-            {/* Section 3: AutoCorrect Options (Advanced Use for Text Efficiency) */}
-            <section className="mb-10">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
-                    3. AutoCorrect Options (Advanced Use for Text Efficiency)
-                </h2>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">Beyond Basic Corrections:</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                        AutoCorrect isn't just for fixing typos! You can use it to create your own text expansions.
-                    </p>
-                </div>
-
-                <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-                    <h3 className="text-2xl font-medium text-gray-700 mb-3">How:</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                        <li>Type a short abbreviation (e.g., <kbd className="font-mono bg-gray-200 px-2 py-1 rounded">sllh</kbd> for "Sierra Leone Leones").</li>
-                        <li>Type the full phrase or even insert a symbol (like a phone icon).</li>
-                        <li>Go to <span className="font-semibold">File</span> &gt; <span className="font-semibold">Options</span> &gt; <span className="font-semibold">Proofing</span> &gt; <span className="font-semibold">AutoCorrect Options...</span></li>
-                        <li>In the <span className="font-semibold">Replace</span> box, type your abbreviation (<kbd className="font-mono bg-gray-200 px-2 py-1 rounded">sllh</kbd>).</li>
-                        <li>In the <span className="font-semibold">With</span> box, type or paste the full phrase/symbol ("Sierra Leone Leones").</li>
-                        <li>Click <span className="font-semibold">Add</span>, then <span className="font-semibold">OK</span>.</li>
-                    </ul>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/images/autocorrect-options.png" // Placeholder for AutoCorrect Options dialog
-                            alt="Screenshot of the AutoCorrect Options dialog box."
-                            className="rounded-md shadow-md w-full max-w-md h-auto border border-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 text-center italic">
-                        The AutoCorrect Options dialog for creating custom text expansions.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed">
-                        <span className="font-semibold">Practical Use:</span> Quickly expand common company names, long product codes, department names, or insert frequently used symbols (like ©, ™, 📞) by typing just a few characters.
-                    </p>
-                </div>
-            </section>
-
+            </div>
         </div>
     );
 };
 
-export default AdWrdWk2;
+export default InPersonCoursePage;

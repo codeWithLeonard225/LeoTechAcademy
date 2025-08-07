@@ -98,6 +98,431 @@ const allQuizzes = {
       }
     ]
   },
+  // computer Basics
+  "CBweek_1": {
+    "title": "Week 1: Computer Basics Quiz",
+    "description": "Test your knowledge on identifying computer parts, basic operations, mouse skills, file organization, personalization, and media playback from Lesson 1, 2, and 3.",
+    "questions": [
+      {
+        "questionText": "What is the primary function of the computer's 'Monitor'?",
+        "options": ["To type text", "To produce sound", "To display images and text", "To store files"],
+        "correctAnswer": "To display images and text"
+      },
+      {
+        "questionText": "Which action correctly turns OFF your computer?",
+        "options": ["Pulling the power cord", "Pressing the power button once quickly", "Clicking the Start Button, then the Power symbol, then 'Shut Down'", "Closing all open windows"],
+        "correctAnswer": "Clicking the Start Button, then the Power symbol, then 'Shut Down'"
+      },
+      {
+        "questionText": "What does a single LEFT-click of the mouse typically do?",
+        "options": ["Opens a program", "Selects an item", "Shows more options", "Deletes a file"],
+        "correctAnswer": "Selects an item"
+      },
+      {
+        "questionText": "Which part of the computer is considered its 'brain' and performs calculations?",
+        "options": ["Monitor", "Keyboard", "Tower (System Case)", "Speakers"],
+        "correctAnswer": "Tower (System Case)"
+      },
+      {
+        "questionText": "What is the long bar at the bottom of your screen that shows currently open programs?",
+        "options": ["Desktop", "Taskbar", "Scrollbar", "Ribbon"],
+        "correctAnswer": "Taskbar"
+      },
+      {
+        "questionText": "What is the purpose of 'double-clicking' an icon with the left mouse button?",
+        "options": ["To select the icon", "To rename the icon", "To open or launch the program/file", "To view icon properties"],
+        "correctAnswer": "To open or launch the program/file"
+      },
+      {
+        "questionText": "Which keyboard shortcut allows you to quickly create a 'New Folder'?",
+        "options": ["Ctrl + S", "Alt + F4", "Shift + Ctrl + N", "Ctrl + C"],
+        "correctAnswer": "Shift + Ctrl + N"
+      },
+      {
+        "questionText": "When you delete a 'shortcut' icon from your Desktop, what happens to the actual program it represents?",
+        "options": ["The program is also uninstalled from the computer", "The program moves to the Recycle Bin", "The program remains installed and accessible", "The program becomes corrupted"],
+        "correctAnswer": "The program remains installed and accessible"
+      },
+      {
+        "questionText": "How do you typically access 'Personalization' settings to change your desktop background?",
+        "options": ["Double-click 'My Computer'", "Right-click on an empty space on the Desktop and select 'Personalize'", "Click the 'X' button on any open window", "Press the power button on the monitor"],
+        "correctAnswer": "Right-click on an empty space on the Desktop and select 'Personalize'"
+      },
+      {
+        "questionText": "What is the main function of a 'Folder' on a computer?",
+        "options": ["To play games", "To browse the internet", "To send emails", "To organize and store files"],
+        "correctAnswer": "To organize and store files"
+      },
+      {
+        "questionText": "What is the 'Recycle Bin' icon commonly used for?",
+        "options": ["Storing new files", "Holding deleted files temporarily", "Playing music", "Changing computer settings"],
+        "correctAnswer": "Holding deleted files temporarily"
+      },
+      {
+        "questionText": "Which mouse action is used to reveal a 'menu of more options' for an item or empty space?",
+        "options": ["Left-click", "Double-click", "Right-click", "Scroll wheel click"],
+        "correctAnswer": "Right-click"
+      },
+      {
+        "questionText": "What does 'Local Disk (C:)' typically represent in 'This PC' or 'My Computer'?",
+        "options": ["Your printer", "Your computer's main storage drive", "Your internet connection", "An external USB drive"],
+        "correctAnswer": "Your computer's main storage drive"
+      },
+      {
+        "questionText": "How do you close an open window on your computer screen?",
+        "options": ["Click the minimize button", "Click the 'X' in the top-right corner of the window", "Press the Enter key", "Drag the window to the Taskbar"],
+        "correctAnswer": "Click the 'X' in the top-right corner of the window"
+      },
+      {
+        "questionText": "What is the term for the overall workspace you see when your computer is on and ready?",
+        "options": ["Start Menu", "Control Panel", "Desktop", "Taskbar"],
+        "correctAnswer": "Desktop"
+      },
+      {
+        "questionText": "Which component is used to type letters, numbers, and symbols into the computer?",
+        "options": ["Monitor", "Mouse", "Keyboard", "Speakers"],
+        "correctAnswer": "Keyboard"
+      },
+      {
+        "questionText": "If you want to play a video file, what is the most common way to start it?",
+        "options": ["Right-click the file and select 'Delete'", "Single-click the file", "Double-click the file with the left mouse button", "Drag the file to the Recycle Bin"],
+        "correctAnswer": "Double-click the file with the left mouse button"
+      },
+      {
+        "questionText": "What is the small arrow that moves on your screen when you move your mouse?",
+        "options": ["Cursor", "Pointer", "Icon", "Widget"],
+        "correctAnswer": "Pointer"
+      },
+      {
+        "questionText": "Which area of the Taskbar usually shows quick updates like internet connection or speaker volume?",
+        "options": ["Start Button", "Search bar", "Pinned apps", "Notification Area"],
+        "correctAnswer": "Notification Area"
+      },
+      {
+        "questionText": "What is the power symbol that indicates an ON/OFF button?",
+        "options": ["⏻", "▶️", "⏸️", "⏹️"],
+        "correctAnswer": "⏻"
+      }
+    ]
+  },
+  "CBweek_2": {
+    "title": "Week 2: Keyboard & Control Panel Quiz",
+    "description": "Test your knowledge on keyboard functions, typing posture, and navigating the Control Panel from Week 2 lessons.",
+    "questions": [
+      {
+        "questionText": "Which key is used to create a single space between words?",
+        "options": ["Enter Key", "Tab Key", "Spacebar", "Backspace Key"],
+        "correctAnswer": "Spacebar"
+      },
+      {
+        "questionText": "To type a capital letter, which key do you hold down while pressing the letter key?",
+        "options": ["Caps Lock", "Alt Key", "Shift Key", "Ctrl Key"],
+        "correctAnswer": "Shift Key"
+      },
+      {
+        "questionText": "What is the function of the Backspace key?",
+        "options": ["Deletes characters to the right of the cursor", "Moves the cursor to the beginning of the line", "Deletes characters to the left of the cursor", "Inserts a new line"],
+        "correctAnswer": "Deletes characters to the left of the cursor"
+      },
+      {
+        "questionText": "Which key, when pressed, allows you to type all letters in uppercase without holding down another key?",
+        "options": ["Shift Key", "Ctrl Key", "Caps Lock", "Num Lock"],
+        "correctAnswer": "Caps Lock"
+      },
+      {
+        "questionText": "What is the primary purpose of the 'Control Panel' (or 'Settings' in newer Windows versions)?",
+        "options": ["To browse the internet", "To create documents and spreadsheets", "To adjust computer settings and manage hardware/software", "To play games"],
+        "correctAnswer": "To adjust computer settings and manage hardware/software"
+      },
+      {
+        "questionText": "Which category in the Control Panel would you typically use to change your computer's date and time?",
+        "options": ["Programs", "Network and Internet", "Clock and Region", "Hardware and Sound"],
+        "correctAnswer": "Clock and Region"
+      },
+      {
+        "questionText": "To correctly change your screen resolution or display settings, which Control Panel category should you open?",
+        "options": ["User Accounts", "System and Security", "Appearance and Personalization", "Programs and Features"],
+        "correctAnswer": "Appearance and Personalization"
+      },
+      {
+        "questionText": "Which of these is NOT a good practice for ergonomic typing?",
+        "options": ["Keeping wrists straight and relaxed", "Sitting with your back straight and shoulders relaxed", "Placing your feet flat on the floor or on a footrest", "Bending your elbows at a sharp 45-degree angle"],
+        "correctAnswer": "Bending your elbows at a sharp 45-degree angle"
+      },
+      {
+        "questionText": "What is the main function of the 'Enter' (or 'Return') key?",
+        "options": ["To delete characters", "To insert a space", "To move the cursor to the next line or confirm an action", "To switch between open applications"],
+        "correctAnswer": "To move the cursor to the next line or confirm an action"
+      },
+      {
+        "questionText": "Which key is commonly used in combination with other keys to perform 'shortcuts' like Copy (Ctrl+C) or Paste (Ctrl+V)?",
+        "options": ["Shift Key", "Alt Key", "Function Keys (F1-F12)", "Ctrl Key"],
+        "correctAnswer": "Ctrl Key"
+      },
+      {
+        "questionText": "What is the purpose of the 'Delete' key?",
+        "options": ["To delete characters to the left of the cursor", "To insert a new line", "To delete characters to the right of the cursor or selected items", "To undo the last action"],
+        "correctAnswer": "To delete characters to the right of the cursor or selected items"
+      },
+      {
+        "questionText": "Which keys are used to move the cursor up, down, left, or right in a document?",
+        "options": ["Number Keys", "Function Keys", "Arrow Keys", "Shift Keys"],
+        "correctAnswer": "Arrow Keys"
+      },
+      {
+        "questionText": "If you want to add a new user account to your computer, which Control Panel category would you visit?",
+        "options": ["System and Security", "Network and Internet", "User Accounts", "Programs and Features"],
+        "correctAnswer": "User Accounts"
+      },
+      {
+        "questionText": "The numeric keypad is most useful for:",
+        "options": ["Typing capital letters rapidly", "Performing calculations and entering large amounts of numerical data", "Controlling media playback (play, pause, stop)", "Navigating web pages"],
+        "correctAnswer": "Performing calculations and entering large amounts of numerical data"
+      },
+      {
+        "questionText": "What is the primary function of the 'Windows Key' (often with a Windows logo)?",
+        "options": ["To lock the computer screen", "To open the Start Menu or Start Screen", "To take a screenshot", "To adjust screen brightness"],
+        "correctAnswer": "To open the Start Menu or Start Screen"
+      },
+      {
+        "questionText": "Which Control Panel option would you select to uninstall a program from your computer?",
+        "options": ["Device Manager", "System Restore", "Programs and Features", "Internet Options"],
+        "correctAnswer": "Programs and Features"
+      },
+      {
+        "questionText": "What is the standard hand position on the keyboard for touch typing?",
+        "options": ["Fingers flat on the keys, wrists resting on the desk", "Index fingers on 'F' and 'J' keys (home row)", "Thumbs on the Spacebar, other fingers floating randomly", "Hands positioned anywhere, as long as you can see the keys"],
+        "correctAnswer": "Index fingers on 'F' and 'J' keys (home row)"
+      },
+      {
+        "questionText": "Which key is used to move the cursor one tab stop or indent in a word processor?",
+        "options": ["Spacebar", "Shift Key", "Tab Key", "Ctrl Key"],
+        "correctAnswer": "Tab Key"
+      },
+      {
+        "questionText": "In the Control Panel, where would you typically go to configure sound devices like speakers or microphones?",
+        "options": ["Programs and Features", "Network and Sharing Center", "Hardware and Sound", "System and Security"],
+        "correctAnswer": "Hardware and Sound"
+      },
+      {
+        "questionText": "Which of the following is a common keyboard shortcut to 'Undo' the last action?",
+        "options": ["Ctrl + S", "Ctrl + C", "Ctrl + Z", "Ctrl + P"],
+        "correctAnswer": "Ctrl + Z"
+      }
+    ]
+  },
+  "CBweek_3": {
+    "title": "Week 3: Sharing & Connecting Quiz",
+    "description": "Test your knowledge on connecting devices, sharing files, using the internet, and staying safe online from Week 3 lessons.",
+    "questions": [
+      {
+        "questionText": "What type of cable is primarily used to connect your phone to your computer for file sharing?",
+        "options": ["HDMI cable", "USB cable", "Ethernet cable", "Audio jack cable"],
+        "correctAnswer": "USB cable"
+      },
+      {
+        "questionText": "When connecting your phone to a computer for file transfer, what important option must you often select on your phone's screen?",
+        "options": ["Make a call", "Charge only", "Disable Wi-Fi", "File transfer / MTP"],
+        "correctAnswer": "File transfer / MTP"
+      },
+      {
+        "questionText": "After connecting your phone to the computer via USB, where would you typically find your phone's storage listed on the computer?",
+        "options": ["In the 'Recycle Bin'", "Under 'Devices and drives' in 'This PC'", "In 'Documents'", "On the web browser"],
+        "correctAnswer": "Under 'Devices and drives' in 'This PC'"
+      },
+      {
+        "questionText": "What does 'copying' a file mean in the context of file management?",
+        "options": ["Making a duplicate of the file, with the original remaining in its place.", "Moving the original file to a new location, deleting the old one.", "Renaming the file to something new.", "Deleting the file permanently from the computer."],
+        "correctAnswer": "Making a duplicate of the file, with the original remaining in its place."
+      },
+      {
+        "questionText": "What is a USB Flash Drive commonly called?",
+        "options": ["Compact Disc", "Pendrive", "External Hard Disk", "Floppy Disk"],
+        "correctAnswer": "Pendrive"
+      },
+      {
+        "questionText": "Why is it important to 'Safely Remove Hardware' before unplugging a USB flash drive?",
+        "options": ["To prevent viruses from entering the computer.", "To charge the USB drive faster.", "To update the drive's software.", "To avoid damaging the drive or losing files."],
+        "correctAnswer": "To avoid damaging the drive or losing files."
+      },
+      {
+        "questionText": "What is the Internet best described as?",
+        "options": ["A program for playing games.", "A single, massive computer.", "A global network that allows computers to communicate and share information.", "A type of operating system."],
+        "correctAnswer": "A global network that allows computers to communicate and share information."
+      },
+      {
+        "questionText": "What is the term for sharing your phone's internet connection with your computer?",
+        "options": ["Bluetooth sharing", "AirDropping", "Tethering or Hotspot", "Syncing"],
+        "correctAnswer": "Tethering or Hotspot"
+      },
+      {
+        "questionText": "When setting up a Wi-Fi Hotspot on your phone, what two pieces of information are 'Very Important' to note down for connecting your computer?",
+        "options": ["Phone model and battery percentage", "Hotspot Name (SSID) and Password", "Date and time", "Number of contacts and storage space"],
+        "correctAnswer": "Hotspot Name (SSID) and Password"
+      },
+      {
+        "questionText": "What is a 'Web Browser' used for?",
+        "options": ["Typing documents and creating spreadsheets.", "Playing offline video games.", "Visiting websites and exploring the Internet.", "Connecting printers to the computer."],
+        "correctAnswer": "Visiting websites and exploring the Internet."
+      },
+      {
+        "questionText": "Which of these is an example of a Web Browser icon?",
+        "options": ["A yellow folder icon", "A blue 'E' or a colorful circle (Chrome)", "A small speaker icon", "A power button icon"],
+        "correctAnswer": "A blue 'E' or a colorful circle (Chrome)"
+      },
+      {
+        "questionText": "What is the long bar at the very top of the browser window where you type website addresses called?",
+        "options": ["Search bar", "Status bar", "Toolbar", "Address Bar (URL bar)"],
+        "correctAnswer": "Address Bar (URL bar)"
+      },
+      {
+        "questionText": "What happens when you 'download' music, videos, or software from the internet?",
+        "options": ["The files are deleted from the internet.", "The files are sent to another computer.", "The files are saved from the internet to your computer.", "The files are played directly without saving."],
+        "correctAnswer": "The files are saved from the internet to your computer."
+      },
+      {
+        "questionText": "Where are downloaded files usually saved on your computer?",
+        "options": ["Desktop", "'My Documents' folder", "'Downloads' folder", "Recycle Bin"],
+        "correctAnswer": "'Downloads' folder"
+      },
+      {
+        "questionText": "What is 'Antivirus Software' like Windows Defender designed to protect your computer from?",
+        "options": ["Dust and physical damage.", "Power outages.", "Bad programs like viruses or malware.", "Slow internet connection."],
+        "correctAnswer": "Bad programs like viruses or malware."
+      },
+      {
+        "questionText": "If you receive an email with a strange link or attachment from someone you don't know, what is the safest action?",
+        "options": ["Click the link immediately to see what it is.", "Open the attachment to check its content.", "Reply to the sender asking for more information.", "DO NOT click the link or open the attachment."],
+        "correctAnswer": "DO NOT click the link or open the attachment."
+      },
+      {
+        "questionText": "Why should you never share your full name, home address, or bank details with strangers online?",
+        "options": ["It makes your computer run slower.", "It can lead to identity theft or other dangers.", "It will cause your internet connection to drop.", "It prevents you from downloading files."],
+        "correctAnswer": "It can lead to identity theft or other dangers."
+      },
+      {
+        "questionText": "What is a characteristic of a 'strong password'?",
+        "options": ["It is your birthday or common words like 'password'.", "It is only made of numbers.", "It uses a mix of capital letters, small letters, numbers, and symbols.", "It is exactly 5 characters long."],
+        "correctAnswer": "It uses a mix of capital letters, small letters, numbers, and symbols."
+      },
+      {
+        "questionText": "Why is it important to keep your computer updated regularly?",
+        "options": ["To change the color of your computer screen.", "To make the computer physically cleaner.", "To fix problems and make your computer safer.", "To increase the computer's storage space."],
+        "correctAnswer": "To fix problems and make your computer safer."
+      },
+      {
+        "questionText": "When Browse the internet, what is a good practice if you read something surprising or unbelievable?",
+        "options": ["Immediately share it with everyone you know.", "Assume it's true because it's online.", "Close the browser and don't think about it.", "Try to find the same information on other trusted websites."],
+        "correctAnswer": "Try to find the same information on other trusted websites."
+      }
+    ]
+  },
+  "CBweek_4": {
+    "title": "Week 4: Documents, Spreadsheets & Presentations Quiz",
+    "description": "Test your knowledge on creating and managing documents, working with data in spreadsheets, and designing presentations.",
+    "questions": [
+      {
+        "questionText": "Which type of software is primarily used for writing letters, reports, and other text-based documents?",
+        "options": ["Spreadsheet software", "Presentation software", "Word processing software", "Web browser"],
+        "correctAnswer": "Word processing software"
+      },
+      {
+        "questionText": "In a word processor, what feature allows you to change the appearance of text, such as its size or style?",
+        "options": ["Page Layout", "Font Formatting", "Spell Check", "Print Preview"],
+        "correctAnswer": "Font Formatting"
+      },
+      {
+        "questionText": "To save a document for the first time, which option would you typically choose?",
+        "options": ["Save As", "Open", "Print", "New"],
+        "correctAnswer": "Save As"
+      },
+      {
+        "questionText": "What is the file extension commonly associated with Microsoft Word documents?",
+        "options": [".xlsx", ".pptx", ".docx", ".pdf"],
+        "correctAnswer": ".docx"
+      },
+      {
+        "questionText": "What is the main purpose of spreadsheet software like Microsoft Excel?",
+        "options": ["Creating photo albums", "Managing and analyzing numerical data", "Designing complex graphics", "Writing computer programs"],
+        "correctAnswer": "Managing and analyzing numerical data"
+      },
+      {
+        "questionText": "In a spreadsheet, what is the intersection of a row and a column called?",
+        "options": ["Graph", "Formula", "Cell", "Table"],
+        "correctAnswer": "Cell"
+      },
+      {
+        "questionText": "Which symbol typically indicates that you are entering a formula in a spreadsheet cell?",
+        "options": ["#", "@", "=", "$"],
+        "correctAnswer": "="
+      },
+      {
+        "questionText": "What does a formula like '=SUM(A1:A5)' do in a spreadsheet?",
+        "options": ["Calculates the average of cells A1 to A5", "Adds the values in cells A1 through A5", "Multiplies the values in cells A1 to A5", "Counts the number of entries in cells A1 to A5"],
+        "correctAnswer": "Adds the values in cells A1 through A5"
+      },
+      {
+        "questionText": "What is the file extension commonly associated with Microsoft Excel spreadsheets?",
+        "options": [".pptx", ".docx", ".pdf", ".xlsx"],
+        "correctAnswer": ".xlsx"
+      },
+      {
+        "questionText": "Which type of software is used to create visual aids for speeches or presentations?",
+        "options": ["Word processing software", "Spreadsheet software", "Presentation software", "Database software"],
+        "correctAnswer": "Presentation software"
+      },
+      {
+        "questionText": "In presentation software, what is an individual page called?",
+        "options": ["Document", "Sheet", "Slide", "Canvas"],
+        "correctAnswer": "Slide"
+      },
+      {
+        "questionText": "What is the purpose of 'transitions' in a presentation?",
+        "options": ["To add background music to the slides.", "To control how text appears on a slide.", "To add visual effects between slides.", "To change the font style of titles."],
+        "correctAnswer": "To add visual effects between slides."
+      },
+      {
+        "questionText": "Which view in presentation software allows you to rearrange the order of your slides easily?",
+        "options": ["Normal View", "Slide Sorter View", "Reading View", "Outline View"],
+        "correctAnswer": "Slide Sorter View"
+      },
+      {
+        "questionText": "What is the file extension commonly associated with Microsoft PowerPoint presentations?",
+        "options": [".docx", ".xlsx", ".pptx", ".jpg"],
+        "correctAnswer": ".pptx"
+      },
+      {
+        "questionText": "To insert an image into a document, spreadsheet, or presentation, which menu tab would you most likely use?",
+        "options": ["Review", "View", "Insert", "Data"],
+        "correctAnswer": "Insert"
+      },
+      {
+        "questionText": "Which shortcut key combination is typically used for 'Copy' in most applications?",
+        "options": ["Ctrl + S", "Ctrl + V", "Ctrl + X", "Ctrl + C"],
+        "correctAnswer": "Ctrl + C"
+      },
+      {
+        "questionText": "Which shortcut key combination is typically used for 'Paste' in most applications?",
+        "options": ["Ctrl + P", "Ctrl + C", "Ctrl + V", "Ctrl + Z"],
+        "correctAnswer": "Ctrl + V"
+      },
+      {
+        "questionText": "What is the purpose of 'Undo' and 'Redo' functions in software applications?",
+        "options": ["To delete text permanently.", "To quickly save and open files.", "To reverse or re-apply the last action.", "To change the font size."],
+        "correctAnswer": "To reverse or re-apply the last action."
+      },
+      {
+        "questionText": "Before printing a document, what feature allows you to see how it will look on paper?",
+        "options": ["Spell Check", "Print Preview", "Grammar Check", "Page Setup"],
+        "correctAnswer": "Print Preview"
+      },
+      {
+        "questionText": "What is a 'template' in office software?",
+        "options": ["A document that cannot be edited.", "A pre-designed structure that you can use as a starting point.", "A tool for checking spelling and grammar.", "A way to share your document online."],
+        "correctAnswer": "A pre-designed structure that you can use as a starting point."
+      }
+    ]
+  },
   // ms word for beginners
   "MSweek_1": {
     "title": "Week 1: MS Word Basics Quiz",

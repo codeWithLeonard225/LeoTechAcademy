@@ -145,16 +145,16 @@ const AdWrdWk3 = () => {
                     <p className="text-sm text-gray-600 mt-2 text-center italic">
                         Locating the Show/Hide ¶ button to reveal hidden formatting marks.
                     </p>
-                    {/* <div className="flex justify-center mt-6">
+                    <div className="flex justify-center mt-6">
                         <img
                             src="/images/visible-section-break.PNG" // Placeholder for a screenshot showing a document with Show/Hide ¶ enabled, clearly showing a "Section Break (Next Page)" marker
                             alt="Screenshot of a document with visible section break markers."
                             className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
                         />
-                    </div> */}
-                    {/* <p className="text-sm text-gray-600 mt-2 text-center italic">
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
                         A visible 'Section Break (Next Page)' marker after enabling Show/Hide ¶.
-                    </p> */}
+                    </p>
                 </div>
 
                 {/* Section 1.4: Removing Section Breaks */}
@@ -192,7 +192,7 @@ const AdWrdWk3 = () => {
                     What we'll cover: Learn how to create dynamic <span className="font-semibold">Table of Contents (TOC)</span> that update automatically, and how to use <span className="font-semibold">bookmarks</span> and <span className="font-semibold">cross-references</span> for smart internal navigation.
                 </p>
 
-                {/* Section 2.1: Generating an Automatic Table of Contents (TOC) */}
+                 {/* Section 2.1: Generating an Automatic Table of Contents (TOC) */}
                 <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
                     <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
                         1. Generating an Automatic Table of Contents (TOC)
@@ -207,10 +207,22 @@ const AdWrdWk3 = () => {
                         <li>Go to the <span className="font-semibold">References Tab</span> &gt; <span className="font-semibold">Table of Contents</span> group.</li>
                         <li>Click <span className="font-semibold">Table of Contents</span> and choose one of the Automatic Table styles.</li>
                     </ol>
-                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                        <span className="font-semibold">Practical Use:</span> Creates a professional, clickable navigation tool for long reports, proposals, or manuals. Readers can click on an entry to jump directly to that section.
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/toc-insert-menu.png" // Placeholder image for inserting TOC
+                            alt="Screenshot showing the References tab and Table of Contents menu in Word."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Inserting an automatic Table of Contents from the References tab.
                     </p>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                
+                  
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        A dynamically generated Table of Contents.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-4 mt-6">
                         <span className="font-semibold">Shortcut:</span> Alt + Shift + O (Opens the Table of Contents dialog, but easier to use Ribbon for first time).
                     </p>
                 </div>
@@ -235,7 +247,17 @@ const AdWrdWk3 = () => {
                             </ul>
                         </li>
                     </ol>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/toc-update-dialog.png" // Placeholder image for TOC update dialog
+                            alt="Screenshot showing the Update Table of Contents dialog with two options."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        The 'Update Table of Contents' dialog box.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-4 mt-6">
                         <span className="font-semibold">Shortcut (Update Field):</span> Select the TOC, then press F9.
                     </p>
                 </div>
@@ -255,7 +277,17 @@ const AdWrdWk3 = () => {
                         <li>Go to <span className="font-semibold">Insert Tab</span> &gt; <span className="font-semibold">Links</span> group &gt; <span className="font-semibold">Bookmark</span>.</li>
                         <li>Type a unique, descriptive name (no spaces allowed) and click <span className="font-semibold">Add</span>.</li>
                     </ol>
-                    <h4 className="text-2xl font-medium text-gray-700 mb-3">Navigating with Bookmarks:</h4>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/bookmark-dialog.png" // Placeholder image for bookmark dialog
+                            alt="Screenshot showing the Bookmark dialog box in Word."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        The Bookmark dialog for creating and managing bookmarks.
+                    </p>
+                    <h4 className="text-2xl font-medium text-gray-700 mt-6 mb-3">Navigating with Bookmarks:</h4>
                     <ol className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
                         <li><span className="font-semibold">Insert Tab</span> &gt; <span className="font-semibold">Links</span> group &gt; <span className="font-semibold">Bookmark</span>.</li>
                         <li>Select the bookmark name and click <span className="font-semibold">Go To</span>.</li>
@@ -290,7 +322,17 @@ const AdWrdWk3 = () => {
                         </li>
                         <li>Click <span className="font-semibold">Insert</span>, then Close.</li>
                     </ol>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/cross-reference-dialog.png" // Placeholder image for cross-reference dialog
+                            alt="Screenshot showing the Cross-reference dialog box in Word."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        The Cross-reference dialog for linking to various document elements.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-4 mt-6">
                         <span className="font-semibold">Updating Cross-references:</span> Like TOCs, they are fields. Select the cross-reference and press F9.
                     </p>
                     <p className="text-lg text-gray-700 leading-relaxed mb-4">
@@ -299,7 +341,189 @@ const AdWrdWk3 = () => {
                 </div>
             </section>
 
-         
+            {/* --- */}
+
+            {/* Topic 3: Advanced Headers, Footers & Page Numbering */}
+            <section className="mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 className="text-4xl font-bold text-gray-800 mb-6 border-b-2 border-blue-400 pb-3">
+                    Topic 3: Advanced Headers, Footers & Page Numbering
+                </h2>
+                <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                    What we'll cover: Take full control of your page headers, footers, and page numbers, allowing for different content on different pages or sections of your document.
+                </p>
+
+                {/* Section 3.1: Recap: Basic Headers & Footers */}
+                <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                        1. Recap: Basic Headers & Footers
+                    </h3>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">How:</h4>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        Go to the <span className="font-semibold">Insert Tab</span> &gt; <span className="font-semibold">Header & Footer</span> group &gt; Click on <span className="font-semibold">Header</span> or <span className="font-semibold">Footer</span>. You can choose a built-in style or select <span className="font-semibold">Edit Header/Footer</span>.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        Remember: By default, the header/footer you create will apply to the entire document.
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/basic-header-footer.png" // Placeholder for an image showing Insert Tab -> Header/Footer options
+                            alt="Screenshot showing the Insert tab and Header & Footer options in Word."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Inserting a basic header or footer.
+                    </p>
+                </div>
+
+                {/* Section 3.2: Different First Page */}
+                <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                        2. Different First Page
+                    </h3>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h4>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        To have a blank header/footer on your title page, or a different one than the rest of the document.
+                    </p>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">How:</h4>
+                    <ol className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
+                        <li>Double-click in the header/footer area to activate the <span className="font-semibold">Header & Footer Tools</span> (<span className="font-semibold">Design Tab</span>).</li>
+                        <li>In the <span className="font-semibold">Options</span> group, check the box for <span className="font-semibold">Different First Page</span>.</li>
+                    </ol>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Result:</span> The header/footer on your very first page becomes independent. You can delete or add content to just that page's header/footer without affecting the rest.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Practical Use:</span> This is perfect for a clean title page of a report or a cover letter where you don't want a page number or header text.
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/different-first-page.PNG" // Placeholder for an image showing Header & Footer Design Tab with 'Different First Page' checked
+                            alt="Screenshot showing the Header & Footer Design tab with the 'Different First Page' option checked."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Enabling 'Different First Page' in the Header & Footer Design tab.
+                    </p>
+                </div>
+
+                {/* Section 3.3: Different Odd & Even Pages */}
+                <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                        3. Different Odd & Even Pages
+                    </h3>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h4>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        To have different headers/footers on left-hand (even) pages and right-hand (odd) pages. Often used for professional book layouts (e.g., chapter title on the odd page, author on the even page).
+                    </p>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">How:</h4>
+                    <ol className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
+                        <li>Double-click in the header/footer area to activate the <span className="font-semibold">Header & Footer Tools</span> (<span className="font-semibold">Design Tab</span>).</li>
+                        <li>In the <span className="font-semibold">Options</span> group, check the box for <span className="font-semibold">Different Odd & Even Pages</span>.</li>
+                    </ol>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Result:</span> You'll now see separate header/footer areas labeled "Odd Page Header" and "Even Page Header." You can add different content to each.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Practical Use:</span> Essential for documents that will be printed double-sided, ensuring a polished and consistent layout.
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/different-odd-even-pages.PNG" // Placeholder for an image showing Header & Footer Design Tab with 'Different Odd & Even Pages' checked
+                            alt="Screenshot showing the Header & Footer Design tab with the 'Different Odd & Even Pages' option checked."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Activating 'Different Odd & Even Pages' for distinct headers/footers.
+                    </p>
+                </div>
+
+                {/* Section 3.4: Linking/Unlinking to Previous (CRUCIAL with Section Breaks!) */}
+                <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                        4. Linking/Unlinking to Previous (CRUCIAL with Section Breaks!)
+                    </h3>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">Purpose:</h4>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        This is the key to having different headers/footers in different <span className="text-red-500"> section</span> of your document. By default, new sections are "linked to previous," meaning they share the same header/footer content as the section before them. You <span className="text-red-500">must</span> Unlink them to make them independent.
+                    </p>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">How:</h4>
+                    <ol className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
+                        <li>First, ensure you have <span className="font-semibold">Section Breaks</span> (from Topic 1) inserted to divide your document into the desired sections.</li>
+                        <li>Go to the header/footer area of the <span className="text-red-500">new section</span> new section where you want to change the content.</li>
+                        <li>Double-click in the header/footer area to activate the <span className="font-semibold">Header & Footer Tools</span> (<span className="font-semibold">Design Tab</span>).</li>
+                        <li>In the <span className="font-semibold">Navigation</span> group, click <span className="font-semibold">Link to Previous</span> to deactivate it. (The button will appear highlighted if it's currently active; click it to turn it off).</li>
+                    </ol>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Result:</span> The header/footer of this specific section is now independent of the previous section. You can type completely different content here without it affecting earlier sections.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Practical Use:</span> Imagine a long report: you can have "Executive Summary" in the header for Section 1, "Main Report" for Section 2, and "Appendix A" for Section 3, all within the same Word file, giving it a highly professional structure.
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/link-to-previous.png" // Placeholder for an image showing Header & Footer Design Tab with 'Link to Previous' button
+                            alt="Screenshot showing the Header & Footer Design tab with the 'Link to Previous' button highlighted, indicating it's active."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Deactivating 'Link to Previous' to make a section's header/footer independent.
+                    </p>
+                </div>
+
+                {/* Section 3.5: Advanced Page Numbering */}
+                <div className="mb-8 p-6 bg-gray-50 rounded-md shadow-sm">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2">
+                        5. Advanced Page Numbering
+                    </h3>
+                    <h4 className="text-2xl font-medium text-gray-700 mb-3">Inserting Page Numbers:</h4>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        Go to the <span className="font-semibold">Insert Tab</span> &gt; <span className="font-semibold">Header & Footer</span> group &gt; Click <span className="font-semibold">Page Number</span>. Choose your desired position (e.g., Bottom of Page).
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/insert-page-number.PNG" // Placeholder for an image showing Insert Tab -> Page Number dropdown
+                            alt="Screenshot showing the Insert tab and the Page Number dropdown menu."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        Inserting page numbers into your document.
+                    </p>
+                    <h4 className="text-2xl font-medium text-gray-700 mt-6 mb-3">Formatting Page Numbers:</h4>
+                    <ol className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
+                        <li>Once page numbers are inserted, go back to the <span className="font-semibold">Insert Tab</span> &gt; <span className="font-semibold">Page Number</span> &gt; Click <span className="font-semibold">Format Page Numbers...</span></li>
+                        <li><span className="font-semibold">Number format:</span> Here, you can change the numbering style from standard Arabic numerals (1, 2, 3) to Roman numerals (i, ii, iii) or letters (a, b, c).</li>
+                        <li><span className="font-semibold">Page numbering:</span>
+                            <ul className="list-disc list-inside ml-5 mt-2 space-y-1">
+                                <li><span className="font-semibold">Continue from previous section:</span> This is the default setting for most sections, continuing the numbering sequence.</li>
+                                <li><span className="font-semibold">Start at:</span> This crucial option allows you to restart numbering from '1' (or 'i', 'a') in a new section (e.g., starting an appendix from page 1, or the main body from page 1 after an introduction using Roman numerals).</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        <span className="font-semibold">Practical Use:</span> This is commonly used for formal reports where introductory pages (like the Table of Contents or Executive Summary) use Roman numerals (i, ii, iii), and then the main body of the report starts with Arabic page 1.
+                    </p>
+                    <div className="flex justify-center mt-6">
+                        <img
+                            src="/images/format-page-numbers.png" // Placeholder for an image showing the Page Number Format dialog
+                            alt="Screenshot showing the Page Number Format dialog box."
+                            className="rounded-md shadow-md w-full max-w-xl h-auto border border-gray-200"
+                        />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 text-center italic">
+                        The 'Page Number Format' dialog allows for detailed numbering control.
+                    </p>
+                </div>
+            </section>
+
+            {/* Footer Section (Optional) */}
+            <footer className="bg-indigo-700 text-white p-4 text-center text-sm rounded-b-lg mt-4">
+                <p>&copy; 2025 Study Notes. All rights reserved.</p>
+            </footer>
         </div>
     );
 };
