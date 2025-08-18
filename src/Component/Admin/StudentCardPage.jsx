@@ -491,7 +491,7 @@ export default function StudentCardPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-6 sm:p-8">
-        <Link to="/students" className="text-blue-600 hover:underline mb-4 inline-block font-medium">
+        <Link to="/admin-panel" className="text-blue-600 hover:underline mb-4 inline-block font-medium">
           ← Back to Dashboard
         </Link>
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 border-b pb-4">

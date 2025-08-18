@@ -55,6 +55,7 @@ import CbWk1 from './Component/Reading/ComputerBasics/CbWk1';
 import CbWk2 from './Component/Reading/ComputerBasics/CbWk2';
 import CbWk3 from './Component/Reading/ComputerBasics/CbWk3';
 import CbWk4 from './Component/Reading/ComputerBasics/CbWk4';
+import DistanceUserDashboard from './Component/Admin/DistanceUserDashboard';
 
 
 
@@ -96,6 +97,7 @@ function App() {
            {/* Admin */}
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/students" element={<StudentDashboard />} />
+        <Route path="/distant" element={<DistanceUserDashboard />} />
         <Route path="/students/:id" element={<StudentCardPage />} />
         <Route path="/enrollment-form" element={<EnrollmentForm />} />
         <Route path="/fees-form" element={<FeesForm />} />

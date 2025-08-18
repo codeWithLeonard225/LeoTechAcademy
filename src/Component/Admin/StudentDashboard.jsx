@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-// Assumes Firebase is initialized and exported from this path
-import { db } from "../../../firebase"; 
+import { db } from "../../../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, onSnapshot, query } from "firebase/firestore";
 
@@ -8,19 +7,17 @@ export default function StudentDashboard() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userTypeFilter, setUserTypeFilter] = useState("all"); // New state for filtering
   const navigate = useNavigate();
 
   useEffect(() => {
-    // We use onSnapshot for real-time updates, which is more efficient for a dashboard.
-    // It will automatically update whenever a student is added, removed, or changed.
     const fetchStudents = () => {
       setLoading(true);
-      // The Firestore collection path matches your original code
       const studentsCollectionRef = collection(db, "Users");
       const studentsQuery = query(studentsCollectionRef);
 
       const unsubscribe = onSnapshot(studentsQuery, (snapshot) => {
-        const studentList = snapshot.docs.map(doc => ({
+        const studentList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
@@ -39,14 +36,28 @@ export default function StudentDashboard() {
     fetchStudents();
   }, []);
 
-  // Function to calculate student counts per course
+  // Filter students based on userTypeFilter
+  const filteredStudents = students.filter((student) => {
+    if (userTypeFilter === "all") {
+      return true;
+    }
+    // Ensure student.userType exists before comparing
+    return student.userType === userTypeFilter;
+  });
+
+  // Function to calculate student counts per course for filtered students
   const getCourseCounts = () => {
     const counts = {};
-    if (students.length > 0) {
-      students.forEach(student => {
-        // We use inPersonClassIds to count enrollments, as per your data structure
+    if (filteredStudents.length > 0) {
+      filteredStudents.forEach((student) => {
+        // Check both inPersonClassIds and enrolledCourseIds for course enrollment
         if (student.inPersonClassIds && Array.isArray(student.inPersonClassIds)) {
-          student.inPersonClassIds.forEach(courseId => {
+          student.inPersonClassIds.forEach((courseId) => {
+            counts[courseId] = (counts[courseId] || 0) + 1;
+          });
+        }
+        if (student.enrolledCourseIds && Array.isArray(student.enrolledCourseIds)) {
+          student.enrolledCourseIds.forEach((courseId) => {
             counts[courseId] = (counts[courseId] || 0) + 1;
           });
         }
@@ -85,7 +96,7 @@ export default function StudentDashboard() {
           ← Back to Home
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Left Column: Summary Dashboard */}
         <div className="md:col-span-1">
@@ -93,11 +104,53 @@ export default function StudentDashboard() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Dashboard Overview</h2>
             <div className="space-y-4">
               <div className="bg-indigo-50 p-4 rounded-lg shadow-inner">
-                <p className="text-sm font-medium text-indigo-700">Total Students</p>
-                <p className="text-3xl font-bold text-indigo-900">{students.length}</p>
+                <p className="text-sm font-medium text-indigo-700">Total Students (Filtered)</p>
+                <p className="text-3xl font-bold text-indigo-900">{filteredStudents.length}</p>
               </div>
+
+              {/* User Type Filter */}
+              <div className="mt-4">
+                <p className="text-sm font-medium text-gray-700 mb-2">Filter by User Type</p>
+                <div className="flex flex-col space-y-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio h-4 w-4 text-indigo-600"
+                      name="userType"
+                      value="all"
+                      checked={userTypeFilter === "all"}
+                      onChange={(e) => setUserTypeFilter(e.target.value)}
+                    />
+                    <span className="ml-2 text-gray-700">All Students</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio h-4 w-4 text-indigo-600"
+                      name="userType"
+                      value="in-person"
+                      checked={userTypeFilter === "in-person"}
+                      onChange={(e) => setUserTypeFilter(e.target.value)}
+                    />
+                    <span className="ml-2 text-gray-700">In-Person Students</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio h-4 w-4 text-indigo-600"
+                      name="userType"
+                      value="distance"
+                      checked={userTypeFilter === "distance"}
+                      onChange={(e) => setUserTypeFilter(e.target.value)}
+                    />
+                    <span className="ml-2 text-gray-700">Distance Students</span>
+                  </label>
+                </div>
+              </div>
+              {/* End User Type Filter */}
+
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Students by Course</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">Students by Course (Filtered)</p>
                 <div className="space-y-2">
                   {Object.keys(courseCounts).length > 0 ? (
                     Object.entries(courseCounts).map(([course, count]) => (
@@ -107,7 +160,7 @@ export default function StudentDashboard() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-500 text-sm">No course enrollments found.</p>
+                    <p className="text-gray-500 text-sm">No course enrollments found for this filter.</p>
                   )}
                 </div>
               </div>
@@ -117,9 +170,9 @@ export default function StudentDashboard() {
 
         {/* Right Column: Student List */}
         <div className="md:col-span-3">
-          {students.length > 0 ? (
+          {filteredStudents.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {students.map(student => (
+              {filteredStudents.map((student) => (
                 <Link key={student.id} to={`/students/${student.id}`} className="block">
                   <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl hover:border-indigo-400 transition-all duration-200 cursor-pointer">
                     <h2 className="text-xl font-semibold text-indigo-700 mb-2">
@@ -131,6 +184,10 @@ export default function StudentDashboard() {
                     <p className="text-gray-700 text-sm">
                       <span className="font-medium">Phone:</span> {student.tel || "N/A"}
                     </p>
+                    {/* Display userType for each student */}
+                    <p className="text-gray-700 text-sm">
+                      <span className="font-medium">Type:</span> {student.userType || "N/A"}
+                    </p>
                     <p className="text-gray-500 text-xs mt-2">Click for more details</p>
                   </div>
                 </Link>
@@ -138,7 +195,9 @@ export default function StudentDashboard() {
             </div>
           ) : (
             <div className="flex justify-center items-center h-full">
-              <p className="text-center text-gray-600 text-lg">No student data found.</p>
+              <p className="text-center text-gray-600 text-lg">
+                No student data found for the selected filter.
+              </p>
             </div>
           )}
         </div>

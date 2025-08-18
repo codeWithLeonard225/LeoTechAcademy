@@ -3,7 +3,7 @@ import { useState } from "react";
 import { LayoutDashboard, BookOpenCheck, BookOpenText, Users, ClipboardList, School, FileEdit, Globe2 } from "lucide-react";
 import UserProfileForm from "../StudentsForm/UserProfileForm";
 import InPersonCourseForm from "../StudentsForm/InPerson/InPersonCourseForm";
-import DistanceDashboard from "../StudentsForm/Distance/DistanceDashboard";
+import DistanceUserDashboard from "./DistanceUserDashboard";
 import PaidCourseForm from "../PaidCourse/PaidCourseForm";
 import StudentDashboard from "./StudentDashboard";
 
@@ -50,7 +50,7 @@ const NAV_ITEMS = [
     { key: "inPersonCourseForm", label: "In-Person Course Form", icon: <FileEdit /> },    // Corrected key to camelCase
     { key: "inPersonDashboard", label: "In-Person Dashboard", icon: <LayoutDashboard /> }, // Corrected key to camelCas
     { key: "distanceCourseForm", label: "Distance Course Form", icon: <Globe2 /> },
-    { key: "distanceDashboard", label: "Distance Dashboard", icon: <ClipboardList /> },
+    { key: "distant", label: "Distance Dashboard", icon: <ClipboardList /> },
 ];
 
 export default function AdminPanel() {
@@ -74,9 +74,8 @@ export default function AdminPanel() {
                         </p>
                     </div>
                 );
-            case "distanceDashboard":
-                // import DistanceDashboard from './path/to/DistanceDashboard';
-                // return <DistanceDashboard />;
+            case "distant":
+                return <DistanceUserDashboard />;
                 return (
                     <div className="p-4 bg-white rounded-lg shadow-md">
                         <h2 className="text-xl font-semibold mb-3">Distance Learning Dashboard</h2>
