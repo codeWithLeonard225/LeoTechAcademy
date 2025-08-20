@@ -68,7 +68,7 @@ function App() {
     <div className="font-sans antialiased">
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Home />} />
         
 
 
@@ -134,7 +134,7 @@ function App() {
         {/* MS Access Beginer*/}
 
         <Route path="/courses/MsAccessWk1" element={<MsAccessWk1 />} />
-        <Route path="/" element={<MsAccessWk2 />} />
+        <Route path="/courses/MsAccessWk2" element={<MsAccessWk2 />} />
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />
