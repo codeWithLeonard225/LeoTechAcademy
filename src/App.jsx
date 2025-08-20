@@ -56,6 +56,8 @@ import CbWk2 from './Component/Reading/ComputerBasics/CbWk2';
 import CbWk3 from './Component/Reading/ComputerBasics/CbWk3';
 import CbWk4 from './Component/Reading/ComputerBasics/CbWk4';
 import DistanceUserDashboard from './Component/Admin/DistanceUserDashboard';
+import MsAccessWk1 from './Component/Reading/MsAccess/MsAccessWk1';
+import MsAccessWk2 from './Component/Reading/MsAccess/MsAccessWk2';
 
 
 
@@ -66,7 +68,7 @@ function App() {
     <div className="font-sans antialiased">
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
         
 
 
@@ -129,6 +131,10 @@ function App() {
         <Route path="/courses/MsExcelWeek3" element={<MsExcelWeek3 />} />
         <Route path="/courses/MsExcelWeek4" element={<MsExcelWeek4 />} />
 
+        {/* MS Access Beginer*/}
+
+        <Route path="/courses/MsAccessWk1" element={<MsAccessWk1 />} />
+        <Route path="/" element={<MsAccessWk2 />} />
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />

@@ -1987,6 +1987,421 @@ const allQuizzes = {
     ]
   },
 
+  // Ms Access
+
+  "MSAccess_Week1": {
+    "title": "Week 1: Introduction to Microsoft Access Quiz",
+    "description": "Test your understanding of fundamental database concepts, Access interface navigation, table creation, and basic field properties.",
+    "questions": [
+      {
+        "questionText": "What is the primary purpose of a database?",
+        "options": [
+          "To create presentations and slideshows.",
+          "To store, organize, find, update, and report information quickly and correctly.",
+          "To perform complex mathematical calculations only.",
+          "To send emails and manage contacts."
+        ],
+        "correctAnswer": "To store, organize, find, update, and report information quickly and correctly."
+      },
+      {
+        "questionText": "In a database, what does 'Entity' refer to?",
+        "options": [
+          "A specific piece of information, like a student's first name.",
+          "The entire database file itself.",
+          "The 'thing' or subject about which you store data (e.g., Student, Patient, Item).",
+          "A unique identifier for each record."
+        ],
+        "correctAnswer": "The 'thing' or subject about which you store data (e.g., Student, Patient, Item)."
+      },
+      {
+        "questionText": "Which of the following is NOT a benefit of using a database?",
+        "options": [
+          "Increased data accuracy.",
+          "Faster data retrieval and reporting.",
+          "Difficulty in sharing data among multiple users.",
+          "Enhanced data security."
+        ],
+        "correctAnswer": "Difficulty in sharing data among multiple users."
+      },
+      {
+        "questionText": "What is the function of a 'Primary Key' (PK) in an Access table?",
+        "options": [
+          "To automatically sum up numerical fields.",
+          "To define the visual style of the table.",
+          "To uniquely identify each record in a table, ensuring no two records are the same.",
+          "To specify the order in which data is entered into the table."
+        ],
+        "correctAnswer": "To uniquely identify each record in a table, ensuring no two records are the same."
+      },
+      {
+        "questionText": "When creating a new table in Microsoft Access, which 'View' is primarily used to define field names, data types, and set the Primary Key?",
+        "options": [
+          "Layout View",
+          "Print Preview",
+          "Datasheet View",
+          "Design View"
+        ],
+        "correctAnswer": "Design View"
+      },
+      {
+        "questionText": "If you want the 'StudentID' field to automatically generate a unique number for each new record, which Data Type should you choose in Access?",
+        "options": [
+          "Number",
+          "Text",
+          "AutoNumber",
+          "Currency"
+        ],
+        "correctAnswer": "AutoNumber"
+      },
+      {
+        "questionText": "What is the keyboard shortcut to save your changes in Access Design View?",
+        "options": [
+          "Ctrl+V",
+          "Ctrl+C",
+          "Ctrl+S",
+          "Ctrl+X"
+        ],
+        "correctAnswer": "Ctrl+S"
+      },
+      {
+        "questionText": "Which 'View' in Access is used for entering, sorting, and filtering data records?",
+        "options": [
+          "Design View",
+          "SQL View",
+          "Report View",
+          "Datasheet View"
+        ],
+        "correctAnswer": "Datasheet View"
+      },
+      {
+        "questionText": "What does setting a field's 'Required' property to 'Yes' in Design View achieve?",
+        "options": [
+          "It makes the field automatically fill with data.",
+          "It ensures that the field cannot be left empty when a new record is entered.",
+          "It converts the field's data type to Text.",
+          "It hides the field from Datasheet View."
+        ],
+        "correctAnswer": "It ensures that the field cannot be left empty when a new record is entered."
+      },
+      {
+        "questionText": "How can you AutoFit a column's width in Datasheet View?",
+        "options": [
+          "Right-click the column header and select 'Hide Field'.",
+          "Double-click the left edge of the column header.",
+          "Double-click the right edge of a column header until the double-arrow shows.",
+          "Drag the bottom edge of the column header."
+        ],
+        "correctAnswer": "Double-click the right edge of a column header until the double-arrow shows."
+      },
+      {
+        "questionText": "Which term refers to a single piece of information about an entity, such as 'FirstName'?",
+        "options": [
+          "Record",
+          "Table",
+          "Attribute/Field",
+          "Entity"
+        ],
+        "correctAnswer": "Attribute/Field"
+      },
+      {
+        "questionText": "What is a 'Record' in a database table?",
+        "options": [
+          "The name of the table.",
+          "One full row of data about one entity.",
+          "A collection of different tables.",
+          "The data type of a field."
+        ],
+        "correctAnswer": "One full row of data about one entity."
+      },
+      {
+        "questionText": "Which real-life example from the Sierra Leone context was given for a database related to a School?",
+        "options": [
+          "Incidents, People involved, Reports.",
+          "Items, Suppliers, Purchases, Sales.",
+          "Patients, Visits, Medicines, Payments.",
+          "Students, Subjects, Classes, Teachers, Results."
+        ],
+        "correctAnswer": "Students, Subjects, Classes, Teachers, Results."
+      },
+      {
+        "questionText": "Why is 'Phone' often stored as a 'Text' data type in Access instead of 'Number'?",
+        "options": [
+          "Because phone numbers always contain letters.",
+          "Because phone numbers are not typically used in mathematical calculations.",
+          "Because 'Number' data type is only for whole numbers.",
+          "Because 'Text' fields are faster to search."
+        ],
+        "correctAnswer": "Because phone numbers are not typically used in mathematical calculations."
+      },
+      {
+        "questionText": "After opening Microsoft Access, what is the first step to creating a brand new database file?",
+        "options": [
+          "Click 'Open Existing Database'.",
+          "Click 'Blank Database'.",
+          "Click 'New Table'.",
+          "Click 'Run Query'."
+        ],
+        "correctAnswer": "Click 'Blank Database'."
+      },
+      {
+        "questionText": "In Design View, where can you typically find options like 'Required' and 'Field Size' for a selected field?",
+        "options": [
+          "In the ribbon at the very top of the Access window.",
+          "In the 'Field Properties' area at the bottom of the Design View window.",
+          "By right-clicking on the table name.",
+          "In the 'Datasheet View' tab."
+        ],
+        "correctAnswer": "In the 'Field Properties' area at the bottom of the Design View window."
+      },
+      {
+        "questionText": "What does the keyboard shortcut 'Ctrl+' (Ctrl and apostrophe) do in Datasheet View?",
+        "options": [
+          "Deletes the current record.",
+          "Repeats the value from the cell above.",
+          "Inserts a new blank record.",
+          "Opens the field properties dialog."
+        ],
+        "correctAnswer": "Repeats the value from the cell above."
+      },
+      {
+        "questionText": "What is the primary difference between Design View and Datasheet View?",
+        "options": [
+          "Design View is for printing, Datasheet View is for viewing.",
+          "Design View is for coding, Datasheet View is for design.",
+          "Design View defines/edits structure (fields, data types); Datasheet View works with data (type, sort, filter).",
+          "Design View is only for queries, Datasheet View is only for tables."
+        ],
+        "correctAnswer": "Design View defines/edits structure (fields, data types); Datasheet View works with data (type, sort, filter)."
+      },
+      {
+        "questionText": "Which action allows you to keep important columns visible while scrolling horizontally in Datasheet View?",
+        "options": [
+          "Hiding the column.",
+          "Deleting the column.",
+          "Freezing Fields.",
+          "Changing the column's data type."
+        ],
+        "correctAnswer": "Freezing Fields."
+      },
+      {
+        "questionText": "Which Data Type would be most appropriate for storing 'DateOfBirth'?",
+        "options": [
+          "Text",
+          "Number",
+          "Date/Time",
+          "Yes/No"
+        ],
+        "correctAnswer": "Date/Time"
+      }
+    ]
+  },
+  "MSAccess_Week2": {
+    "title": "Week 2: Microsoft Access Forms Quiz",
+    "description": "Test your knowledge on creating, designing, and styling forms in Microsoft Access.",
+    "questions": [
+      {
+        "questionText": "What is a primary reason to use a Form in Access instead of directly interacting with a Table?",
+        "options": [
+          "Forms are only for viewing data, not editing.",
+          "Forms offer a more user-friendly interface for data entry and editing.",
+          "Forms allow for complex calculations that tables cannot do.",
+          "Forms are required to save any data in Access."
+        ],
+        "correctAnswer": "Forms offer a more user-friendly interface for data entry and editing."
+      },
+      {
+        "questionText": "Which tab in Access should you go to initiate the 'Form Wizard'?",
+        "options": [
+          "Home",
+          "External Data",
+          "Create",
+          "Database Tools"
+        ],
+        "correctAnswer": "Create"
+      },
+      {
+        "questionText": "When using the Form Wizard, which button would you click to move ALL available fields from your table to the form?",
+        "options": [
+          ">",
+          "<",
+          "<<",
+          ">>"
+        ],
+        "correctAnswer": ">>"
+      },
+      {
+        "questionText": "Which of the following is NOT a layout option provided by the Form Wizard?",
+        "options": [
+          "Columnar",
+          "Tabular",
+          "PivotTable",
+          "Justified"
+        ],
+        "correctAnswer": "PivotTable"
+      },
+      {
+        "questionText": "After creating a form with the Wizard, what are the two main design views you can use to adjust its layout?",
+        "options": [
+          "Table View and Query View",
+          "Layout View and Design View",
+          "Print Preview and Report View",
+          "Datasheet View and SQL View"
+        ],
+        "correctAnswer": "Layout View and Design View"
+      },
+      {
+        "questionText": "Which design view allows you to see the actual data while making quick adjustments like moving or resizing fields?",
+        "options": [
+          "Design View",
+          "Datasheet View",
+          "Layout View",
+          "Print Preview"
+        ],
+        "correctAnswer": "Layout View"
+      },
+      {
+        "questionText": "To select multiple fields on a form in Layout View for simultaneous adjustment, what key should you hold down while clicking on them?",
+        "options": [
+          "Ctrl",
+          "Alt",
+          "Shift",
+          "Tab"
+        ],
+        "correctAnswer": "Shift"
+      },
+      {
+        "questionText": "Which design view gives you full control over the form's structure, including sections like Form Header and Detail, but does NOT show live data?",
+        "options": [
+          "Layout View",
+          "Datasheet View",
+          "Design View",
+          "Form View"
+        ],
+        "correctAnswer": "Design View"
+      },
+      {
+        "questionText": "If the 'Property Sheet' is not visible in Design View, which function key can you press to make it appear?",
+        "options": [
+          "F1",
+          "F2",
+          "F4",
+          "F5"
+        ],
+        "correctAnswer": "F4"
+      },
+      {
+        "questionText": "To change the background color of an entire form, you should first select the form's gray background and then look for which property in the Property Sheet's 'Format' tab?",
+        "options": [
+          "Font Color",
+          "Border Style",
+          "Back Color",
+          "Caption"
+        ],
+        "correctAnswer": "Back Color"
+      },
+      {
+        "questionText": "When adding a background image to a form, which property in the Property Sheet (Format tab) allows you to select the image file?",
+        "options": [
+          "Image Source",
+          "Picture",
+          "Background Image",
+          "File Path"
+        ],
+        "correctAnswer": "Picture"
+      },
+      {
+        "questionText": "Which property allows you to control how a background image displays on a form (e.g., stretched, tiled)?",
+        "options": [
+          "Picture Fit",
+          "Image Alignment",
+          "Picture Size Mode",
+          "Display Mode"
+        ],
+        "correctAnswer": "Picture Size Mode"
+      },
+      {
+        "questionText": "Where would you typically add a title or logo for the form itself?",
+        "options": [
+          "Detail section",
+          "Form Footer",
+          "Form Header",
+          "Record Source"
+        ],
+        "correctAnswer": "Form Header"
+      },
+      {
+        "questionText": "What is generally advised when styling a form regarding colors and images?",
+        "options": [
+          "Use as many colors and images as possible to make it vibrant.",
+          "Keep it simple to ensure readability and ease of use.",
+          "Only use dark colors for backgrounds.",
+          "Forms should not have any colors or images."
+        ],
+        "correctAnswer": "Keep it simple to ensure readability and ease of use."
+      },
+      {
+        "questionText": "Which section of a form in Design View typically contains the input boxes and labels for the actual data fields?",
+        "options": [
+          "Form Header",
+          "Page Header",
+          "Detail",
+          "Form Footer"
+        ],
+        "correctAnswer": "Detail"
+      },
+      {
+        "questionText": "What is the benefit of using the 'Form Wizard'?",
+        "options": [
+          "It allows for manual coding of the form's backend.",
+          "It provides a quick and guided way to create a basic form from a table.",
+          "It's primarily for creating complex reports.",
+          "It helps in connecting multiple databases."
+        ],
+        "correctAnswer": "It provides a quick and guided way to create a basic form from a table."
+      },
+      {
+        "questionText": "If you want to add a button to your form to perform an action (e.g., 'Save Record'), which view would you primarily use?",
+        "options": [
+          "Layout View",
+          "Datasheet View",
+          "Design View",
+          "Form View"
+        ],
+        "correctAnswer": "Design View"
+      },
+      {
+        "questionText": "When adjusting the size of a field in Layout View, what appears around the field that you can drag?",
+        "options": [
+          "Dotted lines",
+          "Red circles",
+          "Small squares (handles)",
+          "Arrows"
+        ],
+        "correctAnswer": "Small squares (handles)"
+      },
+      {
+        "questionText": "After selecting your source table in the Form Wizard, what does the '>' button do?",
+        "options": [
+          "Removes a selected field from the form.",
+          "Moves all available fields to the form.",
+          "Moves a selected field to the form.",
+          "Moves a selected field to the left pane."
+        ],
+        "correctAnswer": "Moves a selected field to the form."
+      },
+      {
+        "questionText": "Which type of control is typically NOT tied to actual data from your table but can be added in Design View?",
+        "options": [
+          "Input Box",
+          "Text Label",
+          "Dropdown List",
+          "Checkbox"
+        ],
+        "correctAnswer": "Text Label"
+      }
+    ]
+  },
+
 
   // html
   "HTML_Week1": {

@@ -30,7 +30,7 @@ export const coursesData = [
     instructor: 'LeoTech',
     level: 'Beginner',
     duration: '4 Weeks',
-    price: 'SLL 250',
+    price: 'SLL 300',
     category: 'Microsoft Office',
     image: '/images/MSWord.png',
     whatYouWillLearn: [
@@ -42,25 +42,25 @@ export const coursesData = [
       'Proofread and finalize documents for printing or sharing'
     ]
   },
-{
-  id: 'ms-word-advanced-office',
-  title: 'Microsoft Word for Office Workers: Advanced Document Design & Efficiency',
-  description: 'Elevate your Word skills beyond the basics! Master advanced document design, complex layouts, automation, and collaborative features to create professional, efficient, and visually impactful office documents.',
-  instructor: 'LeoTech',
-  level: 'Advanced',
-  duration: '6 Weeks',
-  price: 'SLL 500', // Suggested price increase for advanced level
-  category: 'Microsoft Office',
-  image: '/images/ms-word-ad.png', // Suggesting a different image for advanced
-  whatYouWillLearn: [
-    'Design custom layouts using advanced shapes, images, and text boxes',
-    'Automate document creation with styles, themes, and templates',
-    'Manage long documents with advanced navigation and referencing tools',
-    'Collaborate effectively using tracking changes, comments, and document protection',
-    'Create sophisticated forms and mail merges for mass communication',
-    'Optimize documents for sharing, printing, and digital distribution'
-  ]
-}
+  {
+    id: 'ms-word-advanced-office',
+    title: 'Microsoft Word for Office Workers: Advanced Document Design & Efficiency',
+    description: 'Elevate your Word skills beyond the basics! Master advanced document design, complex layouts, automation, and collaborative features to create professional, efficient, and visually impactful office documents.',
+    instructor: 'LeoTech',
+    level: 'Advanced',
+    duration: '6 Weeks',
+    price: 'SLL 500', // Suggested price increase for advanced level
+    category: 'Microsoft Office',
+    image: '/images/ms-word-ad.png', // Suggesting a different image for advanced
+    whatYouWillLearn: [
+      'Design custom layouts using advanced shapes, images, and text boxes',
+      'Automate document creation with styles, themes, and templates',
+      'Manage long documents with advanced navigation and referencing tools',
+      'Collaborate effectively using tracking changes, comments, and document protection',
+      'Create sophisticated forms and mail merges for mass communication',
+      'Optimize documents for sharing, printing, and digital distribution'
+    ]
+  }
   ,
   {
     id: 'ms-excel',
@@ -69,7 +69,7 @@ export const coursesData = [
     instructor: 'LeoTech',
     level: 'Beginner',
     duration: '4 Weeks',
-    price: 'SLL 250',
+    price: 'SLL 300',
     category: 'Microsoft Office',
     image: '/images/MSExcel.png',
     whatYouWillLearn: [
@@ -110,7 +110,7 @@ export const coursesData = [
     instructor: 'LeoTech',
     level: 'Beginner',
     duration: '4 Weeks',
-    price: 'SLL 250',
+    price: 'SLL 300',
     category: 'Microsoft Office',
     image: '/images/MSPowerPoint.png',
     whatYouWillLearn: [
@@ -126,12 +126,12 @@ export const coursesData = [
   ,
   {
     id: 'ms-access',
-    title: 'Microsoft Access for Databases',
+    title: 'Microsoft Access',
     description: 'Learn to build simple databases, create forms and reports, and manage data for small businesses or institutions.',
     instructor: 'LeoTech',
     level: 'Beginner',
-    duration: '2 Months',
-    price: 'SLL 550',
+    duration: '4 weeks',
+    price: 'SLL 350',
     category: 'Microsoft Office',
     image: '/images/MSAccess.png',
     whatYouWillLearn: [
@@ -146,12 +146,12 @@ export const coursesData = [
   ,
   {
     id: 'ms-access-advanced',
-    title: 'Advanced Microsoft Access',
+    title: 'Microsoft Access for Databases',
     description: 'Master complex database design, advanced queries, automation, and reporting. Learn to build efficient, scalable Access databases for professional use.',
     instructor: 'LeoTech',
     level: 'Intermediate to Advanced',
-    duration: '6 Weeks',
-    price: 'SLL 700',
+    duration: '3 Months',
+    price: 'SLL 1200',
     category: 'Microsoft Office',
     image: '/images/MSAccessAdvanced.png',
     whatYouWillLearn: [
@@ -172,7 +172,7 @@ export const coursesData = [
     instructor: 'LeoTech',
     level: 'Beginner',
     duration: '4 Weeks',
-    price: 'SLL 250',
+    price: 'SLL 300',
     category: 'Microsoft Office',
     image: '/images/MSPublisher.png',
     whatYouWillLearn: [
@@ -209,8 +209,8 @@ export const coursesData = [
     description: 'Learn fundamental data analysis techniques using Excel and Power BI. Create insightful reports and interactive dashboards to support informed decision-making.',
     instructor: 'LeoTech',
     level: 'Intermediate',
-    duration: '5 Weeks',
-    price: 'SLL 750',
+    duration: '3 months',
+    price: 'SLL 1200',
     category: 'Data Analysis & Visualization',
     image: '/images/DataAnalysisPowerBI.png',
     whatYouWillLearn: [
@@ -604,7 +604,7 @@ export const learningPaths = [
       'Tour Guide Mobile App for Sierra Leone'
     ]
   },
-   {
+  {
     id: 'git-github-path',
     title: 'Git & GitHub Version Control Path',
     description: 'Learn how to use Git for version control and collaborate on projects with GitHub. Essential for developers and teams.',
