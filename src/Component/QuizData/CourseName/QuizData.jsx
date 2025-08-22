@@ -695,7 +695,7 @@ const allQuizzes = {
         "correctAnswer": "Ctrl+J"
       },
       {
-        "questionText": "What unit is often used to set margins?",
+        "questionText": "What unit is often used to set images?",
         "options": ["Pixels", "Points", "Inches", "Bytes"],
         "correctAnswer": "Inches"
       },
@@ -2455,8 +2455,8 @@ const allQuizzes = {
       },
       {
         "questionText": "Which of the following is an example of a self-closing tag?",
-        "options": ["<p>", "<div>", "<img>", "<span>"],
-        "correctAnswer": "<img>"
+        "options": ["<hr>", "<div>", "<img>", "<span>"],
+        "correctAnswer": "<hr>"
       },
       {
         "questionText": "What attribute is used to specify the path to an image file in the `<img>` tag?",
@@ -2464,9 +2464,9 @@ const allQuizzes = {
         "correctAnswer": "src"
       },
       {
-        "questionText": "Which attribute provides alternative text for an image, important for accessibility and when the image fails to load?",
-        "options": ["title", "description", "alt", "text"],
-        "correctAnswer": "alt"
+        "questionText": "<u> Leo </u>",
+        "options": ["under", "underline", "line", "text"],
+        "correctAnswer": "underline"
       },
       {
         "questionText": "Which HTML tag defines the most important heading on a page?",
