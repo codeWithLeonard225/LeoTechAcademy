@@ -2401,6 +2401,212 @@ const allQuizzes = {
       }
     ]
   },
+  "MSAccess_Week3": {
+    "title": "Week 3: Microsoft Access Forms (Part 2) Quiz",
+    "description": "Test your understanding of advanced form types, combo boxes, and basic calculations in Access.",
+    "questions": [
+      {
+        "questionText": "Which form type is best for data entry as it focuses on one record at a time?",
+        "options": [
+          "Multiple Items Form",
+          "Single Item Form",
+          "Split Form",
+          "Datasheet Form"
+        ],
+        "correctAnswer": "Single Item Form"
+      },
+      {
+        "questionText": "What form type combines a single record view with a spreadsheet-like view of all records in the same window?",
+        "options": [
+          "Multiple Items Form",
+          "Split Form",
+          "Pop-up Form",
+          "Datasheet View"
+        ],
+        "correctAnswer": "Split Form"
+      },
+      {
+        "questionText": "If you want a form that shows many records at once in a table-like format but with added design features, which form type would you choose?",
+        "options": [
+          "Single Item Form",
+          "Multiple Items Form",
+          "Modal Dialog Form",
+          "Pop-up Form"
+        ],
+        "correctAnswer": "Multiple Items Form"
+      },
+      {
+        "questionText": "A Pop-up form that requires the user to close it before interacting with anything else in the database is called a:",
+        "options": [
+          "Modal Dialog Form",
+          "Datasheet Form",
+          "Single Item Form",
+          "Split Form"
+        ],
+        "correctAnswer": "Modal Dialog Form"
+      },
+      {
+        "questionText": "To make a form float on top of the main Access window and still allow interaction with the background, you would set which property to 'Yes'?",
+        "options": [
+          "Scroll Bars",
+          "Modal",
+          "Pop Up",
+          "Auto Center"
+        ],
+        "correctAnswer": "Pop Up"
+      },
+      {
+        "questionText": "What is the primary purpose of a Combo Box?",
+        "options": [
+          "To allow users to type in any value they want.",
+          "To display a picture on the form.",
+          "To ensure data consistency by providing a predefined list of choices.",
+          "To perform complex calculations automatically."
+        ],
+        "correctAnswer": "To ensure data consistency by providing a predefined list of choices."
+      },
+      {
+        "questionText": "When using the Combo Box Wizard, which option should you choose if the dropdown list values come from a separate table?",
+        "options": [
+          "I will type in the values that I want.",
+          "I want the combo box to get the values from another table or query.",
+          "I want the combo box to calculate a value.",
+          "I want the combo box to find a record."
+        ],
+        "correctAnswer": "I want the combo box to get the values from another table or query."
+      },
+      {
+        "questionText": "What is the tool you click on the Form Design tab to add a calculated field?",
+        "options": [
+          "Combo Box",
+          "Text Box",
+          "Button",
+          "Label"
+        ],
+        "correctAnswer": "Text Box"
+      },
+      {
+        "questionText": "In Design View, where do you type the formula for a calculated field?",
+        "options": [
+          "The field's Caption property.",
+          "The Control Source property in the Data tab of the Property Sheet.",
+          "The Format property of the text box.",
+          "In the Expression Builder dialog."
+        ],
+        "correctAnswer": "The Control Source property in the Data tab of the Property Sheet."
+      },
+      {
+        "questionText": "What is the correct syntax for a formula that calculates the product of two fields named 'Quantity' and 'Price'?",
+        "options": [
+          "=[Quantity] * [Price]",
+          "=Quantity * Price",
+          "Quantity * Price",
+          "([Quantity]) * ([Price])"
+        ],
+        "correctAnswer": "=[Quantity] * [Price]"
+      },
+      {
+        "questionText": "Which form property, located in the Format tab of the Property Sheet, must be set to 'Yes' for a form to be displayed as a Pop-up?",
+        "options": [
+          "Modal",
+          "Pop Up",
+          "Record Selectors",
+          "Navigation Buttons"
+        ],
+        "correctAnswer": "Pop Up"
+      },
+      {
+        "questionText": "In a Split Form, what happens when you click on a record in the Datasheet View part of the form?",
+        "options": [
+          "The record is deleted.",
+          "The corresponding record is highlighted in the form view.",
+          "The entire form automatically closes.",
+          "A new record is created."
+        ],
+        "correctAnswer": "The corresponding record is highlighted in the form view."
+      },
+      {
+        "questionText": "The primary benefit of a Modal Dialog form is to:",
+        "options": [
+          "Allow the user to view data in a floating window.",
+          "Force the user to complete the form before continuing with other tasks.",
+          "Display multiple records at once.",
+          "Prevent any data entry from occurring."
+        ],
+        "correctAnswer": "Force the user to complete the form before continuing with other tasks."
+      },
+      {
+        "questionText": "What is the term for the small square on the top-left of the form grid in Design View that you click to select the entire form?",
+        "options": [
+          "Form Selector",
+          "Form Header",
+          "Form Footer",
+          "Detail Selector"
+        ],
+        "correctAnswer": "Form Selector"
+      },
+      {
+        "questionText": "What is the first step you should take when adding a calculated field to a form?",
+        "options": [
+          "Open the form in Datasheet View.",
+          "Add a new Combo Box.",
+          "Open the form in Design View.",
+          "Change the field's data type."
+        ],
+        "correctAnswer": "Open the form in Design View."
+      },
+      {
+        "questionText": "In a calculated field, why are field names enclosed in square brackets?",
+        "options": [
+          "It is a style requirement for all formulas.",
+          "To indicate that the name is a number.",
+          "To specify the format of the output.",
+          "To tell Access that this is a field name from a table or form."
+        ],
+        "correctAnswer": "To tell Access that this is a field name from a table or form."
+      },
+      {
+        "questionText": "If you wanted to calculate a person's age from their 'DateOfBirth', which data type would that field likely be?",
+        "options": [
+          "Text",
+          "Number",
+          "Date/Time",
+          "AutoNumber"
+        ],
+        "correctAnswer": "Date/Time"
+      },
+      {
+        "questionText": "The Combo Box Wizard helps you link your form to a lookup list. Where does the wizard primarily get its data from for the dropdown?",
+        "options": [
+          "External websites",
+          "Other tables or queries",
+          "The user's computer files",
+          "Internal Access memory"
+        ],
+        "correctAnswer": "Other tables or queries"
+      },
+      {
+        "questionText": "If you wanted to add a dropdown list for a 'Class' field in a Student form, you would likely need a separate table called 'Classes' with a list of all class names. This is an example of what database concept?",
+        "options": [
+          "Redundancy",
+          "Normalization",
+          "Duplication",
+          "Uniqueness"
+        ],
+        "correctAnswer": "Normalization"
+      },
+      {
+        "questionText": "After creating a calculated field, which property would you set to display the result with a currency symbol (e.g., Le)?",
+        "options": [
+          "Input Mask",
+          "Format",
+          "Caption",
+          "Default Value"
+        ],
+        "correctAnswer": "Format"
+      }
+    ]
+  },
 
 
   // html

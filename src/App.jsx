@@ -58,6 +58,8 @@ import CbWk4 from './Component/Reading/ComputerBasics/CbWk4';
 import DistanceUserDashboard from './Component/Admin/DistanceUserDashboard';
 import MsAccessWk1 from './Component/Reading/MsAccess/MsAccessWk1';
 import MsAccessWk2 from './Component/Reading/MsAccess/MsAccessWk2';
+import MsAccessWk3 from './Component/Reading/MsAccess/MsAccessWk3';
+// import MsAccessWk4 from './Component/Reading/MsAccess/MsAccessWk4';
 
 
 
@@ -135,6 +137,7 @@ function App() {
 
         <Route path="/courses/MsAccessWk1" element={<MsAccessWk1 />} />
         <Route path="/courses/MsAccessWk2" element={<MsAccessWk2 />} />
+        <Route path="/courses/MsAccessWk3" element={<MsAccessWk3 />} />
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />
