@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from "../../../../firebase"; // adjust path if needed
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -39,6 +39,10 @@ const CoursePage = () => {
     const [activeWeek, setActiveWeek] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // New state variables for payment details
+    const [totalPaidForCourse, setTotalPaidForCourse] = useState(0);
+    const [balanceDueForCourse, setBalanceDueForCourse] = useState(0);
 
     // Define the maximum view count for a video
     const MAX_VIDEO_VIEWS = 10;
@@ -83,6 +87,28 @@ const CoursePage = () => {
 
                     if (foundCourse) {
                         setCourse(foundCourse);
+
+                        // --- Fetch Payment Details for the Course ---
+                        if (!foundCourse.isFree && foundCourse.price) {
+                            const paymentsQuery = query(
+                                collection(db, 'Payments'),
+                                where('studentId', '==', userId),
+                                where('courseId', '==', courseId)
+                            );
+                            const paymentsSnapshot = await getDocs(paymentsQuery);
+                            let totalPaid = 0;
+                            paymentsSnapshot.forEach(doc => {
+                                totalPaid += Number(doc.data().amountPaid || 0);
+                            });
+                            setTotalPaidForCourse(totalPaid);
+                            setBalanceDueForCourse(Number(foundCourse.price) - totalPaid);
+                        } else {
+                            // For free courses or courses without a price, set paid/balance to 0
+                            setTotalPaidForCourse(0);
+                            setBalanceDueForCourse(0);
+                        }
+                        // --- End Fetch Payment Details ---
+
                         const userProgress = userData.userProgress?.[courseId];
                         if (userProgress && userProgress.lastAccessedWeek) {
                             setActiveWeek(userProgress.lastAccessedWeek);
@@ -313,7 +339,7 @@ const CoursePage = () => {
             {/* Header */}
             <header className="bg-white shadow-md p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center">
                 <div className="flex items-center mb-2 sm:mb-0">
-                    <Link
+                   <Link
                         to="/distanceDashboard"
                         className="text-blue-600 hover:text-blue-800 font-semibold text-base sm:text-lg mr-4"
                     >
@@ -325,6 +351,20 @@ const CoursePage = () => {
                         </span>
                     )}
                 </div>
+                {/* Payment Info in Header */}
+                {!course.isFree && course.price && (
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+                        <p className="text-sm sm:text-base text-blue-800">
+                            <span className="font-semibold">Course Price:</span> SLE {Number(course.price).toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-green-700">
+                            <span className="font-semibold">Total Paid:</span> SLE {totalPaidForCourse.toFixed(2)}
+                        </p>
+                        <p className="text-sm sm:text-base text-red-700">
+                            <span className="font-semibold">Balance Due:</span> SLE {balanceDueForCourse.toFixed(2)}
+                        </p>
+                    </div>
+                )}
                 <button
                     onClick={handleLogout}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base transition duration-200"
