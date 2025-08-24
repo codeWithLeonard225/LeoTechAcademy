@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, updateDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from "../../../../firebase"; // adjust path if needed
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-// --- Function to Fetch Course Details (remains unchanged) ---
+// --- Function to Fetch Course Details ---
 const getCourseDetails = async (courseId) => {
     try {
         const paidCourseDocRef = doc(db, 'paidCourses', courseId);
@@ -39,10 +39,6 @@ const CoursePage = () => {
     const [activeWeek, setActiveWeek] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
-    // --- NEW STATE FOR PAYMENT DETAILS ---
-    const [totalPaidForCourse, setTotalPaidForCourse] = useState(0);
-    const [balanceDueForCourse, setBalanceDueForCourse] = useState(0);
 
     // Define the maximum view count for a video
     const MAX_VIDEO_VIEWS = 10;
@@ -93,28 +89,6 @@ const CoursePage = () => {
                         } else {
                             setActiveWeek(1); // Default to week 1 if no progress
                         }
-                        
-                        // --- NEW LOGIC: Fetch Payment Details for the Course ---
-                        if (!foundCourse.isFree && foundCourse.price) {
-                            const paymentsQuery = query(
-                                collection(db, 'Payments'),
-                                where('studentId', '==', userId),
-                                where('courseId', '==', courseId)
-                            );
-                            const paymentsSnapshot = await getDocs(paymentsQuery);
-                            let totalPaid = 0;
-                            paymentsSnapshot.forEach(doc => {
-                                totalPaid += Number(doc.data().amountPaid || 0);
-                            });
-                            setTotalPaidForCourse(totalPaid);
-                            setBalanceDueForCourse(Number(foundCourse.price) - totalPaid);
-                        } else {
-                            // For free courses or courses without a price, set paid/balance to 0
-                            setTotalPaidForCourse(0);
-                            setBalanceDueForCourse(0);
-                        }
-                        // --- End Fetch Payment Details ---
-
                     } else {
                         console.warn(`Course with ID: "${courseId}" not found in Firebase. Redirecting.`);
                         navigate('/courses');
@@ -170,7 +144,7 @@ const CoursePage = () => {
 
         const updatedUserProgress = JSON.parse(JSON.stringify(currentUser.userProgress || {}));
         if (!updatedUserProgress[courseId]) {
-            updatedUserProgress[courseId] = { completedWeeks: [], lastAccessedWeek: 0, completedItems: {}, videoWatchCounts: {}, videosWatchedOnce: {}, quizScores: {}, quizzesAttempted: {} };
+            updatedUserProgress[courseId] = { completedWeeks: [], lastAccessedWeek: 0, completedItems: {}, videoWatchCounts: {}, videosWatchedOnce: {} }; // Added videosWatchedOnce here
         }
         const courseProgress = updatedUserProgress[courseId];
 
@@ -183,23 +157,41 @@ const CoursePage = () => {
         if (courseProgress.completedItems[weekNumber][contentType].includes(itemIdentifier)) {
             console.log(`${itemIdentifier} in week ${weekNumber} already explicitly marked complete.`);
         } else {
+            // Add item to completed list if it's a new completion (e.g., video reaching MAX_VIDEO_VIEWS)
             courseProgress.completedItems[weekNumber][contentType].push(itemIdentifier);
-            courseProgress.completedItems[weekNumber][contentType].sort();
+            courseProgress.completedItems[weekNumber][contentType].sort(); // Keep completed items sorted
         }
 
+
+        // Find the current week's data from the course to calculate total videos in the week
         const currentWeekData = course.weeklyContent?.find(w => w.week === weekNumber);
+
         let allVideosInWeekWatchedOnce = true;
         let totalVideosInWeek = 0;
+
         const videosInWeek = currentWeekData?.videos || [];
         totalVideosInWeek += videosInWeek.length;
+
+        // Check completion status for all videos in the week (considering videosWatchedOnce)
         videosInWeek.forEach(video => {
             const identifier = video.title;
+            // Check if the video has been marked as watched at least once
             if (!courseProgress.videosWatchedOnce?.[weekNumber]?.[identifier]) {
                 allVideosInWeekWatchedOnce = false;
             }
         });
 
+        // Mark the entire week as complete if all its videos are watched at least once and it's not already marked
+        if (allVideosInWeekWatchedOnce && totalVideosInWeek > 0 && !courseProgress.completedWeeks.includes(weekNumber)) {
+            courseProgress.completedWeeks.push(weekNumber);
+            courseProgress.completedWeeks.sort((a, b) => a - b); // Keep completed weeks sorted
+            toast.success(`Week ${weekNumber} completed!`);
+        }
+
+        // Always update last accessed week
         courseProgress.lastAccessedWeek = weekNumber;
+
+        // Persist changes to Firestore
         await updateFirestoreUserProgress(updatedUserProgress);
     };
 
@@ -213,19 +205,22 @@ const CoursePage = () => {
 
         const updatedUserProgress = JSON.parse(JSON.stringify(currentUser.userProgress || {}));
         if (!updatedUserProgress[courseId]) {
-            updatedUserProgress[courseId] = { completedWeeks: [], lastAccessedWeek: 0, completedItems: {}, videoWatchCounts: {}, videosWatchedOnce: {}, quizScores: {}, quizzesAttempted: {} };
+            updatedUserProgress[courseId] = { completedWeeks: [], lastAccessedWeek: 0, completedItems: {}, videoWatchCounts: {}, videosWatchedOnce: {} };
         }
         const courseProgress = updatedUserProgress[courseId];
 
+        // Ensure videoWatchCounts and videosWatchedOnce structures exist
         if (!courseProgress.videoWatchCounts) courseProgress.videoWatchCounts = {};
         if (!courseProgress.videoWatchCounts[weekNumber]) courseProgress.videoWatchCounts[weekNumber] = {};
         if (!courseProgress.videosWatchedOnce) courseProgress.videosWatchedOnce = {};
         if (!courseProgress.videosWatchedOnce[weekNumber]) courseProgress.videosWatchedOnce[weekNumber] = {};
 
+
         const currentCount = courseProgress.videoWatchCounts[weekNumber][videoTitle] || 0;
         const hasBeenWatchedOnce = courseProgress.videosWatchedOnce[weekNumber][videoTitle];
-        const isVideoFullyRestricted = currentCount >= MAX_VIDEO_VIEWS;
+        const isVideoFullyRestricted = currentCount >= MAX_VIDEO_VIEWS; // Check if max views already reached
 
+        // If the video has already reached MAX_VIDEO_VIEWS, do not increment count or show new toast
         if (isVideoFullyRestricted) {
             console.log(`Video "${videoTitle}" in week ${weekNumber} has already reached max views.`);
             return;
@@ -234,24 +229,32 @@ const CoursePage = () => {
         const newCount = currentCount + 1;
         courseProgress.videoWatchCounts[weekNumber][videoTitle] = newCount;
 
+        // Mark as "watched for progress" on the first view to end
         if (!hasBeenWatchedOnce) {
             courseProgress.videosWatchedOnce[weekNumber][videoTitle] = true;
+            // Call markContentComplete to trigger week completion check based on first watch
+            await markContentComplete(weekNumber, 'videos', videoTitle); // Pass itemIdentifier for consistent call
             toast.success(`"${videoTitle}" watched for the first time!`);
         }
 
+        // If the new count reaches MAX_VIDEO_VIEWS, also mark it as explicitly complete for control disabling
         if (newCount >= MAX_VIDEO_VIEWS) {
+            // This is when the video controls should be disabled
             if (!courseProgress.completedItems?.[weekNumber]?.videos?.includes(videoTitle)) {
-                await markContentComplete(weekNumber, 'videos', videoTitle);
+                await markContentComplete(weekNumber, 'videos', videoTitle); // This will add it to completedItems
                 toast.success(`"${videoTitle}" completed all ${MAX_VIDEO_VIEWS} views.`);
             }
         } else {
-            if (newCount > 0 && newCount < MAX_VIDEO_VIEWS && hasBeenWatchedOnce) {
+            // Only show info toast if not the first watch AND not yet maxed out
+            if (newCount > 0 && newCount < MAX_VIDEO_VIEWS && hasBeenWatchedOnce) { // Check hasBeenWatchedOnce to avoid double toast with first watch
                 toast.info(`You have ${MAX_VIDEO_VIEWS - newCount} views remaining for "${videoTitle}".`);
             }
+            await updateFirestoreUserProgress(updatedUserProgress); // Save the incremented count
         }
-        await updateFirestoreUserProgress(updatedUserProgress);
     };
 
+
+    // --- Other functions ---
     const toggleWeek = (weekNumber) => {
         setActiveWeek(activeWeek === weekNumber ? null : weekNumber);
     };
@@ -261,6 +264,7 @@ const CoursePage = () => {
         navigate('/login');
     };
 
+    // --- Loading and Error States ---
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -287,40 +291,29 @@ const CoursePage = () => {
         return null;
     }
 
+    // --- Progress Calculations ---
     const totalWeeks = course.weeklyContent?.length || 0;
+    // Overall progress is based on weeks explicitly marked as complete (meaning all videos in them watched at least once)
     const completedWeeksCount = currentUser.userProgress?.[course.id]?.completedWeeks?.length || 0;
     const overallProgressPercentage = totalWeeks > 0 ? Math.round((completedWeeksCount / totalWeeks) * 100) : 0;
 
+    // Ensure userCourseProgress is initialized correctly for display
     const userCourseProgress = currentUser.userProgress?.[course.id] || {
         completedWeeks: [],
         lastAccessedWeek: 0,
         completedItems: {},
         videoWatchCounts: {},
-        videosWatchedOnce: {},
-        quizScores: {},
-        quizzesAttempted: {}
-    };
-
-    const isWeekAccessible = (weekNumber) => {
-        if (weekNumber === 1) {
-            return true;
-        }
-        const previousWeek = weekNumber - 1;
-        const previousWeekData = course.weeklyContent.find(w => w.week === previousWeek);
-        const previousWeekQuizId = previousWeekData?.quizId;
-        if (previousWeekQuizId) {
-            return userCourseProgress.quizzesAttempted?.[previousWeekQuizId];
-        }
-        return true;
+        videosWatchedOnce: {}
     };
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
             <ToastContainer position="bottom-right" autoClose={5000} />
 
+            {/* Header */}
             <header className="bg-white shadow-md p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center">
                 <div className="flex items-center mb-2 sm:mb-0">
-                     <Link
+                    <Link
                         to="/distanceDashboard"
                         className="text-blue-600 hover:text-blue-800 font-semibold text-base sm:text-lg mr-4"
                     >
@@ -332,20 +325,6 @@ const CoursePage = () => {
                         </span>
                     )}
                 </div>
-                {/* Payment Info in Header */}
-                {!course.isFree && course.price && (
-                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
-                        <p className="text-sm sm:text-base text-blue-800">
-                            <span className="font-semibold">Course Price:</span> SLE {Number(course.price).toFixed(2)}
-                        </p>
-                        <p className="text-sm sm:text-base text-green-700">
-                            <span className="font-semibold">Total Paid:</span> SLE {totalPaidForCourse.toFixed(2)}
-                        </p>
-                        <p className="text-sm sm:text-base text-red-700">
-                            <span className="font-semibold">Balance Due:</span> SLE {balanceDueForCourse.toFixed(2)}
-                        </p>
-                    </div>
-                )}
                 <button
                     onClick={handleLogout}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base transition duration-200"
@@ -354,7 +333,9 @@ const CoursePage = () => {
                 </button>
             </header>
 
+            {/* Main Content Area */}
             <div className="container mx-auto p-4 lg:p-10">
+                {/* Course Header Section */}
                 <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 mb-6 sm:mb-8 flex flex-col lg:flex-row items-center border border-gray-100">
                     <img
                         src={course.image}
@@ -398,47 +379,71 @@ const CoursePage = () => {
                     </div>
                 </div>
 
+                {/* Course Content - Weekly Breakdown (Accordion) */}
                 <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 sm:mb-6 border-b pb-3 sm:pb-4">Course Curriculum</h2>
 
                     {course.weeklyContent && course.weeklyContent.length > 0 ? (
                         course.weeklyContent.map((weekData) => {
+                            const currentWeekNumber = weekData.week;
+                            const isFirstWeek = currentWeekNumber === 1;
+
+                            // Calculate progress for the PREVIOUS week to determine if the CURRENT week is unlocked
+                            const previousWeekProgress = course.weeklyContent.find(w => w.week === currentWeekNumber - 1);
+                            let isPreviousWeekQuizUnlocked = false;
+
+                            if (previousWeekProgress) {
+                                const previousWeekVideos = previousWeekProgress.videos || [];
+                                let videosWatchedInPreviousWeek = 0;
+                                previousWeekVideos.forEach(video => {
+                                    if (userCourseProgress.videosWatchedOnce?.[currentWeekNumber - 1]?.[video.title]) {
+                                        videosWatchedInPreviousWeek++;
+                                    }
+                                });
+                                const previousWeekVideoProgress = previousWeekVideos.length > 0
+                                    ? (videosWatchedInPreviousWeek / previousWeekVideos.length) * 100
+                                    : 0;
+
+                                isPreviousWeekQuizUnlocked = previousWeekVideoProgress >= 80;
+                            }
+
+                            // A week is unlocked if it's the first week OR if the previous week's quiz is unlocked
+                            const isWeekUnlocked = isFirstWeek || isPreviousWeekQuizUnlocked;
+
                             const currentWeekUserProgress = userCourseProgress.completedItems?.[weekData.week];
                             const currentWeekVideoWatchCounts = userCourseProgress.videoWatchCounts?.[weekData.week] || {};
                             const currentWeekVideosWatchedOnce = userCourseProgress.videosWatchedOnce?.[weekData.week] || {};
 
                             let totalVideosInWeek = (weekData.videos || []).length;
-                            let videosWatchedForProgress = 0;
+                            let videosWatchedForProgress = 0; // Count videos watched at least once
+
                             (weekData.videos || []).forEach(video => {
                                 const videoTitle = video.title;
+                                // Check if the video has been marked as watched at least once for progress calculation
                                 if (currentWeekVideosWatchedOnce[videoTitle]) {
                                     videosWatchedForProgress++;
                                 }
                             });
-                            
-                            const quizAttempted = userCourseProgress.quizzesAttempted?.[weekData.quizId];
-                            const isWeekComplete = (totalVideosInWeek > 0 && videosWatchedForProgress === totalVideosInWeek && quizAttempted) || (!weekData.quizId && totalVideosInWeek > 0 && videosWatchedForProgress === totalVideosInWeek) || (weekData.week === 1 && videosWatchedForProgress === totalVideosInWeek && !weekData.quizId);
+
+                            // Week is complete if all videos have been watched at least once
+                            const isWeekCompleteForProgress = totalVideosInWeek > 0 && videosWatchedForProgress === totalVideosInWeek;
                             const weeklyProgressPercentage = totalVideosInWeek > 0
                                 ? Math.round((videosWatchedForProgress / totalVideosInWeek) * 100)
                                 : 0;
-                            
+
                             const isWeekActive = activeWeek === weekData.week;
-                            const isWeekLocked = !isWeekAccessible(weekData.week);
 
                             return (
-                                <div key={weekData.week} id={`week-${weekData.week}`} className={`border-b border-gray-200 last:border-b-0 ${isWeekLocked ? 'bg-gray-100 opacity-60' : ''}`}>
-                                    <button
-                                        className="flex justify-between items-center w-full py-3 sm:py-4 text-left font-semibold text-lg sm:text-xl text-gray-800 hover:text-blue-600"
-                                        onClick={() => !isWeekLocked && toggleWeek(weekData.week)}
-                                        disabled={isWeekLocked}
-                                    >
-                                        <span>Week {weekData.week}: {weekData.title}</span>
-                                        <div className="flex items-center">
-                                            {isWeekLocked ? (
-                                                <span className="text-red-500 text-xs sm:text-sm font-bold mr-2">LOCKED</span>
-                                            ) : (
-                                                <>
-                                                    {isWeekComplete && (
+                                <div key={weekData.week} id={`week-${weekData.week}`} className="border-b border-gray-200 last:border-b-0">
+                                    {isWeekUnlocked ? (
+                                        <>
+                                            <button
+                                                className="flex justify-between items-center w-full py-3 sm:py-4 text-left font-semibold text-lg sm:text-xl text-gray-800 hover:text-blue-600"
+                                                onClick={() => toggleWeek(weekData.week)}
+                                            >
+                                                <span>Week {weekData.week}: {weekData.title}</span>
+                                                <div className="flex items-center">
+                                                    {isWeekCompleteForProgress && (
                                                         <span className="text-green-500 text-xs sm:text-sm font-bold mr-2">COMPLETED</span>
                                                     )}
                                                     <span className="text-sm font-medium text-gray-600 mr-2">{weeklyProgressPercentage}%</span>
@@ -449,152 +454,160 @@ const CoursePage = () => {
                                                         ></div>
                                                     </div>
                                                     <span className="text-xl sm:text-2xl ml-3">{isWeekActive ? '-' : '+'}</span>
-                                                </>
-                                            )}
-                                        </div>
-                                    </button>
-                                    {isWeekActive && !isWeekLocked && (
-                                        <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200">
-                                            {weekData.lessons && weekData.lessons.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Lessons:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.lessons.map((lesson, index) => {
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">{'✅'}</span>
-                                                                    {lesson}
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
                                                 </div>
-                                            )}
+                                            </button>
+                                            {isWeekActive && (
+                                                <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200">
+                                                    {/* Lessons Section */}
+                                                    {weekData.lessons && weekData.lessons.length > 0 && (
+                                                        <div className="mb-3 sm:mb-4">
+                                                            <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Lessons:</h4>
+                                                            <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
+                                                                {weekData.lessons.map((lesson, index) => (
+                                                                    <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
+                                                                        <span className="mr-2">{'✅'}</span>
+                                                                        {lesson}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
 
-                                            {weekData.videos && weekData.videos.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Video Lessons:</h4>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                                                        {weekData.videos.map((video, index) => {
-                                                            const videoTitle = video.title;
-                                                            const currentVideoCount = userCourseProgress.videoWatchCounts?.[weekData.week]?.[videoTitle] || 0;
-                                                            const isVideoComplete = userCourseProgress.completedItems?.[weekData.week]?.videos?.includes(videoTitle) || currentVideoCount >= MAX_VIDEO_VIEWS;
+                                                    {/* Videos Section */}
+                                                    {weekData.videos && weekData.videos.length > 0 && (
+                                                        <div className="mb-3 sm:mb-4">
+                                                            <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Video Lessons:</h4>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                                                                {weekData.videos.map((video, index) => {
+                                                                    const videoTitle = video.title;
+                                                                    const currentVideoCount = currentWeekVideoWatchCounts[videoTitle] || 0;
+                                                                    const isVideoComplete = userCourseProgress.completedItems?.[weekData.week]?.videos?.includes(videoTitle) || currentVideoCount >= MAX_VIDEO_VIEWS;
 
-                                                            return (
-                                                                <div key={index} className="bg-gray-900 rounded-lg shadow-xl overflow-hidden relative">
-                                                                    <div className="absolute top-2 right-2 z-10">
-                                                                        {isVideoComplete ? (
-                                                                            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
-                                                                        ) : (
-                                                                            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-                                                                                Views: {currentVideoCount}/{MAX_VIDEO_VIEWS}
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                    <h5 className="text-white text-md font-semibold p-3 border-b border-gray-700">{video.title}</h5>
-                                                                    <div className="relative pt-[56.25%]">
-                                                                        {video.url ? (
-                                                                            <video
-                                                                                controls={!isVideoComplete}
-                                                                                className="absolute inset-0 w-full h-full object-contain"
-                                                                                poster="/images/video-placeholder.jpg"
-                                                                                preload="metadata"
-                                                                                onEnded={() => !isVideoComplete && handleVideoEnded(weekData.week, video.title)}
-                                                                                controlsList={isVideoComplete ? "nodownload nofullscreen noremoteplayback" : "nodownload"}
-                                                                                muted={isVideoComplete}
-                                                                            >
-                                                                                {!isVideoComplete ? (
-                                                                                    <source src={video.url} type="video/mp4" />
+                                                                    return (
+                                                                        <div key={index} className="bg-gray-900 rounded-lg shadow-xl overflow-hidden relative">
+                                                                            <div className="absolute top-2 right-2 z-10">
+                                                                                {isVideoComplete ? (
+                                                                                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Completed</span>
                                                                                 ) : (
-                                                                                    <div className="absolute inset-0 flex items-center justify-center text-white text-center bg-black bg-opacity-75">
-                                                                                        Video completed.
+                                                                                    <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                                                                                        Views: {currentVideoCount}/{MAX_VIDEO_VIEWS}
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                            <h5 className="text-white text-md font-semibold p-3 border-b border-gray-700">{video.title}</h5>
+                                                                            <div className="relative pt-[56.25%]"> {/* 16:9 Aspect Ratio */}
+                                                                                {video.url ? (
+                                                                                    <video
+                                                                                        controls={!isVideoComplete}
+                                                                                        className="absolute inset-0 w-full h-full object-contain"
+                                                                                        poster="/images/video-placeholder.jpg"
+                                                                                        preload="metadata"
+                                                                                        onEnded={() => !isVideoComplete && handleVideoEnded(weekData.week, video.title)}
+                                                                                        controlsList={isVideoComplete ? "nodownload nofullscreen noremoteplayback" : "nodownload"}
+                                                                                        muted={isVideoComplete}
+                                                                                    >
+                                                                                        {!isVideoComplete && <source src={video.url} type="video/mp4" />}
+                                                                                        {isVideoComplete && (
+                                                                                            <div className="absolute inset-0 flex items-center justify-center text-white text-center bg-black bg-opacity-75">
+                                                                                                Video completed.
+                                                                                            </div>
+                                                                                        )}
+                                                                                        Your browser does not support the video tag.
+                                                                                    </video>
+                                                                                ) : (
+                                                                                    <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+                                                                                        Video not available.
                                                                                     </div>
                                                                                 )}
-                                                                                Your browser does not support the video tag.
-                                                                            </video>
-                                                                        ) : (
-                                                                            <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
-                                                                                Video not available.
                                                                             </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                            <p className="text-gray-700 text-xs sm:text-sm mt-3">
+                                                                *If you have trouble playing a video, ensure your internet connection is stable or try a different browser.
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Readings & Quiz Section */}
+                                                    {(weekData.readings && weekData.readings.length > 0) || weekData.quizId ? (
+                                                        <div className="mb-3 sm:mb-4">
+                                                            <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Notes & Quiz:</h4>
+                                                            <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
+                                                                {weekData.readings && weekData.readings.length > 0 && weekData.readings.map((reading, index) => {
+                                                                    const readingTitle = typeof reading === 'object' ? reading.title : reading;
+                                                                    const readingUrl = typeof reading === 'object' && reading.url ? reading.url : '#';
+                                                                    return (
+                                                                        <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
+                                                                            <span className="mr-2">➡️</span>
+                                                                            {readingUrl !== '#' ? (
+                                                                                <Link to={readingUrl} className="text-blue-600 hover:underline">
+                                                                                    {readingTitle}
+                                                                                </Link>
+                                                                            ) : (
+                                                                                <span>{readingTitle}</span>
+                                                                            )}
+                                                                        </li>
+                                                                    );
+                                                                })}
+                                                                {weekData.quizId && (
+                                                                    <li className="flex items-center text-sm sm:text-base text-gray-600 font-bold">
+                                                                        <span className="mr-2">💡</span>
+                                                                        {weeklyProgressPercentage >= 80 ? (
+                                                                            <Link
+                                                                                to={`/quiz/${weekData.quizId}`}
+                                                                                className="text-purple-600 hover:underline"
+                                                                            >
+                                                                                Take Quiz for Week {weekData.week}
+                                                                            </Link>
+                                                                        ) : (
+                                                                            <span
+                                                                                className="text-gray-400 cursor-not-allowed"
+                                                                                title={`Complete at least 80% of videos for Week ${weekData.week} to unlock this quiz.`}
+                                                                            >
+                                                                                Take Quiz for Week {weekData.week} (Unlock at 80% video progress - Current: {weeklyProgressPercentage}%)
+                                                                            </span>
                                                                         )}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                    <p className="text-gray-700 text-xs sm:text-sm mt-3">
-                                                        *If you have trouble playing a video, ensure your internet connection is stable or try a different browser.
-                                                    </p>
-                                                </div>
-                                            )}
-
-                                            {(weekData.readings && weekData.readings.length > 0) || weekData.quizId ? (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Notes & Quiz:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.readings && weekData.readings.length > 0 && weekData.readings.map((reading, index) => {
-                                                            const readingTitle = typeof reading === 'object' ? reading.title : reading;
-                                                            const readingUrl = typeof reading === 'object' && reading.url ? reading.url : '#';
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">➡️</span>
-                                                                    {readingUrl !== '#' ? (
-                                                                        <Link to={readingUrl} className="text-blue-600 hover:underline">
-                                                                            {readingTitle}
-                                                                        </Link>
-                                                                    ) : (
-                                                                        <span>{readingTitle}</span>
-                                                                    )}
-                                                                </li>
-                                                            );
-                                                        })}
-                                                        {weekData.quizId && (
-                                                            <li className="flex items-center text-sm sm:text-base text-gray-600 font-bold">
-                                                                <span className="mr-2">💡</span>
-                                                                {weeklyProgressPercentage >= 80 ? (
-                                                                    <Link
-                                                                        to={`/quiz/${weekData.quizId}`}
-                                                                        className="text-purple-600 hover:underline"
-                                                                    >
-                                                                        Take Quiz for Week {weekData.week}
-                                                                    </Link>
-                                                                ) : (
-                                                                    <span
-                                                                        className="text-gray-400 cursor-not-allowed"
-                                                                        title={`Complete at least 80% of videos for Week ${weekData.week} to unlock this quiz.`}
-                                                                    >
-                                                                        Take Quiz for Week {weekData.week} (Unlock at 80% video progress - Current: {weeklyProgressPercentage}%)
-                                                                    </span>
+                                                                    </li>
                                                                 )}
-                                                            </li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            ) : null}
+                                                            </ul>
+                                                        </div>
+                                                    ) : null}
 
-                                            {weekData.assignments && weekData.assignments.length > 0 && (
-                                                <div className="mb-3 sm:mb-4">
-                                                    <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Assignments:</h4>
-                                                    <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
-                                                        {weekData.assignments.map((assignment, index) => {
-                                                            const assignmentTitle = typeof assignment === 'object' && assignment.title ? assignment.title : assignment;
-                                                            const assignmentUrl = typeof assignment === 'object' && assignment.url ? assignment.url : '#';
-                                                            return (
-                                                                <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
-                                                                    <span className="mr-2">⬇️</span>
-                                                                    {assignmentUrl !== '#' ? (
-                                                                        <Link to={assignmentUrl} className="text-blue-600 hover:underline">
-                                                                            {assignmentTitle}
-                                                                        </Link>
-                                                                    ) : (
-                                                                        <span>{assignmentTitle}</span>
-                                                                    )}
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
+
+                                                    {/* Assignments Section */}
+                                                    {weekData.assignments && weekData.assignments.length > 0 && (
+                                                        <div className="mb-3 sm:mb-4">
+                                                            <h4 className="font-semibold text-base sm:text-lg mb-1.5 sm:mb-2 text-gray-700">Assignments:</h4>
+                                                            <ul className="list-disc list-inside space-y-1.5 sm:space-y-2">
+                                                                {weekData.assignments.map((assignment, index) => {
+                                                                    const assignmentTitle = typeof assignment === 'object' && assignment.title ? assignment.title : assignment;
+                                                                    const assignmentUrl = typeof assignment === 'object' && assignment.url ? assignment.url : '#';
+                                                                    return (
+                                                                        <li key={index} className="flex items-center text-sm sm:text-base text-gray-600">
+                                                                            <span className="mr-2">⬇️</span>
+                                                                            {assignmentUrl !== '#' ? (
+                                                                                <Link to={assignmentUrl} className="text-blue-600 hover:underline">
+                                                                                    {assignmentTitle}
+                                                                                </Link>
+                                                                            ) : (
+                                                                                <span>{assignmentTitle}</span>
+                                                                            )}
+                                                                        </li>
+                                                                    );
+                                                                })}
+                                                            </ul>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
+                                        </>
+                                    ) : (
+                                        // Render a disabled state for the week
+                                        <div className="flex justify-between items-center w-full py-3 sm:py-4 text-left font-semibold text-lg sm:text-xl text-gray-400 cursor-not-allowed">
+                                            <span>Week {weekData.week}: {weekData.title}</span>
+                                            <span className="text-sm text-gray-500">Locked 🔒</span>
                                         </div>
                                     )}
                                 </div>
