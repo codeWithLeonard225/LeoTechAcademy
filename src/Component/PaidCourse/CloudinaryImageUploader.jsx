@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const CLOUD_NAME = "dyt1xzrcv"; // Your Cloudinary Cloud Name
+const CLOUD_NAME = "dyt1xzrcv"; // Your Cloudinary Cloud Name Leonardskargbo Account
 const UPLOAD_PRESET = "firstTime"; // Your Cloudinary Upload Preset (must allow videos)
 
 const CloudinaryImageUploader = ({ onUploadSuccess }) => {

@@ -59,6 +59,10 @@ import DistanceUserDashboard from './Component/Admin/DistanceUserDashboard';
 import MsAccessWk1 from './Component/Reading/MsAccess/MsAccessWk1';
 import MsAccessWk2 from './Component/Reading/MsAccess/MsAccessWk2';
 import MsAccessWk3 from './Component/Reading/MsAccess/MsAccessWk3';
+import Week1CSSIntro from './Component/Reading/CSS/Week1CSSIntro';
+import Week2CSS from './Component/Reading/CSS/Week2CSS';
+import Week3CSS from './Component/Reading/CSS/Week3CSS';
+import Week4CSS from './Component/Reading/CSS/Week4CSS';
 // import MsAccessWk4 from './Component/Reading/MsAccess/MsAccessWk4';
 
 
@@ -70,7 +74,8 @@ function App() {
     <div className="font-sans antialiased">
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Week4CSS />} />
         
 
 
@@ -144,6 +149,12 @@ function App() {
         <Route path="/courses/Week2HTMLMedia" element={<Week2HTMLMedia />} />
         <Route path="/courses/Week3HTMLFormsSemantic" element={<Week3FormsSemantic />} />
         <Route path="/courses/Week4IntroductiontoCSS" element={<Week4BestPracticesCSS />} />
+
+        {/* CSS */}
+        <Route path="/courses/Week1CSSIntro" element={<Week1CSSIntro />} />
+        <Route path="/courses/Week2CSS" element={<Week2CSS />} />
+        <Route path="/courses/Week3CSS" element={<Week3CSS />} />
+        <Route path="/courses/Week4CSS" element={<Week4CSS />} />
 
         {/* Python */}
         <Route path="/courses/Week1PythonIntro" element={<Week1PythonIntro />} />

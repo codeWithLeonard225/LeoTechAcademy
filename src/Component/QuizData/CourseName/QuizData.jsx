@@ -1361,7 +1361,7 @@ const allQuizzes = {
 
 
   // ms excel for beginers
-  
+
   "MSexcel_1": {
     "title": "Week 1: MS Excel Basics Quiz",
     "description": "Test your knowledge on the fundamental concepts of Microsoft Excel, including interface navigation, data entry, formatting, formulas, and basic functions.",
@@ -1886,12 +1886,7 @@ const allQuizzes = {
     "questions": [
       {
         "questionText": "Which Excel function is primarily used to search for a value in the first column of a table and return a corresponding value from a specified column in the same row?",
-        "options": [
-          "HLOOKUP",
-          "INDEX",
-          "MATCH",
-          "VLOOKUP"
-        ],
+        "options": ["HLOOKUP", "INDEX", "MATCH", "VLOOKUP"],
         "correctAnswer": "VLOOKUP"
       },
       {
@@ -1916,32 +1911,17 @@ const allQuizzes = {
       },
       {
         "questionText": "Which chart type is best suited for showing trends over time or continuous data?",
-        "options": [
-          "Pie Chart",
-          "Bar Chart",
-          "Scatter Plot",
-          "Line Chart"
-        ],
+        "options": ["Pie Chart", "Bar Chart", "Scatter Plot", "Line Chart"],
         "correctAnswer": "Line Chart"
       },
       {
         "questionText": "To quickly add or remove elements like Chart Title or Axis Titles from a selected chart in Excel, which icon should you look for next to the chart?",
-        "options": [
-          "A paintbrush icon",
-          "A plus (+) icon",
-          "A funnel icon",
-          "A filter icon"
-        ],
+        "options": ["A paintbrush icon", "A plus (+) icon", "A funnel icon", "A filter icon"],
         "correctAnswer": "A plus (+) icon"
       },
       {
         "questionText": "If you want to print only a specific section of your worksheet and exclude other data, what feature should you use?",
-        "options": [
-          "Page Breaks",
-          "Scale to Fit",
-          "Print Area",
-          "Print Titles"
-        ],
+        "options": ["Page Breaks", "Scale to Fit", "Print Area", "Print Titles"],
         "correctAnswer": "Print Area"
       },
       {
@@ -1956,12 +1936,7 @@ const allQuizzes = {
       },
       {
         "questionText": "Which of the following built-in codes would you use in a footer to automatically display the current page number?",
-        "options": [
-          "&[Date]",
-          "&[File]",
-          "&[Page]",
-          "&[Tab]"
-        ],
+        "options": ["&[Date]", "&[File]", "&[Page]", "&[Tab]"],
         "correctAnswer": "&[Page]"
       },
       {
@@ -1976,13 +1951,78 @@ const allQuizzes = {
       },
       {
         "questionText": "You've created a sales report and want to display the proportion of sales contributed by each product category. Which chart type would be most appropriate?",
-        "options": [
-          "Column Chart",
-          "Line Chart",
-          "Pie Chart",
-          "Area Chart"
-        ],
+        "options": ["Column Chart", "Line Chart", "Pie Chart", "Area Chart"],
         "correctAnswer": "Pie Chart"
+      },
+      {
+        "questionText": "Which function can return both the row and column position of a lookup value when combined?",
+        "options": ["INDEX and MATCH", "VLOOKUP and HLOOKUP", "SUM and IF", "OFFSET and COUNTIF"],
+        "correctAnswer": "INDEX and MATCH"
+      },
+      {
+        "questionText": "What happens if VLOOKUP does not find the `lookup_value` in the table array?",
+        "options": [
+          "It returns 0",
+          "It returns #N/A error",
+          "It returns the last value in the column",
+          "It returns FALSE"
+        ],
+        "correctAnswer": "It returns #N/A error"
+      },
+      {
+        "questionText": "Which Excel chart is most suitable for comparing quantities across different categories (e.g., sales by region)?",
+        "options": ["Pie Chart", "Bar/Column Chart", "Line Chart", "Radar Chart"],
+        "correctAnswer": "Bar/Column Chart"
+      },
+      {
+        "questionText": "How do you repeat row or column headers on every printed page of an Excel worksheet?",
+        "options": ["Set Print Area", "Use Print Titles", "Insert Page Breaks", "Use Page Layout View"],
+        "correctAnswer": "Use Print Titles"
+      },
+      {
+        "questionText": "What does the `range_lookup` argument do in VLOOKUP?",
+        "options": [
+          "Defines the column to look in",
+          "Specifies whether to use exact or approximate match",
+          "Returns the number of rows searched",
+          "Filters out duplicate values"
+        ],
+        "correctAnswer": "Specifies whether to use exact or approximate match"
+      },
+      {
+        "questionText": "When using HLOOKUP, where must the `lookup_value` be located?",
+        "options": [
+          "In the first row of the table_array",
+          "In the first column of the table_array",
+          "Anywhere in the worksheet",
+          "In the last row of the table_array"
+        ],
+        "correctAnswer": "In the first row of the table_array"
+      },
+      {
+        "questionText": "Which chart type allows you to show the relationship between two numerical variables?",
+        "options": ["Column Chart", "Scatter Plot", "Pie Chart", "Line Chart"],
+        "correctAnswer": "Scatter Plot"
+      },
+      {
+        "questionText": "If you want Excel to automatically adjust the printed worksheet to fit both width and height on one page, which option should you select?",
+        "options": [
+          "Fit Sheet on One Page",
+          "Fit All Columns on One Page",
+          "Fit All Rows on One Page",
+          "Scale to 200%"
+        ],
+        "correctAnswer": "Fit Sheet on One Page"
+      },
+      {
+        "questionText": "Which chart element helps readers understand what each color or symbol represents?",
+        "options": ["Chart Area", "Legend", "Gridlines", "Axis Title"],
+        "correctAnswer": "Legend"
+      },
+      {
+        "questionText": "What shortcut key opens the Print Preview window in Excel?",
+        "options": ["Ctrl + P", "Ctrl + F2", "Alt + Enter", "Shift + F12"],
+        "correctAnswer": "Ctrl + P"
       }
     ]
   },
@@ -3144,6 +3184,823 @@ const allQuizzes = {
       }
     ]
   },
+
+
+  //CSS
+ "CSS_Week1": {
+  "title": "Week 1: CSS Foundations Quiz",
+  "description": "Test your knowledge of fundamental CSS concepts, including syntax, selectors, the Box Model, and styling properties.",
+  "questions": [
+    {
+      "questionText": "What does CSS stand for?",
+      "options": [
+        "Creative Style Sheets",
+        "Computer Style Syntax",
+        "Cascading Style Sheets",
+        "Colorful Style Systems"
+      ],
+      "correctAnswer": "Cascading Style Sheets"
+    },
+    {
+      "questionText": "What are the three main components of a CSS rule?",
+      "options": [
+        "element, class, id",
+        "property, value, declaration",
+        "selector, property, value",
+        "tag, attribute, value"
+      ],
+      "correctAnswer": "selector, property, value"
+    },
+    {
+      "questionText": "Which symbol is used to select an element with a specific ID?",
+      "options": [".", "#", "_", ">"],
+      "correctAnswer": "#"
+    },
+    {
+      "questionText": "Which symbol is used to select elements that belong to a specific class?",
+      "options": ["#", "@", ".", "$"],
+      "correctAnswer": "."
+    },
+    {
+      "questionText": "An ID should be used to style:",
+      "options": [
+        "a group of elements that share a common style",
+        "a single, unique element on a page",
+        "any number of elements on a page",
+        "only text elements"
+      ],
+      "correctAnswer": "a single, unique element on a page"
+    },
+    {
+      "questionText": "What is the outermost part of the CSS Box Model?",
+      "options": ["Padding", "Content", "Border", "Margin"],
+      "correctAnswer": "Margin"
+    },
+    {
+      "questionText": "Which part of the Box Model is the space between the content and the border?",
+      "options": ["Margin", "Padding", "Boundary", "Wrapper"],
+      "correctAnswer": "Padding"
+    },
+    {
+      "questionText": "If a `div` has `width: 200px;` and `padding: 10px;`, what is its total width in the default `content-box` model?",
+      "options": ["200px", "210px", "220px", "240px"],
+      "correctAnswer": "220px"
+    },
+    {
+      "questionText": "What does the `box-sizing: border-box;` property do?",
+      "options": [
+        "It makes the box's border invisible.",
+        "It forces the content to fill the entire box.",
+        "It makes the width and height properties include padding and border.",
+        "It only applies a border to the top and bottom of the box."
+      ],
+      "correctAnswer": "It makes the width and height properties include padding and border."
+    },
+    {
+      "questionText": "Which CSS property is used to set the typeface of text?",
+      "options": ["font-style", "font-family", "font-size", "font-weight"],
+      "correctAnswer": "font-family"
+    },
+    {
+      "questionText": "Which property would you use to center a heading horizontally on a page?",
+      "options": [
+        "text-align: center;",
+        "align: center;",
+        "margin: auto;",
+        "justify-content: center;"
+      ],
+      "correctAnswer": "text-align: center;"
+    },
+    {
+      "questionText": "Which CSS property is most commonly used to remove the underline from a link?",
+      "options": [
+        "text-style",
+        "text-decoration",
+        "font-underline",
+        "link-style"
+      ],
+      "correctAnswer": "text-decoration"
+    },
+    {
+      "questionText": "In `h1 { color: red; }`, what is `color`?",
+      "options": ["The selector", "The value", "The property", "The declaration"],
+      "correctAnswer": "The property"
+    },
+    {
+      "questionText": "The `border` property is a shorthand for which three other properties?",
+      "options": [
+        "border-style, border-color, border-width",
+        "border-top, border-bottom, border-left",
+        "border-padding, border-margin, border-radius",
+        "border-size, border-type, border-fill"
+      ],
+      "correctAnswer": "border-style, border-color, border-width"
+    },
+    {
+      "questionText": "A `div` with `width: 300px; padding: 20px; box-sizing: border-box;` will have a total final width of:",
+      "options": ["300px", "340px", "320px", "360px"],
+      "correctAnswer": "300px"
+    },
+    {
+      "questionText": "Which CSS property would you use to change the font size of a paragraph?",
+      "options": ["font-style", "font-size", "font-family", "text-size"],
+      "correctAnswer": "font-size"
+    },
+    {
+      "questionText": "What is the purpose of the `margin` property?",
+      "options": [
+        "To add space inside an element",
+        "To create a border around an element",
+        "To add space outside an element, separating it from others",
+        "To change the background color of an element"
+      ],
+      "correctAnswer": "To add space outside an element, separating it from others"
+    },
+    {
+      "questionText": "In `h1 { color: blue; }`, what is `blue`?",
+      "options": ["The selector", "The property", "The value", "The declaration"],
+      "correctAnswer": "The value"
+    },
+    {
+      "questionText": "Which syntax correctly creates a linear gradient from red to yellow?",
+      "options": [
+        "background: linear-gradient(red, yellow);",
+        "background-color: linear-gradient(red, yellow);",
+        "background-image: gradient(red, yellow);",
+        "gradient: linear(red, yellow);"
+      ],
+      "correctAnswer": "background: linear-gradient(red, yellow);"
+    },
+    {
+      "questionText": "How do you apply a background image that covers the entire element?",
+      "options": [
+        "background-size: contain;",
+        "background-size: cover;",
+        "background-size: auto;",
+        "background-fit: cover;"
+      ],
+      "correctAnswer": "background-size: cover;"
+    },
+    {
+      "questionText": "Which CSS property controls the repetition of a background image?",
+      "options": [
+        "background-repeat",
+        "background-loop",
+        "background-cycle",
+        "background-pattern"
+      ],
+      "correctAnswer": "background-repeat"
+    },
+    {
+      "questionText": "How would you add a subtle shadow below a box using `box-shadow`?",
+      "options": [
+        "box-shadow: 5px 5px 10px grey;",
+        "box-shadow: grey inset;",
+        "shadow-box: 5px 5px 10px grey;",
+        "box-shadow: 10px grey;"
+      ],
+      "correctAnswer": "box-shadow: 5px 5px 10px grey;"
+    },
+    {
+      "questionText": "Which syntax adds both an inner and outer shadow to a box?",
+      "options": [
+        "box-shadow: inset 2px 2px 5px black, 2px 2px 5px grey;",
+        "box-shadow: 2px 2px 5px black inset;",
+        "box-shadow: 2px 2px 5px black, inset 2px 2px 5px grey;",
+        "box-shadow: inner 2px 2px 5px black, outer 2px 2px 5px grey;"
+      ],
+      "correctAnswer": "box-shadow: inset 2px 2px 5px black, 2px 2px 5px grey;"
+    }
+  ]
+},
+
+  "CSS_Week2": {
+    "title": "Week 2: Layout and Interaction Quiz",
+    "description": "Test your knowledge of creating dynamic websites using CSS hover effects, transitions, transforms, and Flexbox for layout.",
+    "questions": [
+      {
+        "questionText": "Which CSS pseudo-class is used to apply a style to an element when the user's mouse hovers over it?",
+        "options": [":active", ":focus", ":hover", ":link"],
+        "correctAnswer": ":hover"
+      },
+      {
+        "questionText": "What does the `transition` property do?",
+        "options": [
+          "It creates an instant change in an element's style.",
+          "It moves an element from one position to another.",
+          "It creates a smooth animation effect for style changes over time.",
+          "It rotates an element."
+        ],
+        "correctAnswer": "It creates a smooth animation effect for style changes over time."
+      },
+      {
+        "questionText": "To make a button's background color change smoothly over 0.5 seconds on hover, which property should be applied to the button itself (not the `:hover` state)?",
+        "options": [
+          "transition: background-color 0.5s ease;",
+          "animation: background-color 0.5s;",
+          "hover: background-color 0.5s;",
+          "transition-duration: 0.5s;"
+        ],
+        "correctAnswer": "transition: background-color 0.5s ease;"
+      },
+      {
+        "questionText": "Which CSS property is used to move, resize, or rotate an element without affecting its layout in the document flow?",
+        "options": ["position", "transform", "transition", "animation"],
+        "correctAnswer": "transform"
+      },
+      {
+        "questionText": "Which `transform` function would you use to enlarge an element to 150% of its original size?",
+        "options": ["scale(1.5)", "scale(0.5)", "enlarge(1.5)", "zoom(1.5)"],
+        "correctAnswer": "scale(1.5)"
+      },
+      {
+        "questionText": "If an element has `transform: translateY(-10px);` on hover, what happens when the user hovers over it?",
+        "options": [
+          "It moves up by 10 pixels.",
+          "It moves down by 10 pixels.",
+          "It moves to the left by 10 pixels.",
+          "It rotates 10 degrees."
+        ],
+        "correctAnswer": "It moves up by 10 pixels."
+      },
+      {
+        "questionText": "What is the purpose of the `transition-timing-function` property?",
+        "options": [
+          "It defines the total duration of the transition.",
+          "It specifies which CSS property to animate.",
+          "It describes the speed curve of the animation.",
+          "It sets a delay before the animation starts."
+        ],
+        "correctAnswer": "It describes the speed curve of the animation."
+      },
+      {
+        "questionText": "In the syntax `transition: property duration timing-function delay;`, which component is optional?",
+        "options": ["property", "duration", "timing-function", "all of the above"],
+        "correctAnswer": "delay"
+      },
+      {
+        "questionText": "How would you rotate an element 45 degrees clockwise on hover?",
+        "options": [
+          ".box:hover { transform: rotate(45deg); }",
+          ".box:hover { rotate: 45deg; }",
+          ".box { transform: rotate(45deg); }",
+          ".box { transition: rotate 45deg; }"
+        ],
+        "correctAnswer": ".box:hover { transform: rotate(45deg); }"
+      },
+      {
+        "questionText": "A `transform` property of `scale(0.8)` would:",
+        "options": [
+          "enlarge the element to 80% of its original size.",
+          "shrink the element to 80% of its original size.",
+          "move the element 80px to the right.",
+          "rotate the element 80 degrees."
+        ],
+        "correctAnswer": "shrink the element to 80% of its original size."
+      },
+      {
+        "questionText": "To make a container a Flexbox container, what CSS property and value should you apply to it?",
+        "options": ["position: flex;", "layout: flex;", "display: flex;", "container: flex;"],
+        "correctAnswer": "display: flex;"
+      },
+      {
+        "questionText": "What does the `flex-direction: column;` property do?",
+        "options": [
+          "It aligns items from left to right.",
+          "It aligns items from top to bottom.",
+          "It makes items wrap to a new row.",
+          "It justifies items to the center."
+        ],
+        "correctAnswer": "It aligns items from top to bottom."
+      },
+      {
+        "questionText": "Which Flexbox property controls the alignment of items along the main axis?",
+        "options": ["align-items", "flex-wrap", "justify-content", "flex-direction"],
+        "correctAnswer": "justify-content"
+      },
+      {
+        "questionText": "Which Flexbox property is used to align items on the cross-axis?",
+        "options": ["align-items", "justify-content", "flex-flow", "flex-grow"],
+        "correctAnswer": "align-items"
+      },
+      {
+        "questionText": "How would you use Flexbox to horizontally and vertically center a single element inside its parent container?",
+        "options": [
+          "display: block; margin: auto;",
+          "display: flex; justify-content: center; align-items: center;",
+          "align-items: center; justify-content: center;",
+          "flex-direction: column; text-align: center;"
+        ],
+        "correctAnswer": "display: flex; justify-content: center; align-items: center;"
+      },
+      {
+        "questionText": "What is the default value of the `flex-direction` property?",
+        "options": ["column", "row", "row-reverse", "column-reverse"],
+        "correctAnswer": "row"
+      },
+      {
+        "questionText": "In a Flexbox container, what are the direct children elements called?",
+        "options": ["flex-parents", "flex-items", "flex-children", "flex-units"],
+        "correctAnswer": "flex-items"
+      },
+      {
+        "questionText": "The `justify-content: space-between;` property:",
+        "options": [
+          "Adds equal space on both sides of each item.",
+          "Adds space between items, with the first and last items touching the edges of the container.",
+          "Adds space only to the right of each item.",
+          "Adds a fixed amount of space between each item."
+        ],
+        "correctAnswer": "Adds space between items, with the first and last items touching the edges of the container."
+      },
+      {
+        "questionText": "True or False: The `align-items` property aligns items along the main axis in Flexbox.",
+        "options": ["True", "False"],
+        "correctAnswer": "False"
+      },
+      {
+        "questionText": "You want to create a navigation bar with items spread evenly across the full width. Which property should you use?",
+        "options": [
+          "align-items: stretch;",
+          "justify-content: space-between;",
+          "flex-direction: column;",
+          "flex-wrap: wrap;"
+        ],
+        "correctAnswer": "justify-content: space-between;"
+      },
+      {
+        "questionText": "You need to center a button inside a card both horizontally and vertically. Which CSS would you use?",
+        "options": [
+          "display: flex; justify-content: center; align-items: center;",
+          "margin: auto; text-align: center;",
+          "position: absolute; left: 50%; top: 50%;",
+          "flex-direction: column; justify-content: flex-end;"
+        ],
+        "correctAnswer": "display: flex; justify-content: center; align-items: center;"
+      }
+    ]
+  },
+  "CSS_Week3": {
+    "title": "Week 3: Responsive Design & Animations Quiz",
+    "description": "Test your understanding of Media Queries for responsive design, different CSS positioning methods, and basic CSS animations.",
+    "questions": [
+      {
+        "questionText": "What is the primary purpose of a CSS Media Query?",
+        "options": [
+          "To change styles based on user interaction.",
+          "To apply different styles to a website based on the screen size or device characteristics.",
+          "To add animations to an element.",
+          "To position elements on a page."
+        ],
+        "correctAnswer": "To apply different styles to a website based on the screen size or device characteristics."
+      },
+      {
+        "questionText": "Which media feature would you use to apply a style when the screen width is 1024 pixels or less?",
+        "options": [
+          "min-width: 1024px",
+          "max-width: 1024px",
+          "device-width: 1024px",
+          "screen-width: 1024px"
+        ],
+        "correctAnswer": "max-width: 1024px"
+      },
+      {
+        "questionText": "A media query with `(min-width: 600px)` will apply its styles to:",
+        "options": [
+          "Screens smaller than 600px.",
+          "Screens exactly 600px wide.",
+          "Screens 600px wide and larger.",
+          "All screens."
+        ],
+        "correctAnswer": "Screens 600px wide and larger."
+      },
+      {
+        "questionText": "What does 'responsive design' mean in web development?",
+        "options": [
+          "A website that loads quickly.",
+          "A website that is interactive and uses animations.",
+          "A website that responds to a server request.",
+          "A website that adapts its layout and content to fit various screen sizes."
+        ],
+        "correctAnswer": "A website that adapts its layout and content to fit various screen sizes."
+      },
+      {
+        "questionText": "Which of the following is the correct syntax for a media query?",
+        "options": [
+          "media (min-width: 500px) { ... }",
+          "@media screen and (min-width: 500px) { ... }",
+          "@query (min-width: 500px) { ... }",
+          "media query (min-width: 500px) { ... }"
+        ],
+        "correctAnswer": "@media screen and (min-width: 500px) { ... }"
+      },
+      {
+        "questionText": "When writing CSS for responsive design, which approach is generally recommended for a 'mobile-first' strategy?",
+        "options": [
+          "Writing styles for large screens first, then using `max-width` media queries for smaller screens.",
+          "Writing styles for small screens first, then using `min-width` media queries for larger screens.",
+          "Writing separate CSS files for each device.",
+          "Using only a single set of styles for all screen sizes."
+        ],
+        "correctAnswer": "Writing styles for small screens first, then using `min-width` media queries for larger screens."
+      },
+      {
+        "questionText": "What is the purpose of the `max-width` property?",
+        "options": [
+          "It forces an element to be a specific width.",
+          "It allows an element to grow to a certain size and no larger.",
+          "It sets the minimum width for an element.",
+          "It makes an element shrink to fit its content."
+        ],
+        "correctAnswer": "It allows an element to grow to a certain size and no larger."
+      },
+      {
+        "questionText": "What does `margin: 0 auto;` do when applied to a block-level element with a specified width?",
+        "options": [
+          "It centers the element vertically.",
+          "It centers the element horizontally.",
+          "It adds a margin of 0px to all sides.",
+          "It removes all margins from the element."
+        ],
+        "correctAnswer": "It centers the element horizontally."
+      },
+      {
+        "questionText": "Which `position` value is used to remove an element from the normal document flow and position it relative to its closest positioned ancestor?",
+        "options": [
+          "relative",
+          "absolute",
+          "fixed",
+          "static"
+        ],
+        "correctAnswer": "absolute"
+      },
+      {
+        "questionText": "What is the purpose of a `position: fixed;` element?",
+        "options": [
+          "It moves the element relative to its normal position.",
+          "It stays in the same place on the screen, even when the user scrolls.",
+          "It floats above other elements but is still affected by the page's flow.",
+          "It has no special positioning behavior."
+        ],
+        "correctAnswer": "It stays in the same place on the screen, even when the user scrolls."
+      },
+      {
+        "questionText": "What CSS rule is used to define the different stages of a CSS animation?",
+        "options": [
+          "@keyframes",
+          "@animation",
+          "@transform",
+          "@transition"
+        ],
+        "correctAnswer": "@keyframes"
+      },
+      {
+        "questionText": "Which property is used to link a CSS rule to a specific `@keyframes` rule?",
+        "options": [
+          "animation-duration",
+          "animation-name",
+          "animation-play-state",
+          "animation-fill-mode"
+        ],
+        "correctAnswer": "animation-name"
+      },
+      {
+        "questionText": "How would you make a `box` animation repeat forever?",
+        "options": [
+          "animation-iteration-count: 100%;",
+          "animation-iteration-count: loop;",
+          "animation-iteration-count: infinite;",
+          "animation-repeat: forever;"
+        ],
+        "correctAnswer": "animation-iteration-count: infinite;"
+      },
+      {
+        "questionText": "In the animation shorthand `animation: slideIn 2s ease-in 0.5s 3 alternate;`, what does `2s` represent?",
+        "options": [
+          "The animation's delay.",
+          "The number of times the animation will repeat.",
+          "The animation's duration.",
+          "The animation's name."
+        ],
+        "correctAnswer": "The animation's duration."
+      },
+      {
+        "questionText": "What does the `animation-direction: alternate;` property do?",
+        "options": [
+          "It reverses the animation's direction every other cycle.",
+          "It makes the animation run only in reverse.",
+          "It makes the animation repeat once and then stop.",
+          "It plays the animation randomly."
+        ],
+        "correctAnswer": "It reverses the animation's direction every other cycle."
+      },
+      {
+        "questionText": "The `@keyframes` rule uses percentages (e.g., 0%, 50%, 100%) to define:",
+        "options": [
+          "The exact position of an element in pixels.",
+          "The style of an element at a specific point in the animation's timeline.",
+          "The duration of the animation.",
+          "The number of times the animation repeats."
+        ],
+        "correctAnswer": "The style of an element at a specific point in the animation's timeline."
+      },
+      {
+        "questionText": "Which `position` value keeps an element in its normal flow but lets you move it relative to itself?",
+        "options": [
+          "static",
+          "relative",
+          "absolute",
+          "fixed"
+        ],
+        "correctAnswer": "relative"
+      },
+      {
+        "questionText": "What does `animation-fill-mode: forwards;` do?",
+        "options": [
+          "Animation never ends",
+          "Keeps the element in the final keyframe style",
+          "Reverses animation",
+          "Pauses the animation"
+        ],
+        "correctAnswer": "Keeps the element in the final keyframe style"
+      },
+      {
+        "questionText": "Which `animation-timing-function` starts slow and speeds up at the end?",
+        "options": [
+          "ease",
+          "linear",
+          "ease-in",
+          "ease-out"
+        ],
+        "correctAnswer": "ease-in"
+      },
+      {
+        "questionText": "You want a notification to stay visible while scrolling. Which CSS positioning should you use?",
+        "options": [
+          "relative",
+          "absolute",
+          "fixed",
+          "static"
+        ],
+        "correctAnswer": "fixed"
+      },
+      {
+        "questionText": "Which property would you use to make an element move smoothly from left to right?",
+        "options": [
+          "transition",
+          "transform",
+          "position",
+          "display"
+        ],
+        "correctAnswer": "transform"
+      },
+      {
+        "questionText": "In a mobile-first approach, you write styles for small screens first. Which media query should you use for larger screens?",
+        "options": [
+          "max-width",
+          "min-width",
+          "only screen",
+          "all devices"
+        ],
+        "correctAnswer": "min-width"
+      },
+      {
+        "questionText": "You combine hover + animation. Which effect does this achieve?",
+        "options": [
+          "Animation triggers only when the user hovers",
+          "Animation repeats automatically",
+          "Animation ignores hover",
+          "Animation pauses forever"
+        ],
+        "correctAnswer": "Animation triggers only when the user hovers"
+      }
+    ]
+  },
+  "CSS_Week4": {
+    "title": "Week 4: Advanced Layouts & Best Practices Quiz",
+    "description": "Test your knowledge of CSS Grid, responsive design principles, CSS preprocessors, and professional CSS practices with both conceptual and practical questions.",
+    "questions": [
+      {
+        "questionText": "What is the key difference between CSS Grid and Flexbox?",
+        "options": [
+          "Flexbox is for aligning items horizontally, while Grid is for aligning them vertically.",
+          "Flexbox is a one-dimensional layout system, while Grid is a two-dimensional layout system.",
+          "Flexbox is used for mobile-first design, while Grid is used for desktop design.",
+          "Flexbox is only for aligning items, while Grid is only for creating columns."
+        ],
+        "correctAnswer": "Flexbox is a one-dimensional layout system, while Grid is a two-dimensional layout system."
+      },
+      {
+        "questionText": "Which property is used on the **grid container** to define the number and size of columns?",
+        "options": ["grid-template-rows", "grid-gap", "grid-template-columns", "grid-column"],
+        "correctAnswer": "grid-template-columns"
+      },
+      {
+        "questionText": "What does the `1fr` unit in CSS Grid stand for?",
+        "options": ["1 fixed row", "1 flexible row", "1 fraction of the available space", "1 floating unit"],
+        "correctAnswer": "1 fraction of the available space"
+      },
+      {
+        "questionText": "How would you make a grid item span across 3 columns?",
+        "options": ["grid-column: 3;", "grid-column-span: 3;", "grid-column: 1 / span 3;", "grid-column-end: 3;"],
+        "correctAnswer": "grid-column: 1 / span 3;"
+      },
+      {
+        "questionText": "What is the purpose of the `gap` property in CSS Grid?",
+        "options": [
+          "To add space between the grid container's border and its items.",
+          "To add space between the grid items (both rows and columns).",
+          "To add space only between the grid rows.",
+          "To add space only between the grid columns."
+        ],
+        "correctAnswer": "To add space between the grid items (both rows and columns)."
+      },
+      {
+        "questionText": "What does `repeat(3, 1fr)` do in CSS Grid?",
+        "options": [
+          "It creates 3 rows, each with a size of 1fr.",
+          "It creates 3 columns, each with a size of 1fr.",
+          "It makes the grid repeat 3 times.",
+          "It repeats a 1fr track 3 times."
+        ],
+        "correctAnswer": "It creates 3 columns, each with a size of 1fr."
+      },
+      {
+        "questionText": "Why is commenting your CSS code considered a professional best practice?",
+        "options": [
+          "It makes your code run faster.",
+          "It helps other developers (and your future self) understand complex parts of the code.",
+          "It is a required part of the CSS syntax.",
+          "It removes unnecessary code from the stylesheet."
+        ],
+        "correctAnswer": "It helps other developers (and your future self) understand complex parts of the code."
+      },
+      {
+        "questionText": "According to the notes, what is the main benefit of using a consistent class naming convention like BEM?",
+        "options": [
+          "It reduces the file size of your CSS.",
+          "It improves the visual appearance of your website.",
+          "It makes your HTML more readable and organized.",
+          "It makes your CSS more maintainable and scalable."
+        ],
+        "correctAnswer": "It makes your CSS more maintainable and scalable."
+      },
+      {
+        "questionText": "What is the purpose of a CSS preprocessor?",
+        "options": [
+          "To compile CSS into a different programming language.",
+          "To add features to standard CSS to make it more powerful and maintainable.",
+          "To compress CSS files to improve website performance.",
+          "To automatically generate CSS from a website's HTML."
+        ],
+        "correctAnswer": "To add features to standard CSS to make it more powerful and maintainable."
+      },
+      {
+        "questionText": "What are **variables** in a preprocessor like Sass used for?",
+        "options": [
+          "Storing temporary data for animations.",
+          "Defining the layout of a grid.",
+          "Storing reusable values like colors or font sizes to avoid repetition.",
+          "Creating conditional logic in CSS."
+        ],
+        "correctAnswer": "Storing reusable values like colors or font sizes to avoid repetition."
+      },
+      {
+        "questionText": "In a Sass file, what does **nesting** allow you to do?",
+        "options": [
+          "Create a new HTML element inside a CSS file.",
+          "Place one CSS file inside another.",
+          "Organize selectors to mirror the structure of your HTML.",
+          "Apply the same style to multiple elements."
+        ],
+        "correctAnswer": "Organize selectors to mirror the structure of your HTML."
+      },
+      {
+        "questionText": "What is a **mixin** in a CSS preprocessor?",
+        "options": [
+          "A tool for combining multiple CSS files.",
+          "A reusable group of CSS declarations that can be included in a selector.",
+          "A way to add a variable to an element's style.",
+          "A feature that allows you to calculate values using math."
+        ],
+        "correctAnswer": "A reusable group of CSS declarations that can be included in a selector."
+      },
+      {
+        "questionText": "Based on the provided example, what would a tablet-sized screen (768px wide) show for the `.container` grid?",
+        "options": [
+          "3 columns, each with a width of 1fr.",
+          "2 columns, each with a width of 1fr.",
+          "1 column with a width of 1fr.",
+          "No columns, as the media query would fail."
+        ],
+        "correctAnswer": "2 columns, each with a width of 1fr."
+      },
+      {
+        "questionText": "Which of the following is an example of good CSS organization based on the notes?",
+        "options": [
+          "Placing all your selectors in a single line.",
+          "Using a single, large CSS file for the entire project.",
+          "Grouping related sections and using consistent spacing.",
+          "Adding a new stylesheet for every component."
+        ],
+        "correctAnswer": "Grouping related sections and using consistent spacing."
+      },
+      {
+        "questionText": "Practical: How would you make a grid container have 4 columns of equal width using CSS Grid?",
+        "options": [
+          "grid-template-columns: 4px;",
+          "grid-template-columns: repeat(4, 1fr);",
+          "grid-columns: 1fr 1fr 1fr 1fr;",
+          "grid-columns: repeat(1fr, 4);"
+        ],
+        "correctAnswer": "grid-template-columns: repeat(4, 1fr);"
+      },
+      {
+        "questionText": "Practical: If you want the second grid item to span 2 rows, which property would you use?",
+        "options": [
+          "grid-row: span 2;",
+          "grid-column: span 2;",
+          "grid-row-span: 2;",
+          "grid-item-span: 2;"
+        ],
+        "correctAnswer": "grid-row: span 2;"
+      },
+      {
+        "questionText": "Practical: How do you make a background image cover an entire grid item?",
+        "options": [
+          "background-size: auto;",
+          "background-size: cover;",
+          "background-size: fit;",
+          "background-size: contain;"
+        ],
+        "correctAnswer": "background-size: cover;"
+      },
+      {
+        "questionText": "Practical: Which property adds a 10px space between all grid items?",
+        "options": ["margin: 10px;", "gap: 10px;", "padding: 10px;", "spacing: 10px;"],
+        "correctAnswer": "gap: 10px;"
+      },
+      {
+        "questionText": "Practical: How do you create a 2-column grid on desktop and a 1-column layout on mobile using media queries?",
+        "options": [
+          "Use `display: flex;` with `flex-direction: column;` on mobile.",
+          "Change `grid-template-columns` inside a `@media` rule for mobile screens.",
+          "Set all items to width: 100% on mobile.",
+          "You cannot change grid layouts with media queries."
+        ],
+        "correctAnswer": "Change `grid-template-columns` inside a `@media` rule for mobile screens."
+      },
+      {
+        "questionText": "Practical: How would you write a CSS rule to add an inset shadow to a box?",
+        "options": [
+          "box-shadow: inset 2px 2px 5px grey;",
+          "box-shadow: 2px 2px 5px grey inset;",
+          "shadow: inset 2px 2px 5px grey;",
+          "box-inset: 2px 2px 5px grey;"
+        ],
+        "correctAnswer": "box-shadow: inset 2px 2px 5px grey;"
+      },
+      {
+        "questionText": "Practical: If a grid container uses `grid-template-rows: 100px 200px;`, what is the height of the second row?",
+        "options": ["100px", "200px", "300px", "auto"],
+        "correctAnswer": "200px"
+      },
+      {
+        "questionText": "Practical: How do you include a mixin named `button-style` in a Sass selector?",
+        "options": [
+          "@include button-style;",
+          "include: button-style;",
+          "mixin: button-style;",
+          "use: button-style;"
+        ],
+        "correctAnswer": "@include button-style;"
+      },
+      {
+        "questionText": "Practical: Which unit is most flexible for defining column widths in CSS Grid?",
+        "options": ["px", "%", "fr", "em"],
+        "correctAnswer": "fr"
+      },
+      {
+        "questionText": "Practical: How do you make a grid container responsive for screens smaller than 480px?",
+        "options": [
+          "@media (max-width: 480px) { grid-template-columns: 1fr; }",
+          "@media (max-width: 480px) { grid-template-columns: repeat(3, 1fr); }",
+          "@media (min-width: 480px) { grid-template-columns: 1fr; }",
+          "Use JavaScript to change columns."
+        ],
+        "correctAnswer": "@media (max-width: 480px) { grid-template-columns: 1fr; }"
+      }
+    ]
+  },
+
+
+
+
+
+
+
+
+
   //python
   "Python_Week1": {
     "title": "Week 1: Introduction to Python Quiz",
