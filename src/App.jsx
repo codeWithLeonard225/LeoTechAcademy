@@ -74,8 +74,8 @@ function App() {
     <div className="font-sans antialiased">
       <Routes>
         {/* The HomePage component is rendered when the path is '/' */}
-        {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/" element={<Week4CSS />} />
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Week4CSS />} /> */}
         
 
 
