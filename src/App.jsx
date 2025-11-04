@@ -63,6 +63,7 @@ import Week1CSSIntro from './Component/Reading/CSS/Week1CSSIntro';
 import Week2CSS from './Component/Reading/CSS/Week2CSS';
 import Week3CSS from './Component/Reading/CSS/Week3CSS';
 import Week4CSS from './Component/Reading/CSS/Week4CSS';
+import MsAccessWk4 from './Component/Reading/MsAccess/MsAccessWk4';
 // import MsAccessWk4 from './Component/Reading/MsAccess/MsAccessWk4';
 
 
@@ -143,6 +144,7 @@ function App() {
         <Route path="/courses/MsAccessWk1" element={<MsAccessWk1 />} />
         <Route path="/courses/MsAccessWk2" element={<MsAccessWk2 />} />
         <Route path="/courses/MsAccessWk3" element={<MsAccessWk3 />} />
+        <Route path="/courses/MsAccessWk4" element={<MsAccessWk4 />} />
 
         {/* HTML */}
         <Route path="/courses/Week1HTMLIntro" element={<Week1HTMLIntro />} />

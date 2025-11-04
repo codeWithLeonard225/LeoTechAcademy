@@ -2647,6 +2647,213 @@ const allQuizzes = {
       }
     ]
   },
+  "MSAccess_Week4": {
+  "title": "Week 4: Dashboards and Navigation Quiz",
+  "description": "Assess your understanding of creating dashboards, adding command buttons, using images as buttons, and enhancing navigation in Access.",
+  "questions": [
+    {
+      "questionText": "What is another name for a Dashboard in Microsoft Access?",
+      "options": [
+        "Report Sheet",
+        "Switchboard",
+        "Macro Builder",
+        "Data Table"
+      ],
+      "correctAnswer": "Switchboard"
+    },
+    {
+      "questionText": "What is the primary purpose of a Dashboard in Access?",
+      "options": [
+        "To create and print reports",
+        "To act as a main menu for easy navigation within the database",
+        "To display raw data from tables",
+        "To store macros and queries"
+      ],
+      "correctAnswer": "To act as a main menu for easy navigation within the database"
+    },
+    {
+      "questionText": "Which view should you switch to when designing your Dashboard form?",
+      "options": [
+        "Layout View",
+        "Form View",
+        "Design View",
+        "Report View"
+      ],
+      "correctAnswer": "Design View"
+    },
+    {
+      "questionText": "Which control is used to add titles or headings to your Dashboard form?",
+      "options": [
+        "Text Box",
+        "Label",
+        "Combo Box",
+        "Button"
+      ],
+      "correctAnswer": "Label"
+    },
+    {
+      "questionText": "When creating a Dashboard title, which tool from the Form Design tab do you click?",
+      "options": [
+        "Aa (Label Tool)",
+        "Text Box Tool",
+        "Image Tool",
+        "Macro Tool"
+      ],
+      "correctAnswer": "Aa (Label Tool)"
+    },
+    {
+      "questionText": "What tool is used to create clickable buttons on a Dashboard?",
+      "options": [
+        "Label",
+        "Image",
+        "Command Button",
+        "Text Box"
+      ],
+      "correctAnswer": "Command Button"
+    },
+    {
+      "questionText": "What does the Command Button Wizard help you do?",
+      "options": [
+        "Write SQL queries automatically",
+        "Create buttons that perform actions like opening forms or reports",
+        "Add titles and labels to forms",
+        "Design database relationships"
+      ],
+      "correctAnswer": "Create buttons that perform actions like opening forms or reports"
+    },
+    {
+      "questionText": "Which category in the Command Button Wizard would you choose to make a button that opens a form?",
+      "options": [
+        "Application",
+        "Form Operations",
+        "Report Operations",
+        "Record Navigation"
+      ],
+      "correctAnswer": "Form Operations"
+    },
+    {
+      "questionText": "If you want a button that exits the database, which category should you select in the Command Button Wizard?",
+      "options": [
+        "Form Operations",
+        "Application",
+        "Report Operations",
+        "Query Design"
+      ],
+      "correctAnswer": "Application"
+    },
+    {
+      "questionText": "What is the purpose of choosing 'Text' or 'Picture' during the Command Button Wizard process?",
+      "options": [
+        "To set the button color",
+        "To define how the button looks — with words or an image",
+        "To determine the button’s size",
+        "To link the button to a table"
+      ],
+      "correctAnswer": "To define how the button looks — with words or an image"
+    },
+    {
+      "questionText": "What can you use instead of buttons to make your Dashboard more visual?",
+      "options": [
+        "Labels",
+        "Images",
+        "Text Boxes",
+        "Combo Boxes"
+      ],
+      "correctAnswer": "Images"
+    },
+    {
+      "questionText": "Which property of an image do you use to make it clickable?",
+      "options": [
+        "On Load",
+        "On Click",
+        "On Hover",
+        "After Update"
+      ],
+      "correctAnswer": "On Click"
+    },
+    {
+      "questionText": "What should you select when you want to assign an action to an image using the On Click event?",
+      "options": [
+        "Expression Builder",
+        "Macro Builder",
+        "Code Builder",
+        "Query Builder"
+      ],
+      "correctAnswer": "Macro Builder"
+    },
+    {
+      "questionText": "Which macro action is commonly used to make an image open another form?",
+      "options": [
+        "RunCommand",
+        "OpenForm",
+        "OpenReport",
+        "GoToRecord"
+      ],
+      "correctAnswer": "OpenForm"
+    },
+    {
+      "questionText": "Why should you use a Dashboard in a school database?",
+      "options": [
+        "To let users open tables directly",
+        "To provide easy access to forms like Students, Teachers, and Reports",
+        "To remove the need for forms entirely",
+        "To store student grades"
+      ],
+      "correctAnswer": "To provide easy access to forms like Students, Teachers, and Reports"
+    },
+    {
+      "questionText": "Which tool helps you visually align and organize buttons or images neatly?",
+      "options": [
+        "Layout Grid",
+        "Macro Builder",
+        "Property Sheet",
+        "Control Wizard"
+      ],
+      "correctAnswer": "Layout Grid"
+    },
+    {
+      "questionText": "Where can you find the option to set your Dashboard to open automatically when the database starts?",
+      "options": [
+        "File → Options → Current Database → Display Form",
+        "Database Tools → Relationships",
+        "Form Design → Property Sheet",
+        "Create → Form Wizard"
+      ],
+      "correctAnswer": "File → Options → Current Database → Display Form"
+    },
+    {
+      "questionText": "What action category should you use to add an Exit button that closes the database?",
+      "options": [
+        "Application → Exit Application",
+        "Form Operations → Close Form",
+        "Report Operations → Close Report",
+        "Macro Actions → End Macro"
+      ],
+      "correctAnswer": "Application → Exit Application"
+    },
+    {
+      "questionText": "Why should buttons and images on a Dashboard be neatly aligned?",
+      "options": [
+        "To make the database load faster",
+        "To make the Dashboard look professional and easy to use",
+        "To allow more forms to be opened",
+        "To improve the query speed"
+      ],
+      "correctAnswer": "To make the Dashboard look professional and easy to use"
+    },
+    {
+      "questionText": "What happens when you set your Dashboard as the Display Form in Access Options?",
+      "options": [
+        "It becomes the first form to open whenever the database starts",
+        "It deletes all other forms automatically",
+        "It hides the Navigation Pane permanently",
+        "It locks all tables"
+      ],
+      "correctAnswer": "It becomes the first form to open whenever the database starts"
+    }
+  ]
+},
+
 
 
   // html
